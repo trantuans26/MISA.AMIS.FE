@@ -1,0 +1,156 @@
+.drilldown {
+    position: absolute;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .16);
+    top:100%;
+    background-color: rgb(249, 250, 252);
+    border-radius: 3px;
+    cursor: pointer;
+    z-index: 2;
+    outline: none;
+    transform-origin: top center;
+    animation: scaleZ 300ms ease-in-out forwards;
+}
+
+.drilldown--open {
+    display: block;
+}
+
+.drilldown--normal {
+    width: 100%; 
+    font-size: 13px;
+}
+
+.drilldown--modal {
+    left: 0;
+    width: 120%; 
+    font-size: 14px;
+}
+
+.drilldown--pagesize {
+    border-radius: 2.625px;
+    width: 60px;
+    top: -102px;
+    animation: popFromBottom 300ms ease-in-out forwards;
+}
+
+.drilldown--pagesize .drilldown__box {
+
+}
+
+.drilldown--pagesize .drilldown__item {
+    justify-content: center;
+    height: 25px;
+}
+
+.drilldown::before {
+    content: "";
+    position: absolute;
+    width: 100px;
+    right: 0%;
+    background-color: none;
+    height: 60px;
+    top: -20px;
+}
+
+.drilldown--modal::before {
+    content: "";
+    position: absolute;
+    width: 100px;
+    right: 10%;
+    background-color: none;
+    height: 60px;
+    top: -20px;
+}
+
+.drilldown__box {
+    margin: 4px;
+    overflow: auto;   
+    max-height: 216px;
+    position: relative;
+}
+
+.drilldown__box::-webkit-scrollbar {
+    display: none;
+}
+
+.drilldown__item {
+    display: flex;
+    border-radius: 3px;
+    width: 100%;
+    height: 36px;
+    align-items: center;
+    outline: none;
+}
+
+.drilldown__item--header,
+.drilldown__item--header:hover {
+    background-color: rgb(150, 198, 238) !important;
+}
+
+.drilldown__item--modal {
+    padding: 12px;
+}
+
+.drilldown__item--selected {
+    background-color: rgb(199, 224, 245);
+}
+
+.drilldown__item--selected .drilldown__check i {
+    display: block;
+}
+
+.drilldown__item:hover,
+.drilldown__item:focus {
+    background-color: rgb(199, 224, 245);
+}
+
+.drilldown__item:focus > .drilldown__check i,
+.drilldown__item:hover > .drilldown__check i {
+    display: block;
+}
+
+.drilldown__check {
+    width: 36px;
+    text-align: center;
+    margin-right: 6px;
+}
+
+.drilldown__check i {
+    font-size: 15px;
+    display: none;
+}
+
+.drilldown--year .drilldown__check {
+    margin-right: 11px;
+}
+
+.drilldown__id {
+    margin-right: 32px;
+    width: 52px;
+    text-align: center;
+}
+
+@keyframes scaleZ {
+    0% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    
+    80% {
+      transform: scale(1.02);
+    }
+  
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+}
+
+@keyframes popFromBottom {
+    0% {
+      transform: translateY(100px) scale(0);
+    }
+    100% {
+      transform: translateY(0px) scale(1);
+    }
+  }

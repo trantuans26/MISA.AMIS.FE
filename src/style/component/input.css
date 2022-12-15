@@ -1,0 +1,117 @@
+:root {
+    --input-height: 32px;
+    --input-colorHover: #2ca01c;
+}
+
+.input {
+    font-size: 13px;
+    background-color: #ffffff;
+    border-radius: 2px;
+    padding-left: 10px;
+    color: inherit;
+    border: 1px solid #babec5;
+    height: var(--input-height);
+    box-sizing: border-box;
+    outline: none;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.input::placeholder {
+    font-size: 13px;
+    font-style: italic;
+}
+
+.input--disable {
+    background-color: #f5f4f4;
+    pointer-events: none;
+}
+
+.input:hover,
+.input:focus {
+    border-color: var(--input-colorHover);
+}
+
+.input:focus +.message--hasError {
+    display: none;
+}
+
+.input--disable {
+    background-color: #f5f4f4;
+    pointer-events: none;
+}
+
+.input--error {
+    border: 1.5px solid #ed4337;
+}
+
+/* Begin: Search input */
+.input--search {
+    width: 280px;
+    padding-left: 10px;
+    padding-right: 36px;
+}
+
+.input--search::placeholder {
+    font-size: 13px !important;
+    font-style: Roboto Italic;
+}
+/* End: Search input */
+
+.input--search {
+    border-radius: 2.5px;
+    border: 1.5px solid #afafaf;
+}
+
+.input--filter {
+ /*    pointer-events: none; */
+}
+
+.input--filter::selection {
+    background-color: white;
+}
+
+
+/* Được dùng cho dữ liệu nhập số */
+.input--textright {
+    text-align: right;
+}
+
+/* Được dùng cho modal */
+.input--haveicon {
+    padding-right: 36px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    display: block;
+	width: 18px;
+	height: 18px;
+    z-index: 1;
+}
+
+.input__text--error {
+    position: absolute;
+    color: #ed4337;
+    font-size: 10px;
+    margin-top: 4px;
+}
+
+.input--quantity {
+    position: relative;
+}
+
+.input--modal {
+    font-size: 14px;
+}
+
+.input--page {
+    width: 200px !important;
+    text-overflow: ellipsis;
+    display: flex;
+    flex-grow: 1;
+}
+
+.input--220 {
+    width: 200px !important;
+}

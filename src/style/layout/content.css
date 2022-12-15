@@ -1,0 +1,29 @@
+:root {
+    --contentHeader-height: 64px;
+    --contentBody-color: rgb(255, 255, 255);
+}
+.content {
+    margin: 0 0 0 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.content__header {
+    margin-top: 4px;
+    margin-right: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: var(--contentHeader-height);    
+}
+
+.content__title {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.content__body {
+    background-color: var(--contentBody-color);
+    flex: 1;
+}
+

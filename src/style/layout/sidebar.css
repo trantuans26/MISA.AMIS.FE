@@ -1,0 +1,301 @@
+:root {
+    --border-color: rgb(44, 160, 28);
+    --sidebar-color: rgb(57, 58, 61);
+    --sidebarHover-color: rgb(88, 89, 93);
+    --logo-height: 48px;
+    --sidebar-width: 178px;
+    --sidebar-item-height: 42px;
+}
+
+
+.sidebar {
+    background-color: var(--sidebar-color);
+    box-shadow: inset 0 3px 6px rgba(0, 0, 0, .16);
+    height: 100vh; 
+    display: none;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    width: var(--sidebar-width);
+}
+
+.display {
+    display: flex;
+}
+
+.sidebar__bottom {
+    padding: 8px 0 8px;
+    border-top: 1.3px solid rgba(241, 241, 241, .2);
+    width: 100%;
+    display: flex;
+    align-items: center; 
+    opacity: 0.8;
+}
+.sidebar--minimize > .sidebar__bottom {
+    justify-content: center;
+}
+
+.sidebar--maximum > .sidebar__bottom {
+    justify-content: flex-end;
+    padding-right: 16px;
+}
+
+.sidebar__top {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.sidebar__bottom {
+
+}
+
+.sidebar__logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--logo-height);
+    padding-top: 2px;
+    padding-left: 2px;
+}
+
+.sidebar__logo--link {
+    margin-left: 13px;
+    outline: none;
+}
+
+.sidebar__list {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    margin-top: 14px;
+    padding: 0;
+}
+
+.sidebar__item {
+    height: var(--sidebar-item-height);
+    display: flex;
+    align-items: center;
+    position: relative;
+    outline: none;
+    border-left: solid 6px var(--sidebar-color); 
+    
+}
+
+.sidebar__item  a {
+    display: flex;
+    align-items: center;
+    outline: none;
+}
+
+.sidebar__item p {
+    color: white;
+    outline: none;
+    font-weight: 400;
+}
+
+.sidebar__icon {
+    width: 42px;
+}
+
+.sidebar--minimize {
+    width: 52px;
+}
+.sidebar--minimize .sidebar__item {
+    justify-content: center;
+}
+
+.sidebar--minimize .sidebar__item i {
+    margin: 0 10px 0;
+}
+
+.sidebar--maximum .sidebar__item i {
+    margin: 0 12px 0;
+
+}
+
+.sidebar__item .icon--angle-down {
+    position: absolute;
+    right: 0;
+}
+
+/* BEGIN: Hover */
+.sidebar__item:hover { 
+    background-color: var(--sidebarHover-color);
+    cursor: pointer;
+    border-left: solid 6px var(--sidebarHover-color);
+}
+
+/* END: Hover */
+
+.sidebar__list.total .total,
+.sidebar__list.money .money,
+.sidebar__list.deposit .deposit,
+.sidebar__list.shop .shop,
+.sidebar__list.sale .sale,
+.sidebar__list.bill .bill,
+.sidebar__list.store .store,
+.sidebar__list.tool .tool,
+.sidebar__list.fixedAsset .fixedAsset,
+.sidebar__list.tax .tax,
+.sidebar__list.cost .cost,
+.sidebar__list.general .general,
+.sidebar__list.budget .budget,
+.sidebar__list.report .report,
+.sidebar__list.analyst .analyst {
+    background-color: rgb(88, 89, 93);
+    cursor: pointer;
+    border-left: solid 6px var(--border-color);
+}
+
+/* Main */
+/* .sidebar__list.total p,
+.sidebar__list.asset p,
+.sidebar__list.infrastructure p,
+.sidebar__list.tool p,
+.sidebar__list.category p,
+.sidebar__list.searchShadow p,
+.sidebar__list.report p {
+    font-weight: 600;
+} */
+/* Test */
+.sidebar__list.total .total p,
+.sidebar__list.money .money p,
+.sidebar__list.deposit .deposit p,
+.sidebar__list.shop .shop p,
+.sidebar__list.sale .sale p,
+.sidebar__list.bill .bill p,
+.sidebar__list.store .store p,
+.sidebar__list.tool .tool p,
+.sidebar__list.fixedAsset .fixedAsset p,
+.sidebar__list.tax .tax p,
+.sidebar__list.cost .cost p,
+.sidebar__list.general .general p,
+.sidebar__list.budget .budget p,
+.sidebar__list.report .report p,
+.sidebar__list.analyst .analyst p {
+    font-family: Notosans Bold;
+}
+
+.sidebar__item:hover a > .icon--total p,
+.sidebar__list.total .icon--total {
+    background-position: -33px -1587px;
+	width: 18px;
+	height: 20px;
+}
+
+.sidebar__item:hover a > .icon--money,
+.sidebar__list.money .icon--money {
+    background-position: -78px -1588px;
+	width: 14px;
+	height: 18px;
+}
+
+.sidebar__item:hover a > .icon--deposit,
+.sidebar__list.deposit .icon--deposit {
+    background-position: -121px -1590px;
+	width: 16px;
+	height: 16px;
+}
+
+.sidebar__item:hover a > .icon--shop,
+.sidebar__list.shop .icon--shop {
+    background-position: -165px -1589px;
+	width: 16px;
+	height: 18px;
+}
+
+.sidebar__item:hover a > .icon--sale,
+.sidebar__list.sale .icon--sale {
+    background-position: -206px -1588px;
+	width: 20px;
+	height: 18px;
+}
+
+.sidebar__item:hover a > .icon--bill,
+.sidebar__list.bill .icon--bill {
+    background-position: -254px -1589px;
+	width: 14px;
+	height: 17px;
+}
+
+
+.sidebar__item:hover a > .icon--store,
+.sidebar__list.store .icon--store {
+    background-position: -294px -1589px;
+	width: 18px;
+	height: 17px;
+}
+
+.sidebar__item:hover a > .icon--tool,
+.sidebar__list.tool .icon--tool {
+    background-position: -339px -1590px;
+	width: 18px;
+	height: 17px;
+}
+
+
+.sidebar__item:hover a > .icon--fixedAsset,
+.sidebar__list.fixedAsset .icon--fixedAsset {
+    background-position: -382px -1589px;
+	width: 17px;
+	height: 18px;
+}
+
+.sidebar__item:hover a > .icon--tax,
+.sidebar__list.tax .icon--tax {
+    background-position: -427px -1591px;
+	width: 16px;
+	height: 16px;
+}
+
+
+.sidebar__item:hover a > .icon--cost,
+.sidebar__list.cost .icon--cost {
+    background-position: -471px -1590px;
+	width: 17px;
+	height: 17px;
+}
+
+.sidebar__item:hover a > .icon--general,
+.sidebar__list.general .icon--general {
+    background-position: -514px -1590px;    
+	width: 15px;
+	height: 16px;
+}
+
+.sidebar__item:hover a > .icon--budget,
+.sidebar__list.budget .icon--budget {
+    background-position: -427px -1664px;    
+	width: 16px;
+	height: 16px;
+}
+
+
+.sidebar__item:hover a > .icon--report,
+.sidebar__list.report .icon--report {
+    background-position: -552px -1593px;
+	width: 14px;
+	height: 13px;
+}
+
+.sidebar__item:hover a > .icon--analyst,
+.sidebar__list.analyst .icon--analyst {
+    background-position: -251px -1667px;
+	width: 17px;
+	height: 14px;
+}
+
+
+
+
+.sidebar [data-title]:after {
+    bottom: -3.5vh;
+    right: -12%;
+} 
+
+.sidebar--minimize [data-title]:after {
+    bottom: 1vh;
+    right: -160%;
+} 

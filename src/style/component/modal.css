@@ -1,0 +1,208 @@
+.modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 2;
+    align-items: center;
+    justify-content: center;
+    display: none;
+}
+
+.modal--open {
+    display:flex;
+}
+
+.modal__main {
+    position: relative;
+    animation: modalFadeIn ease 0.5s;
+    border-radius: 3.5px;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+.modal__section { 
+    margin: 0 32px 0;
+}
+
+.modal__icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 8px;
+    margin: 6px 8px 6px;
+
+    display: flex;
+    align-items: center;
+}
+
+.modal__close {
+    color: black;
+    margin-left: 12px;
+}
+
+.modal__close:hover {
+    cursor: pointer;
+}
+
+.modal__header {
+    font-size: 24px;
+    color: #111;
+    margin: 24px 32px 20px;
+    font-weight: 700;
+    height: 32px;
+    display: flex;
+    align-items: center;
+}
+
+.modal__bag {
+    margin-right: 16px;
+}
+
+.modal__content {
+    margin: 0 40px 0 28px;
+}
+
+.modal__top {
+    display: flex;
+    margin-bottom: 16px;
+}
+
+.modal__topLeft {
+    width: 50%;
+    padding-right: 18px;
+}
+
+.modal__line {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.modal__item {
+    margin: 0 4px 0;
+    position: relative;
+}
+
+.modal__item em {
+    color: red;
+}
+
+.modal__item--fill {
+    flex: 1;
+}
+
+.modal__item--fill input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal__label {
+    font-weight: 600;
+}
+
+.modal__item--employeeCode {
+    width: 142px;
+}
+
+
+.modal__input--icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.modal__input--icon i {
+    position: absolute;
+    top: 36;
+    right: 16px;
+    padding-left: 8px;
+}
+
+.modal__label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.modal__item .modal__input--icon i:hover + .modal__dropdown,
+.modal__dropdown:hover {
+    display: block;
+}
+
+.modal__dropdown {
+    position: absolute;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .16);
+    top:100%;
+    left: 0;
+    background-color: rgb(249, 250, 252);
+    z-index: 1;
+    width: 120%; 
+    border-radius: 3px;
+    display: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.modal__dropdown::before {
+    content: "";
+    position: absolute;
+    width: 100px;
+    right: 10%;
+    background-color: none;
+    height: 60px;
+    top: -20px;
+}
+
+.modal__footer {
+    border-top: 1px solid #babec5;
+    height: 80px;
+    align-items: center;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+}
+
+.modal__footer--start {
+    display: flex;
+    flex-direction: row-reverse;
+}
+.modal__footer .btn__save {
+    margin-left: 10px;
+}
+
+.modal__input--quantity {
+    position: relative;
+}
+
+.spin {
+    position: absolute;
+    right: 5.6%;
+    width: 8px;
+    height: 8px;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.spin--up {
+    top: 21%;
+}
+
+.spin--down {
+    bottom: 21%;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-200px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+

@@ -1,0 +1,92 @@
+:root {
+    --theHeader-color: rgb(255, 255, 255);
+    --theHeader-height: 48px;
+}
+
+.header {
+    min-height: var(--theHeader-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--theHeader-color);
+}
+
+.header__leftside {
+    display: flex;
+    align-items: center;
+}
+.header__toggle {
+    margin: 0 10px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header__company {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.header__companyName {
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    text-overflow: ellipsis;
+    padding: 0 10px;
+}
+
+.header__companyExtend {
+    display: flex;
+}
+
+.header__companyExtend i {
+    transform: rotate(90deg);
+    margin: 0 4px -1px 4px;
+}
+
+.header__rightside {
+    display: flex;
+    align-items: center;
+    padding-right: 20px;
+}
+
+.header__notify {
+    width: 44px;
+    display: flex;
+    justify-content: center;
+}
+.header__employee {
+    align-items: center;
+    display: flex;
+    padding: 0 16px;
+    cursor: pointer;
+}
+
+.header__avatar {
+    margin-right: 6px;
+}
+
+.header__avatar i {
+    border-radius: 50%;
+}
+
+.header__employeeName {
+    font-size: 14px;
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.header__employeeExtend {
+    width: 14px;
+    display: flex;
+    justify-content: center;
+}
+
+.header__employeeExtend i {
+}
+.header [data-title]:after {
+    bottom: -3.5vh;
+} 

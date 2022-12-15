@@ -1,0 +1,359 @@
+:root {
+    --tableRow-height: 44px;
+    --tableHeader-height: 34px;
+    --tableFunction-height: 64px;
+/*     --tableBody-width: 1552px; */
+    --tableBody-width: 100%;
+    --tableBody-height: 541px;
+    --tableSpace-width: 19.6px;
+    --tableHeader-color: rgb(229, 232, 236);
+    --tableBody-color: rgb(255, 255, 255);
+    --tableBorder-color: rgb(199, 199, 199);
+}
+.table__function {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: var(--tableFunction-height);
+}
+
+.table__search {
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    border-radius: 2px;
+}
+
+.table__search i {
+    position: absolute;
+    right: 16px;
+}
+
+.table__reset {
+    padding: 0 20px;
+}
+
+.table {
+    font-size: 13px;
+    background-color: var(--tableBody-color);
+    max-height: var(--tableBody-height);
+    max-width: var(--tableBody-width);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.table__scroll {
+    display: flex;
+    flex-direction: column;
+    overflow-x: scroll;
+    overflow-y: scroll;
+    position: relative;
+    padding-left: 20px;
+    padding-right: 30px;
+    padding-bottom: 60px;
+}
+
+.table__scroll::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.table__scroll::-webkit-scrollbar-track {
+    background: rgb(236, 238, 241);
+}
+
+
+.table__scroll::-webkit-scrollbar-thumb {
+    background: #b8bcc3;
+}
+
+
+
+
+/* Begin: Header */
+.table__header {
+    height: var(--tableHeader-height);
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.table__header table {
+    width: 100%;
+    height: 100%;
+    line-height: var(--tableHeader-height);
+}
+
+.table__header table thead {
+    background-color: var(--tableHeader-color);
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--tableBorder-color);
+}
+
+.table__header table thead th {
+    line-height: var(--tableHeader-height);
+}
+/* End: Header */
+
+/* Begin: Body */
+.table__body table tbody tr {
+    display: flex;
+    border-bottom: 1px solid var(--tableBorder-color);
+    height: var(--tableRow-height);
+    line-height: var(--tableRow-height);
+}
+
+.table__col--check {
+    display: flex;
+    align-items: center;
+    position: sticky;
+    left: 0;
+}
+
+th.table__col--check {
+    background-color: var(--tableHeader-color);
+    height: var(--tableHeader-height);
+}
+
+td.table__col--check {
+    background-color: var(--tableBody-color);
+    height: var(--tableRow-height);
+    border-bottom: 1px solid var(--tableBorder-color);
+}
+
+.table__col--check input {
+    margin: 0;
+    padding: 0;
+}
+
+.table__col--function {
+    min-width: 120px;
+    margin-right: var(--tableSpace-width);
+    position: sticky;
+    right: 0%; 
+    border-left: 1px solid var(--tableBorder-color);
+
+}
+
+th.table__col--function {
+    background-color: var(--tableHeader-color);
+}
+
+td.table__col--function {
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    font-weight: 600;
+    color: #0075c0;
+    align-items: center;
+}
+
+.table__col--update {
+    cursor: pointer;
+}
+
+.table__col--more {
+    margin-left: 10px;
+    padding: 6px;
+    cursor: pointer;
+}
+
+/* End: Body */
+
+/* Begin: Footer */
+.table__footer {
+    position: absolute;
+    background-color: var(--tableBody-color);
+    bottom: 10px;
+    left: 20px;
+    right: 20px;
+    padding: 12px 32px 12px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.table__record {
+    height: 32px;
+    line-height: 32px;
+}
+
+.table__page {
+    margin-right: var(--tableSpace-width);
+    height: 100%;
+    width: 360px;
+    display: flex;
+    align-items: center;
+}
+
+.table__size {
+    width: 200px;
+    height: 32px;
+    display: flex;
+    position: relative;
+    margin: 0 16px;
+}
+
+.table__sizeIcon {
+    width: 30px;
+    height: 29px;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    right: 1%;
+    bottom: 6%;
+    box-sizing: border-box;
+}
+
+.table__sizeInput {
+    border-radius: 2px;
+}
+.table__sizeIcon:hover {
+    background-color: rgb(224, 224, 224);
+}
+
+.table__sizeIcon:hover + .table__sizeInput {
+    border-color: var(--input-colorHover);
+}
+
+.table__number {
+
+}
+
+.table__previous {
+    margin-right: 13px;
+    cursor: pointer;
+}
+
+.table__next {
+    margin-left: 13px;
+    cursor: pointer;
+}
+
+.table__subnumber {
+    padding: 0 6.5px;
+    box-sizing: border-box;
+}
+
+.table__subnumber:focus {
+    border: 1px solid rgb(224, 224, 224);
+    font-family: notosans bold;
+}
+
+.table__subnumber:hover {
+    font-family: notosans bold;
+}
+
+/* Begin: Footer */
+
+
+
+
+.table__col {
+    border-right: 1px solid var(--tableBorder-color);
+    padding: 0 10px;
+}
+
+.table__col--left {
+    text-align: left;
+}
+    
+.table__col--right {
+    text-align: right;  
+}
+
+.table__col--center {
+    text-align: center;
+}
+
+.table__col--employeeCode {
+    min-width: 140px;
+}
+
+.table__col--employeeName {
+    min-width: 180px;
+}
+
+.table__col--gender {
+    min-width: 100px;
+}
+
+.table__col--birthday {
+    min-width: 120px;
+}
+
+.table__col--identity {
+    min-width: 130px;
+}
+
+.table__col--positionName {
+    min-width: 160px;
+}
+
+.table__col--departmentName {
+    min-width: 200px;
+}
+
+.table__col--bankNumber {
+    min-width: 140px;
+}
+
+.table__col--bankName {
+    min-width: 160px;
+}
+
+.table__col--bankBranch {
+    min-width: 200px;
+    padding: 0 10px;
+}
+
+/* Begin: Support layout */
+.table__space--20grey {
+    background-color: rgb(236, 238, 241);
+    width: 20px;
+    height: 100%;
+}
+
+.table__space--10grey {
+    background-color: rgb(236, 238, 241);
+    width: 10px;
+    height: calc(var(--tableBody-height) - 10px);
+    position: absolute;
+    right: 10px;
+    z-index: 2;
+}
+
+.table__space--20white {
+    background-color: #fff;
+    width: 20px;
+    height: calc(var(--tableBody-height) - 10px);
+    position: absolute;
+    left: 0;
+    z-index: 2;
+}
+
+.table__space--20whiteRight {
+    background-color: #fff;
+    width: 20px;
+    height: calc(var(--tableBody-height) - 10px);
+    position: absolute;
+    right: 20px;
+    z-index: 2;
+}
+
+.table__space--10white {
+    background-color: #fff;
+    width: 20px;
+    height: calc(var(--tableBody-height) - 10px);
+    position: absolute;
+    right: 10px;
+    z-index: 2;
+}
+/* End: Support layout */
