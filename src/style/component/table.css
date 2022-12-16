@@ -38,6 +38,7 @@
     font-size: 13px;
     background-color: var(--tableBody-color);
     max-height: var(--tableBody-height);
+    min-height: var(--tableBody-height);
     max-width: var(--tableBody-width);
     display: flex;
     flex-direction: column;
@@ -52,7 +53,7 @@
     position: relative;
     padding-left: 20px;
     padding-right: 30px;
-    padding-bottom: 60px;
+    padding-bottom: 48px;
 }
 
 .table__scroll::-webkit-scrollbar {
@@ -103,13 +104,22 @@
 /* End: Header */
 
 /* Begin: Body */
+.table__body {
+    height: calc(var(--tableBody-height) - var(--tableHeader-height) - 56px);
+}
+
 .table__body table tbody tr {
     display: flex;
     border-bottom: 1px solid var(--tableBorder-color);
     height: var(--tableRow-height);
     line-height: var(--tableRow-height);
+    box-sizing: border-box;
 }
 
+.table__row--space {
+    height: 58px !important;
+    border: none !important;
+}
 .table__col--check {
     display: flex;
     align-items: center;
@@ -200,28 +210,12 @@ td.table__col--function {
     margin: 0 16px;
 }
 
-.table__sizeIcon {
-    width: 30px;
-    height: 29px;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    right: 1%;
-    bottom: 6%;
-    box-sizing: border-box;
-}
+
 
 .table__sizeInput {
     border-radius: 2px;
 }
-.table__sizeIcon:hover {
-    background-color: rgb(224, 224, 224);
-}
 
-.table__sizeIcon:hover + .table__sizeInput {
-    border-color: var(--input-colorHover);
-}
 
 .table__number {
 
@@ -286,7 +280,7 @@ td.table__col--function {
 }
 
 .table__col--birthday {
-    min-width: 120px;
+    min-width: 100px;
 }
 
 .table__col--identity {

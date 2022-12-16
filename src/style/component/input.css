@@ -83,11 +83,25 @@
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
-    opacity: 0;
-    display: block;
-	width: 18px;
-	height: 18px;
-    z-index: 1;
+    position: relative;
+    padding: 6px;
+    width: 16px;
+    height: 17px;
+    right: 0.8px;
+    cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    background-color: rgb(224, 224, 224);
+}
+
+input[type="radio"] {
+    accent-color: #2ca01c;
+    width: 18px;
+    height: 18px;
+    position: relative;
+    top: -2px;
+    outline-color: #a2f897;
 }
 
 .input__text--error {

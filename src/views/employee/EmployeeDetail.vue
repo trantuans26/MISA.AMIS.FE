@@ -38,7 +38,7 @@
                                     {{this.textFullName}} <em>*</em>
                                 </label>
                                 <input class="input input--modal" type="text"
-                                    :class="{'input--error': !this.assetModal.fixedAssetName && this.isSubmited}"
+                                    :class="{'input--error': this.isSubmited}"
                                     maxlength="255"
                                 >
                                 <base-message-error text="Tên nhân viên"></base-message-error>
@@ -51,7 +51,7 @@
                                 <label class="modal__label">
                                     {{this.textDepartmentName}} <em>*</em>
                                 </label>
-                                <div class="modal__input--icon" 
+                                <div class="modal__input--dropdown" 
                                     @submit.prevent="onSubmit"
                                 >
                                     <input  
@@ -61,7 +61,9 @@
                                         maxlength="50"
                                     >
                                     <base-message-error text="Đơn vị"></base-message-error>
-                                    <i class="icon icon--caretdown"></i>
+                                    <div class="item--caretdown">
+                                        <i class="icon icon--caretdown"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -83,7 +85,9 @@
                         </div>
                     </div>    
 
+                    
                     <div class="modal__topright">
+                        <!-- Ngày sinh / giới tính -->
                         <div class="modal__line">
                             <div class="modal__item">
                                 <label class="modal__label">
@@ -96,19 +100,22 @@
                                         :class="{'input--error': this.isSubmited}" 
                                     >
                                     <base-message-error text="Ngày mua"></base-message-error>
-                                    <i class="icon icon--date"></i>
                                 </div>
                             </div>
             
-                            <div class="modal__item">
+                            <div class="modal__item modal__item--gender">
                                 <label class="modal__label">
                                     {{this.textGender}}
                                 </label>
-                                <div class="modal__input--icon">
+                                <div class="modal__radio">
+                                    <input type="radio" v-model="this.employeeModal.gender" value="0" checked> <p>Nam</p>
+                                    <input type="radio" v-model="this.employeeModal.gender" value="1"> <p>Nữ</p>
+                                    <input type="radio" v-model="this.employeeModal.gender" value="2"> <p>Khác</p>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Số CMND / Ngày cấp -->
                         <div class="modal__line">
                             <div class="modal__item modal__item--fill">
                                 <label class="modal__label">
@@ -134,7 +141,6 @@
                                         :class="{'input--error': this.isSubmited}" 
                                     >
                                     <base-message-error text="Ngày cấp"></base-message-error>
-                                    <i class="icon icon--date"></i>
                                 </div>
                             </div>
                         </div>
@@ -350,7 +356,7 @@ import {required} from '@vuelidate/validators'
 import BaseMessageError from "@/components/base/message/BaseMessageError.vue";
 
 export default {
-    name: "AssetDetail",
+    name: "EmployeeDetail",
     components: {
         BaseMessageError,
     },
@@ -1018,22 +1024,6 @@ export default {
 
     data() {
         return {
-
-            categories: [], // Danh sách loại tài sản
-
-            departments: [], // Danh sách phòng ban
-
-            category: { // Data loại tài sản
-                showFilter: false, // Show combobox lọc tài sản
-                showModal: false, // Show combobox chọn tài sản trong modal
-                filter: Resource.TitleFunction.CategoryFilter, // Giá trị hiển thị trên filter
-            },
-
-            department: { // Data bộ phận sử dụng
-                showFilter: false, // Show combobox lọc phòng ban
-                showModal: false, // Show combobox chọn phòng ban trong modal
-                filter: Resource.TitleFunction.DepartmentFilter, // Giá trị hiển thị trên filter
-            },
             //#endregion Table
 
             //#region Data Modal 
@@ -1055,7 +1045,9 @@ export default {
             textExceptionMsg: "", // Thông điệp trong cảnh báo lỗi backend
             backendError: false, // Có hiển thị dialog cảnh báo lỗi từ backend không
             /* Begin: Tên các nội dung trong form */
-            titleModal: Resource.TextVi.Modal.titleModal,
+            titleModal: Resource.TextVi.Modal.InsertModal,
+            textInsertModal: Resource.TextVi.Modal.InsertModal,
+            textUpdateModal: Resource.TextVi.Modal.UpdateModal,
             textEmployeeCode: Resource.TextVi.Modal.EmployeeCode, 
             textFullName: Resource.TextVi.Modal.FullName,
             textDateOfBirth: Resource.TextVi.Modal.DateOfBirth,
@@ -1073,26 +1065,26 @@ export default {
             textBankName: Resource.TextVi.Modal.BankName,
             textBankBranch: Resource.TextVi.Modal.BankBranch,
             /* End: Tên các nội dung trong form */
-            assetModal: { // Dữ liệu form modal
-                fixedAssetId: '',
-                fixedAssetCode: 'TS00001',
-                fixedAssetName: '',
-                departmentId: '',
-                departmentCode: '',
-                departmentName: '',
-                categoryId: '',
-                categoryCode: '',
-                categoryName: '',
-                quantity: '',
-                cost: '',
-                lifeTime: '',
-                purchaseDate: new Date().toISOString().substring(0,10),
-                depreciationRate: '',
-                depreciation: 0,
-                trackedYear: new Date().getFullYear(),
-                productionDate: new Date().toISOString().substring(0,10),
+            employeeModal: { // Dữ liệu form modal
+                employeeID: '',
+                employeeCode: '',
+                fullName: '',
+                dateOfBirth: "",
+                gender: "",
+                departmentName: "",
+                identityNumber: "",
+                identityDate: "",
+                positionName: "",
+                identityPlace: "",
+                address: "",
+                phone: "",
+                contact: "",
+                email: "",
+                bankAccountNumber: "",
+                bankName: "",
+                bankBranch: "",
             },
-            fixedAssetCodeUpdate: '',
+            employeeCodeUpdate: '',
             //#endregion Data Modal
 
             errorMsg: {

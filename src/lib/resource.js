@@ -82,7 +82,8 @@ export default {
         },
 
         Modal:{
-            titleModal: "Thông tin nhân viên",
+            InsertModal: "Thêm nhân viên",
+            UpdateModal: "Thông tin nhân viên",
             EmployeeCode: "Mã",
             FullName: "Tên",
             DateOfBirth: "Ngày sinh",
