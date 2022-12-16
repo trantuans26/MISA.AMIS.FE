@@ -9,6 +9,7 @@
     --tableHeader-color: rgb(229, 232, 236);
     --tableBody-color: rgb(255, 255, 255);
     --tableBorder-color: rgb(199, 199, 199);
+    --tableRow-colorcheck: rgb(242, 249, 255);
 }
 .table__function {
     display: flex;
@@ -31,7 +32,7 @@
 }
 
 .table__reset {
-    padding: 0 20px;
+    padding: 0 16px 0 16px;
 }
 
 .table {
@@ -82,7 +83,7 @@
     text-transform: uppercase;
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 2;
 }
 
 .table__header table {
@@ -109,11 +110,24 @@
 }
 
 .table__body table tbody tr {
+    position: relative;
     display: flex;
     border-bottom: 1px solid var(--tableBorder-color);
     height: var(--tableRow-height);
     line-height: var(--tableRow-height);
     box-sizing: border-box;
+}
+
+.table__body table tbody tr:hover,
+.table__body table tbody tr:hover .table__col--function,
+.table__body table tbody tr:hover .table__col--check {
+    background-color: var(--tableRow-colorcheck) !important;
+}
+
+.table__row--focus,
+.table__row--focus > .table__col--check,
+.table__row--focus > .table__col--function {
+    background-color: var(--tableRow-colorcheck) !important;
 }
 
 .table__row--space {
@@ -136,6 +150,7 @@ td.table__col--check {
     background-color: var(--tableBody-color);
     height: var(--tableRow-height);
     border-bottom: 1px solid var(--tableBorder-color);
+    z-index: 1;
 }
 
 .table__col--check input {
@@ -149,7 +164,6 @@ td.table__col--check {
     position: sticky;
     right: 0%; 
     border-left: 1px solid var(--tableBorder-color);
-
 }
 
 th.table__col--function {
@@ -163,6 +177,7 @@ td.table__col--function {
     font-weight: 600;
     color: #0075c0;
     align-items: center;
+    z-index: 0.5;
 }
 
 .table__col--update {
@@ -171,10 +186,13 @@ td.table__col--function {
 
 .table__col--more {
     margin-left: 10px;
-    padding: 6px;
+    padding: 6px 8px;
     cursor: pointer;
 }
 
+.table__col--more:focus {
+    border: #0075c0 1px solid;
+}
 /* End: Body */
 
 /* Begin: Footer */
@@ -187,6 +205,7 @@ td.table__col--function {
     padding: 12px 32px 12px 0;
     display: flex;
     justify-content: space-between;
+    z-index: 2;
 }
 
 .table__record {
@@ -315,13 +334,19 @@ td.table__col--function {
     height: 100%;
 }
 
+.table__space--10greyFunction {
+    background-color: rgb(236, 238, 241);
+    width: 10px;
+    height: 100%;
+}
+
 .table__space--10grey {
     background-color: rgb(236, 238, 241);
     width: 10px;
     height: calc(var(--tableBody-height) - 10px);
     position: absolute;
     right: 10px;
-    z-index: 2;
+    z-index: 3;
 }
 
 .table__space--20white {
@@ -330,7 +355,7 @@ td.table__col--function {
     height: calc(var(--tableBody-height) - 10px);
     position: absolute;
     left: 0;
-    z-index: 2;
+    z-index: 3;
 }
 
 .table__space--20whiteRight {
@@ -339,7 +364,7 @@ td.table__col--function {
     height: calc(var(--tableBody-height) - 10px);
     position: absolute;
     right: 20px;
-    z-index: 2;
+    z-index: 3;
 }
 
 .table__space--10white {
@@ -348,6 +373,6 @@ td.table__col--function {
     height: calc(var(--tableBody-height) - 10px);
     position: absolute;
     right: 10px;
-    z-index: 2;
+    z-index: 3;
 }
 /* End: Support layout */

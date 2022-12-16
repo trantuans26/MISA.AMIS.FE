@@ -54,10 +54,18 @@
                                     class="table__row" 
                                     v-for="(employee) in this.employees"
                                     :key="employee"
-                                    :class="{'table__row--checked': checkBackground(employee.EmployeeId)}"             
+                                    :class="{'table__row--checked': checkBackground(employee.EmployeeId), 'table__row--focus': checkEmployeesFocus(employee.EmployeeId)}"   
+                                    @click="focusEmployeesByID(employee.EmployeeId)"
                                 >
                                     <td class="table__col table__col--center table__col--check">
                                         <input class="checkbox" type="checkbox" v-model='selectedEmployeeByIds' :value="employee.EmployeeId">
+                                        <span class="dropdown" v-show="checkEmployeeSelected(employee.EmployeeId)">
+                                        <ul class="dropdown__list">
+                                            <li class="dropdown__item">Nhân bản</li>
+                                            <li class="dropdown__item">Xoá</li>
+                                            <li class="dropdown__item">Ngưng sử dụng</li>
+                                        </ul>
+                                    </span>
                                     </td>
                                     <td class="table__col table__col--left table__col--employeeCode">{{employee.EmployeeCode}}</td>
                                     <td class="table__col table__col--left table__col--employeeName">{{employee.FullName}}</td>
@@ -71,7 +79,10 @@
                                     <td class="table__col--left table__col--bankBranch">Hà Nội{{employee.EmployeeBankBranch}}</td>
                                     <td class="table__col--right table__col--function">
                                         <span class="table__col--update">Sửa</span>
-                                        <span class="table__col--more">
+                                        <span class="table__col--more"
+                                            tabindex="1"
+                                            @click="this.selectEmployeeByID(employee.EmployeeId)"
+                                        >
                                             <i class="icon icon--functiondown"></i>
                                         </span>
                                     </td>
@@ -256,7 +267,43 @@ export default {
             return false;
         },
 
+        focusEmployeesByID(id) {
+            let bool = true;
 
+            for(var i = 0; i < this.employeesIDFocused.length; i++) {
+                if(id == this.employeesIDFocused[i]) {
+                    this.employeesIDFocused.splice(i,1);
+                    bool = false;
+                    break;
+                }
+            }
+
+            if(bool) this.employeesIDFocused.push(id);
+        },
+
+        selectEmployeeByID(id) {
+            if(id == this.employeeIDSelected) {
+                this.employeeIDSelected = ''
+            } else {
+                this.employeeIDSelected = id;
+            }
+        },
+
+        checkEmployeesFocus(id) {
+            for(var i = 0; i < this.employeesIDFocused.length; i++) {
+                if(id == this.employeesIDFocused[i]) {
+                    return true;
+                }
+            }
+
+            return false; 
+        },
+
+        checkEmployeeSelected(id) {
+            if(id == this.employeeIDSelected) 
+                return true;
+            return false; 
+        },
         /*  Hàm xử lý exception gửi về từ backend hiện ra cho người dùng
             @param {int} status: trạng thái bên backend trả về
             @returns void
@@ -296,7 +343,8 @@ export default {
         return {
             isDisplayModal: false,
             selectedEmployeeByIds: [],
-
+            employeesIDFocused: [],
+            employeeIDSelected: '',
             employees: [
             ],
             employeesNoLimit: [],
