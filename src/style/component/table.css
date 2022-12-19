@@ -257,7 +257,7 @@ td.table__col--function {
     box-sizing: border-box;
 }
 
-.table__subnumber:focus {
+.table__subnumber--focus {
     border: 1px solid rgb(224, 224, 224);
     font-family: notosans bold;
 }

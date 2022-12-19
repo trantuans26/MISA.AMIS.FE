@@ -123,11 +123,47 @@
 
                         <div class="table__number">
                             <span class="table__previous" @click="previousPage()">Trước</span>
-                            <span class="table__subnumber" tabindex="1" @click="firstPage()">1</span>
-                            <span class="table__subnumber" tabindex="1" v-show="this.currentPage > this.totalPage/2">...</span>
-                            <span class="table__subnumber" tabindex="1">{{ this.currentPage + 1 }}</span>
-                            <span class="table__subnumber" tabindex="1">...</span>
-                            <span class="table__subnumber" @click="lastPage()">{{this.totalPage}}</span>
+                            <span class="table__subnumber" tabindex="1" 
+                                @click="firstPage()"
+                                :class="{'table__subnumber--focus': this.currentPage == 1}"
+                            >1</span>
+                            <span class="table__subnumber" tabindex="1" v-show="this.currentPage > 2">...</span>
+                            <span class="table__subnumber" tabindex="1" 
+                                v-show="this.currentPage < 3"
+                                @click="this.currentPage=2, loadAPI()"
+                                :class="{'table__subnumber--focus': this.currentPage == 2}"
+                            >2</span>
+                            <span class="table__subnumber" tabindex="1" 
+                                v-show="this.currentPage < 3"
+                                @click="this.currentPage=3, loadAPI()"
+                            >3</span>
+
+                            <span class="table__subnumber" tabindex="1"
+                                v-show="this.currentPage > 2 && this. currentPage < this.totalPage - 1"
+                                @click="this.currentPage--, loadAPI()"
+                            >{{ this.currentPage - 1 }}</span>
+                            <span class="table__subnumber table__subnumber--focus" tabindex="1" 
+                                v-show="this.currentPage > 2 && this. currentPage < this.totalPage - 1"
+                            >{{ this.currentPage }}</span>
+                            <span class="table__subnumber" tabindex="1" 
+                                v-show="this.currentPage > 2 && this. currentPage < this.totalPage - 1"
+                                @click="this.currentPage++, loadAPI()"
+                            >{{ this.currentPage + 1 }}</span>
+
+                            <span class="table__subnumber" tabindex="1" v-show="this.currentPage < this.totalPage - 1">...</span>
+                            <span class="table__subnumber" tabindex="1"
+                                v-show="this.currentPage > this.totalPage-2"
+                                @click="this.currentPage = this.totalPage-2, loadAPI()"
+                            >{{ this.totalPage-2 }}</span>
+                            <span class="table__subnumber" tabindex="1" 
+                                v-show="this.currentPage > this.totalPage-2"
+                                @click="this.currentPage = this.totalPage-1, loadAPI()"  
+                                :class="{'table__subnumber--focus': this.currentPage == this.totalPage-1}"
+                            >{{ this.totalPage-1 }}</span>
+                            <span class="table__subnumber" tabindex="1" 
+                                @click="lastPage()"
+                                :class="{'table__subnumber--focus': this.currentPage == this.totalPage}"
+                            >{{this.totalPage}}</span>
                             <span class="table__next" @click="nextPage()">Sau</span>
                         </div>
                     </div>
