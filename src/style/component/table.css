@@ -255,10 +255,12 @@ td.table__col--function {
 .table__subnumber {
     padding: 0 6.5px;
     box-sizing: border-box;
-    
+
 }
 
-.table__subnumber::selection {
+.table__subnumber::selection,
+.table__previous::selection,
+.table__next::selection {
     background-color: #fff;
 }
 .table__subnumber--focus {
@@ -270,6 +272,10 @@ td.table__col--function {
     font-family: notosans bold;
 }
 
+.table__item--disable {
+    cursor: default!important;
+    color: #9e9e9e
+}
 /* Begin: Footer */
 
 

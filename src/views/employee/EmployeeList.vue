@@ -122,7 +122,10 @@
                         </div>
 
                         <div class="table__number">
-                            <span class="table__previous" @click="previousPage()">Trước</span>
+                            <span class="table__previous"
+                                @click="previousPage()"
+                                :class="{'table__item--disable': this.currentPage == 1}"
+                            >Trước</span>
                             <span class="table__subnumber" tabindex="1" 
                                 @click="firstPage()"
                                 :class="{'table__subnumber--focus': this.currentPage == 1}"
@@ -164,7 +167,10 @@
                                 @click="lastPage()"
                                 :class="{'table__subnumber--focus': this.currentPage == this.totalPage}"
                             >{{this.totalPage}}</span>
-                            <span class="table__next" @click="nextPage()">Sau</span>
+                            <span class="table__next" 
+                                @click="nextPage()"
+                                :class="{'table__item--disable': this.currentPage == this.totalPage}"
+                            >Sau</span>
                         </div>
                     </div>
                 </div>
