@@ -1,14 +1,14 @@
 /* BEGIN: TOAST MESSAGE */
 
 /* -- Display -- */
-@keyframes sideInLeft {
+@keyframes sideInTop {
     from {
-        opacity: 0;
-        transform: translateX(calc(100% + 8px));
+        opacity: 0.5;
+        transform: translateY(calc(100% - 100px));
     } 
     to {
         opacity: 1;
-        transform: translateX(0);   
+        transform: translateY(0);   
     }
 }
 
@@ -19,15 +19,56 @@
     }
 }
 
-#toast__box {
+.toast {
     position: fixed;
-    z-index: 3;
-    top: 0px;
-    right: 0px;
+    top: 0;
+    transform: translateX(84%);
+    z-index: 999;
 }
 
+.toast__container {
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    width: 450px;
+    height: 56px;
+    border-radius: 4px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.078);
+    margin: 20px 0;
+    padding: 16px;
+    z-index: 999;
+    animation: sideInTop ease 0.5s, faceOut linear 1s 4s;
+}
+
+.toast__icon {
+    padding-right: 10px;
+}
+
+.toast__body {
+    display: flex;
+    flex: 1;
+}
+
+.toast__title {
+    color: rgb(44, 160, 28);
+    font-family: notosans bold;
+    padding-right: 4px;
+}
+
+.toast__text {
+
+}
+
+.toast__close {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+
+}
+
+
 .toast__item {
-    box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
     padding: 8px 16px 8px;
     margin-top: 20px;
     margin-right: 17px;
@@ -41,14 +82,6 @@
     font-family: Roboto Regular;
     font-size: 14px;
     z-index: 999;
-}
-
-.toast__icon {
-    margin-right: 20px;
-}
-
-.toast__text {
-    font-size: 14px;
 }
 
 /* -- message error --*/

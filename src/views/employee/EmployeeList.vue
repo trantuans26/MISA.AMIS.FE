@@ -17,7 +17,10 @@
                     >
                     <i class="icon icon--search"></i>
                 </div>
-                <div class="table__reset" data-title="Tải lại dữ liệu"><i class="icon icon--reset"></i></div>
+                <div class="table__reset"
+                    data-title="Tải lại dữ liệu"
+                    @click="loadAPI()"
+                ><i class="icon icon--reset"></i></div>
                 <div class="table__space--20grey"></div>
             </div>
 
@@ -59,13 +62,13 @@
                                 >
                                     <td class="table__col table__col--center table__col--check">
                                         <input class="checkbox" type="checkbox" v-model='selectedEmployeeByIds' :value="employee.EmployeeId">
-                                        <span class="dropdown" v-show="checkEmployeeSelected(employee.EmployeeId)">
-                                        <ul class="dropdown__list">
-                                            <li class="dropdown__item">Nhân bản</li>
-                                            <li class="dropdown__item">Xoá</li>
-                                            <li class="dropdown__item">Ngưng sử dụng</li>
-                                        </ul>
-                                    </span>
+                                        <span class="dropdown dropdown--function" v-show="checkEmployeeSelected(employee)">
+                                            <ul class="dropdown__list">
+                                                <li class="dropdown__item">Nhân bản</li>
+                                                <li class="dropdown__item" @click="isShowDeleteDialog = true">Xoá</li>
+                                                <li class="dropdown__item">Ngưng sử dụng</li>
+                                            </ul>
+                                        </span>
                                     </td>
                                     <td class="table__col table__col--left table__col--employeeCode">{{employee.EmployeeCode}}</td>
                                     <td class="table__col table__col--left table__col--employeeName">{{employee.FullName}}</td>
@@ -81,7 +84,8 @@
                                         <span class="table__col--update">Sửa</span>
                                         <span class="table__col--more"
                                             tabindex="1"
-                                            @click="this.selectEmployeeByID(employee.EmployeeId)"
+                                            @click="this.selectEmployee(employee)"
+                                            
                                         >
                                             <i class="icon icon--functiondown"></i>
                                         </span>
@@ -98,21 +102,33 @@
                     <span class="table__record">Tổng số: <b>{{totalRecord}}</b> bản ghi</span>
                     <div class="table__page">
                         <div class="table__size">
-                            <div class="item--caretdown">
+                            <div class="item--caretdown" @click="this.isShowDropdownPage = !this.isShowDropdownPage">
                                 <i class="icon icon--caretdown"></i>
                             </div>
                             <input class="input table__sizeInput" 
                                 type="text"
-                                v-bind:value="this.filter.pageSize + ` bản ghi trên 1 trang`"
+                                v-bind:value="this.filter.pageSize + textRecordPerPage"
                                 readonly
                             >
+                            <span class="dropdown dropdown--page" v-show="this.isShowDropdownPage">
+                                <ul class="dropdown__list">
+                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 10}" @click="this.filter.pageSize = 10, loadAPI()">10{{textRecordPerPage}}</li>
+                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 20}" @click="this.filter.pageSize = 20, loadAPI()">20{{textRecordPerPage}}</li>
+                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 30}" @click="this.filter.pageSize = 30, loadAPI()">30{{textRecordPerPage}}</li>
+                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 50}" @click="this.filter.pageSize = 50, loadAPI()">50{{textRecordPerPage}}</li>
+                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 100}" @click="this.filter.pageSize = 100, loadAPI()">100{{textRecordPerPage}}</li>
+                                </ul>
+                            </span>
                         </div>
 
                         <div class="table__number">
-                            <span class="table__previous">Trước</span>
-                            <span class="table__subnumber" tabindex="1">1</span>
-                            <span class="table__subnumber" tabindex="1">2</span>
-                            <span class="table__next">Sau</span>
+                            <span class="table__previous" @click="previousPage()">Trước</span>
+                            <span class="table__subnumber" tabindex="1" @click="firstPage()">1</span>
+                            <span class="table__subnumber" tabindex="1" v-show="this.currentPage > this.totalPage/2">...</span>
+                            <span class="table__subnumber" tabindex="1">{{ this.currentPage + 1 }}</span>
+                            <span class="table__subnumber" tabindex="1">...</span>
+                            <span class="table__subnumber" @click="lastPage()">{{this.totalPage}}</span>
+                            <span class="table__next" @click="nextPage()">Sau</span>
                         </div>
                     </div>
                 </div>
@@ -121,6 +137,21 @@
     </div>
 
     <EmployeeDetail v-show="isDisplayModal"></EmployeeDetail>
+
+    <BDialog
+        class="dialog--delete"
+        :message="this.employeeSelected.EmployeeCode"
+        v-show="this.isShowDeleteDialog"
+        @closeDialog="(this.isShowDeleteDialog = $event)"
+        @deleteEmployee="deleteEmployeeByID(), showSucessDeleteToast()"
+    ></BDialog>
+
+    <BToast
+        v-show="this.isShowSuccessDeleteToast"
+        @closeToast="this.isShowSuccessDeleteToast = false"
+    ></BToast>
+
+    <TheLoading v-show="this.isShowLoading"></TheLoading>
 </template>
 
 <script>
@@ -131,17 +162,20 @@ import Resource from "@/lib/resource";
 import Enum from "../../lib/enum.js";
 import useValidate from '@vuelidate/core'
 import {required} from '@vuelidate/validators'
+import TheLoading from '@/components/loading/TheLoading.vue'
 import EmployeeDetail from "./EmployeeDetail.vue";
+import BDialog from "@/components/base/dialog/BDialog.vue";
+import BToast from "@/components/base/toast/BToast.vue";
 /* import TheLoading from "@/components/base/loading/TheLoading.vue"; */
 /* import BaseMessageError from "@/components/base/message/BaseMessageError.vue"; */
 
 export default {
     name: "EmployeeList",
     components: {
-/*         TheDelete,
         TheLoading,
-        BaseMessageError, */
         EmployeeDetail,
+        BDialog,
+        BToast,
     },
     props: [
         'sidebarmini',
@@ -154,7 +188,8 @@ export default {
     // Thiết lập vào data, event nhưng chưa vào DOM
     created() {
         try {
-            this.isDisplayLoading = true; // Hiển thị loading data
+            this.isShowLoading = true; // Hiển thị loading data
+            setTimeout(() => this.isShowLoading = false, 500);
 
 /*             axios.get(`${Resource.Url.FixedAssetCategories}`)
             .then((resource) => {
@@ -216,14 +251,15 @@ export default {
             try {
 
                 axios
-                .get(`${Resource.Url.Employees}/filter?employeeFilter=${me.filter.employeeFilter}&pageSize=20&pageNumber=1`)
+                .get(`${Resource.Url.Employees}/filter?employeeFilter=${me.filter.employeeFilter}&pageSize=${me.filter.pageSize}&pageNumber=${me.currentPage}`)
                 .then((resource) => {
                     me.employees = resource.data.Data;
                     me.totalRecord = resource.data.TotalRecord;
-                    console.log("No filter:", resource.data);
+                    me.totalPage = resource.data.TotalPage;
+                    console.log("No filter: ", resource.data);
                 })
                 .catch((error) => {
-                    console.log('error' + error.status);
+                    console.log('error: ', error.status);
                 });
  
              /*    axios
@@ -236,21 +272,48 @@ export default {
                 })
                 .catch((error) => {
                     console.log('error' + error.status);
-                });
-
-                axios
-                .get(`https://cukcuk.manhnv.net/api/v1/Employees/filter?pageSize=20&pageNumber=1`)
-                .then((resource) => {
-                    console.log("Filter:" + resource);
-                })
-                .catch((error) => {
-                    console.log('error: ' + error.status);
                 }); */
             } catch (e) {
                 console.log(e);
             }
         },
-    
+
+        /* Xoá 1 nhân viên theo ID
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 17/12/2022 
+        */
+        deleteEmployeeByID() {
+            try {
+                axios
+                .delete(`${Resource.Url.Employees}/${this.employeeSelected.EmployeeId}`)
+                .then(() => {
+                    // Reload data
+                    this.loadAPI();
+                    this.employeeSelected = '';
+
+                    // Display success toast message 
+                    //this.showDeleteSuccessToast();
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        /* Show toast xoá thành công
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 17/12/2022 
+        */
+        showSucessDeleteToast() {
+            this.isShowSuccessDeleteToast = true;
+            setTimeout(() => this.isShowSuccessDeleteToast = false, 4000); 
+        },
         /* Binding css cho dòng được chọn
             @param {}
             @returns void
@@ -281,11 +344,11 @@ export default {
             if(bool) this.employeesIDFocused.push(id);
         },
 
-        selectEmployeeByID(id) {
-            if(id == this.employeeIDSelected) {
-                this.employeeIDSelected = ''
+        selectEmployee(employee) {
+            if(employee == this.employeeSelected) {
+                this.employeeSelected = ''
             } else {
-                this.employeeIDSelected = id;
+                this.employeeSelected = employee;
             }
         },
 
@@ -299,11 +362,40 @@ export default {
             return false; 
         },
 
-        checkEmployeeSelected(id) {
-            if(id == this.employeeIDSelected) 
+        checkEmployeeSelected(employee) {
+            if(employee == this.employeeSelected) 
                 return true;
             return false; 
         },
+
+        previousPage() {
+            if(this.currentPage != 1) {
+                this.currentPage--;
+                this.loadAPI();
+            }
+        },
+
+        nextPage() {
+            if(this.currentPage != this.totalPage) {
+                this.currentPage++;
+                this.loadAPI();
+            }
+        },
+
+        firstPage() {
+            if(this.currentPage != 1) {
+                this.currentPage = 1;
+                this.loadAPI();
+            }
+        },
+
+        lastPage() {
+            if(this.currentPage != this.totalPage) {
+                this.currentPage = this.totalPage;
+                this.loadAPI();
+            }
+        },
+
         /*  Hàm xử lý exception gửi về từ backend hiện ra cho người dùng
             @param {int} status: trạng thái bên backend trả về
             @returns void
@@ -341,16 +433,33 @@ export default {
 
     data() {
         return {
+            sucess: {
+                icon: "icon--sucessToast",
+                title: "Thành công",
+                text: "Công việc đã bị xoá",
+            },
+            warning: {
+                icon: "icon--sucessToast",
+                title: "Cảnh báo",
+                text: "Dữ liệu của bạn đã bị thay đổi bởi người dùng khác",
+            },
+
+            isShowDropdownPage: false,
+            isShowLoading: false,
+            isShowSuccessDeleteToast: false,
+            isShowDeleteDialog: false,
+            isShowMoreFunction: false,
             isDisplayModal: false,
             selectedEmployeeByIds: [],
             employeesIDFocused: [],
-            employeeIDSelected: '',
+            employeeSelected: '',
             employees: [
             ],
             employeesNoLimit: [],
 
             totalRecord: 0,
             totalPage: 0,
+            currentPage: 1,
             filter: {
                 employeeFilter: '',
                 pageSize: '20',
@@ -379,6 +488,7 @@ export default {
             textReplication: Resource.TextVi.Table.Replication,
             textDelete: Resource.TextVi.Table.Delete,
             textStop: Resource.TextVi.Table.Stop,
+            textRecordPerPage: Resource.TextVi.Table.RecordPerPage,
             //#endregion Data table
             v$: useValidate(), // validate dữ liệu (sử dụng vuelidate)
             

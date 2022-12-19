@@ -90,19 +90,3 @@
 .alert__button--space {
     margin-left: 16px;
 }
-
-@keyframes popFromCenter {
-    0% {
-    opacity: 0;
-    transform: scale(0);
-    }
-
-    80% {
-    transform: scale(1.08);
-    }
-
-    100% {
-    opacity: 1;
-    transform: scale(1);
-    }
-}

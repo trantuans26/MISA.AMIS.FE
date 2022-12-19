@@ -218,6 +218,37 @@
 	width: 16px;
 	height: 16px;
 }
+
+.icon--warning {
+	background-position: -592px -456px;
+	width: 48px;
+    height: 48px;
+}
+
+.icon--sucessToast {
+	background-position: -1602px -258px;
+	width: 20px;
+	height: 20px;
+}
+
+.icon--warningToast {
+	background-position: -538px -146px;
+	width: 20px;
+	height: 20px;
+}
+
+.icon--closeToast {
+	background-position: -1178px -362px;
+	width: 12px;
+	height: 12px;
+}
+
+.icon--loader {
+	background: url('/src/assets/icons/loading.svg') no-repeat 0 0;
+	width: 32px;
+	height: 32px;
+}
+
 /* BEGIN: ICON:HOVER */
 .item--caretdown {
     width: 30px;

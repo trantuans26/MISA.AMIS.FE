@@ -12,6 +12,7 @@
 @import url(./component/drilldown.css);
 @import url(./component/dropdown.css);
 @import url(./component/alert.css);
+@import url(./component/dialog.css);
 @import url(./component/combobox.css);
 
 :root {

@@ -159,7 +159,7 @@ td.table__col--check {
 }
 
 .table__col--function {
-    min-width: 120px;
+    min-width: 128px;
     margin-right: var(--tableSpace-width);
     position: sticky;
     right: 0%; 
@@ -188,6 +188,8 @@ td.table__col--function {
     margin-left: 10px;
     padding: 6px 8px;
     cursor: pointer;
+    border: rgba(0, 0, 0, 0) 1px solid;
+    box-sizing: border-box;
 }
 
 .table__col--more:focus {
@@ -216,7 +218,7 @@ td.table__col--function {
 .table__page {
     margin-right: var(--tableSpace-width);
     height: 100%;
-    width: 360px;
+    width: auto;
     display: flex;
     align-items: center;
 }
