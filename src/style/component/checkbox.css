@@ -1,11 +1,9 @@
 input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    border-radius: 0;
 }
 
 input[type="checkbox"]:checked {
-    content: "";
     accent-color: #fff;
     background-color: #74cb2f;
     color: #74cb2f;
@@ -22,9 +20,4 @@ input[type='checkbox']:checked:before {
     border-color: white;
     
 }
-.checkbox {
-    border-radius: 0 !important;
-    outline-offset: 0 !important;
-}
-
 

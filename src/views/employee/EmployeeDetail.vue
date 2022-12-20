@@ -27,6 +27,7 @@
                                 <input class="input input--modal" 
                                     ref="focusMe" 
                                     :class="{'input--error': this.isSubmited}"
+                                    v-model.trim="this.employeeModal.employeeCode"
                                     type="text" 
                                     maxlength="100"
                                 >
@@ -362,53 +363,41 @@ export default {
     },
 
     props: [
+        'employee',
     ],
     
 
     // Khởi tạo một đối instance(đối tượng), chưa thiết lập data, event
     beforeCreate() {
+        console.log("beforeCreate from")
     },
 
     // Thiết lập vào data, event nhưng chưa vào DOM
     created() {
+        console.log("created form")
         let me = this;
-        me.displayModal = me.$parent.displayModal
-        try {
-            me.isDisplayLoading = true; // Hiển thị loading data
 
-            axios.get(`${Resource.Url.FixedAssetCategories}`)
-            .then((resource) => {
-                me.categories = resource.data;
-            })
-            .catch((error) => {
-                console.log('error' + error.status);
-            });
-
-            axios.get(`${Resource.Url.Departments}`)
-            .then((resource) => {
-                me.departments = resource.data;
-            })
-            .catch((error) => {
-                console.log('error' + error.status);
-            });
-
-            me.loadAPI(); 
-        } catch (error) {
-            console.log(error);
-        }
+        me.displayModal = me.$parent.displayModal;
     },
     
     /* Khởi tạo giá trị mặc định khi vào DOM thật */
     beforeMount() {
+        console.log("beforeMount form")
+        let me = this;
+
+        me.$nextTick(() => me.$refs.focusMe.focus());
+        this.employeeModal.employeeCode = "NV-" + parseInt(Math.random()*11245);
     },
 
     /* DOM thật */
-    Mounted() {
+    mounted() {
+        console.log("mounted form")
+
     },
 
     /* Khi dữ liệu thay đổi, và trước khi render, patch lại và hiển thị ra cho người dùng */
     beforeUpdate() {
-        this.heightAlertValidate = this.errorArray.length * 28;
+        console.log("beforeUpdate form")
     },
 
     /*  Sử dụng khi bạn cần truy cập DOM sau khi thay đổi thuộc tính */
@@ -432,23 +421,6 @@ export default {
             Date: 30/10/2022 
         */
         loadAPI() {
-/*             this.isDisplayLoading = true; */
-            try {
-                // Sử dụng axios get all data
-                axios
-                .get(`${Resource.Url.FixedAssets}`)
-                .then((resource) => {
-                     // Lấy tổng số bản ghi
-                    console.log(resource);
-                    setTimeout(() => this.isDisplayLoading = false, 500); // Ẩn loading data
-                   
-                })
-                .catch((error) => {
-                    console.log('error' + error.status);
-                });
-            } catch (e) {
-                console.log(e);
-            }
         },
 
         //#region Method Modal 
@@ -631,21 +603,9 @@ export default {
             Date: 23/10/2022 
         */
         focusFirst() {
-            setTimeout(() => {
-                this.$refs.focusMe.focus();
-            }, 1);
-        },
+            let me = this;
 
-        /* Mở modal
-            @param {}
-            @returns void
-            Author: Tuan 
-            Date: 23/10/2022 
-        */
-        openModal() {
-            this.displayModal = true;
-            this.assetModal.fixedAssetCode += parseInt(Math.random()*112345);
-            this.focusFirst();
+            me.$nextTick(() => me.$refs.focusMe.focus());
         },
 
         /* Click huỷ trên form modal
@@ -714,70 +674,7 @@ export default {
         },
         //#endregion Modal processing ui
 
-        //#region Modal processing data
-        /* Tăng số lượng
-            @param {}
-            @returns void
-            Author: Tuan 
-            Date: 10/12/2022 
-        */
-        increaseQuantity() {
-            try {
-                this.assetModal.quantity++;
-            } catch (error) {
-                console.log(error);
-            }
-        },
-
-        /* Giảm số lượng
-            @param {}
-            @returns void
-            Author: Tuan 
-            Date: 10/12/2022 
-        */
-        decreaseQuantity() {
-            try {
-                if(this.assetModal.quantity > 0)
-                    this.assetModal.quantity--;
-            } catch (error) {
-                console.log(error);
-            }
-        },
-
-        /* Tăng tỷ lệ hao mòn
-            @param {}
-            @returns void
-            Author: Tuan 
-            Date: 10/12/2022 
-        */
-        increaseDepreciationRate() {
-            try {
-                if (this.assetModal.depreciationRate == '' || this.assetModal.depreciationRate == null || this.assetModal.depreciationRate == '0') this.assetModal.depreciationRate = 0;
-                    this.assetModal.depreciationRate = parseFloat(this.assetModal.depreciationRate) + 1;
-                this.assetModal.lifeTime = Math.floor((100 / this.assetModal.depreciationRate));
-            } catch (error) {
-                console.log(error);
-            }
-        },
-
-        /* Giảm tỷ lệ hao mòn
-            @param {}
-            @returns void
-            Author: Tuan 
-            Date: 10/12/2022 
-        */
-        decreaseDepreciationRate() {
-            try {
-                if(this.assetModal.depreciationRate >= 1) {
-                    this.assetModal.depreciationRate = parseFloat(this.assetModal.depreciationRate) - 1;
-                    this.assetModal.lifeTime = Math.floor((100 / this.assetModal.depreciationRate));
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        },
-        //#endregion Modal processing data
-
+        
         //#region Modal format support
 
         /* handler key number
@@ -1045,7 +942,7 @@ export default {
             textExceptionMsg: "", // Thông điệp trong cảnh báo lỗi backend
             backendError: false, // Có hiển thị dialog cảnh báo lỗi từ backend không
             /* Begin: Tên các nội dung trong form */
-            titleModal: Resource.TextVi.Modal.InsertModal,
+            titleModal: Resource.TextVi.Modal.UpdateModal,
             textInsertModal: Resource.TextVi.Modal.InsertModal,
             textUpdateModal: Resource.TextVi.Modal.UpdateModal,
             textEmployeeCode: Resource.TextVi.Modal.EmployeeCode, 
@@ -1100,17 +997,23 @@ export default {
 
     validations: {
         // Các trường cần validate thiếu
-        assetModal: { 
-            fixedAssetCode: { required },
-            fixedAssetName: { required },
-            departmentCode: { required },
-            categoryCode: { required },
-            quantity: { required },
-            cost: { required },
-            depreciationRate: { required },
-            lifeTime: { required },
-            purchaseDate: { required },
-            productionDate: { required },
+        employeeModal: { 
+            employeeCode: { required },
+            fullName: { required },
+            dateOfBirth: { required },
+            gender: { required },
+            departmentName: { required },
+            identityNumber: { required },
+            identityDate: { required },
+            positionName: { required },
+            identityPlace: { required },
+            address: { required },
+            phone: { required },
+            contact: { required },
+            email: { required },
+            bankAccountNumber: { required },
+            bankName: { required },
+            bankBranch: { required },
         },
     },
 

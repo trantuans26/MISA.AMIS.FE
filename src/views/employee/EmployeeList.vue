@@ -33,7 +33,7 @@
                         <table>
                             <thead>
                                 <th class="table__col table__col--center table__col--check">
-                                    <input class="checkbox" type="checkbox" v-model.trim='selectAll'>
+                                    <input type="checkbox" v-model='selectAllEmployees'>
                                 </th>
                                 <th class="table__col table__col--left table__col--employeeCode">{{this.textEmployeeCode}}</th>
                                 <th class="table__col table__col--left table__col--employeeName">{{this.textEmployeeName}}</th>
@@ -61,7 +61,14 @@
                                     @click="focusEmployeesByID(employee.EmployeeId)"
                                 >
                                     <td class="table__col table__col--center table__col--check">
-                                        <input class="checkbox" type="checkbox" v-model='selectedEmployeeByIds' :value="employee.EmployeeId">
+ <!--                                        <input type="checkbox" 
+                                            :value="employee.EmployeeId"
+                                            v-model='this.employeesSelectedByID' 
+                                        > -->
+                                        <input type="checkbox" 
+                                            :checked="checkEmployee(employee.EmployeeId)"
+                                            @click="clickCheckEmployee(employee.EmployeeId)"
+                                        >
                                         <span class="dropdown dropdown--function" v-show="checkEmployeeSelected(employee)">
                                             <ul class="dropdown__list">
                                                 <li class="dropdown__item">Nhân bản</li>
@@ -178,7 +185,7 @@
         </div>
     </div>
 
-    <EmployeeDetail v-show="isDisplayModal"></EmployeeDetail>
+    <EmployeeDetail v-if="isDisplayModal"></EmployeeDetail>
 
     <BDialog
         class="dialog--delete"
@@ -229,27 +236,13 @@ export default {
 
     // Thiết lập vào data, event nhưng chưa vào DOM
     created() {
+        console.log("Created")
+        let me = this;
         try {
-            this.isShowLoading = true; // Hiển thị loading data
-            setTimeout(() => this.isShowLoading = false, 500);
+            me.isShowLoading = true; // Hiển thị loading data
+            setTimeout(() => me.isShowLoading = false, 500);
 
-/*             axios.get(`${Resource.Url.FixedAssetCategories}`)
-            .then((resource) => {
-                this.categories = resource.data;
-            })
-            .catch((error) => {
-                console.log('error' + error.status);
-            });
-
-            axios.get(`${Resource.Url.Departments}`)
-            .then((resource) => {
-                this.departments = resource.data;
-            })
-            .catch((error) => {
-                console.log('error' + error.status);
-            }); */
-
-            this.loadAPI(); 
+            me.loadAPI();
         } catch (error) {
             console.log(error);
         }
@@ -257,19 +250,22 @@ export default {
     
     /* Khởi tạo giá trị mặc định khi vào DOM thật */
     beforeMount() {
+        console.log("beforeMount")
     },
 
     /* DOM thật */
-    Mounted() {
+    mounted() {
+        console.log("Mounted")
     },
 
     /* Khi dữ liệu thay đổi, và trước khi render, patch lại và hiển thị ra cho người dùng */
     beforeUpdate() {
-/*         this.heightAlertValidate = this.errorArray.length * 28; */
+        console.log("beforeUpdate");
     },
 
     /*  Sử dụng khi bạn cần truy cập DOM sau khi thay đổi thuộc tính */
     updated() {
+        console.log("updated");
     },
 
     /* Đây là nơi để quản lý tài nguyên xóa tài nguyên, dọn dẹp các component */
@@ -298,7 +294,6 @@ export default {
                     me.employees = resource.data.Data;
                     me.totalRecord = resource.data.TotalRecord;
                     me.totalPage = resource.data.TotalPage;
-                    console.log("No filter: ", resource.data);
                 })
                 .catch((error) => {
                     console.log('error: ', error.status);
@@ -356,6 +351,7 @@ export default {
             this.isShowSuccessDeleteToast = true;
             setTimeout(() => this.isShowSuccessDeleteToast = false, 4000); 
         },
+
         /* Binding css cho dòng được chọn
             @param {}
             @returns void
@@ -372,6 +368,12 @@ export default {
             return false;
         },
 
+        /* Focus các nhân viên
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
         focusEmployeesByID(id) {
             let bool = true;
 
@@ -386,6 +388,47 @@ export default {
             if(bool) this.employeesIDFocused.push(id);
         },
 
+        /* Check các nhân viên với checkbox
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
+        clickCheckEmployee(id) {
+            let bool = true;
+            for(var i = 0; i < this.employeesSelectedByID.length; i++) {
+                if(id == this.employeesSelectedByID[i]) {
+                    bool = false;
+                    this.employeesSelectedByID.splice(i,1);
+                    break;
+                }
+            }
+            
+            if(bool) this.employeesSelectedByID.push(id);
+        },
+
+        /* Check các nhân viên với checkbox
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
+        checkEmployee(id) {
+            for(var i = 0; i < this.employeesSelectedByID.length; i++) {
+                if(id == this.employeesSelectedByID[i]) {
+                    return true;
+                }
+            }
+
+            return false
+        },
+
+        /* Chọn 1 nhân viên thao tác các chức năng
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
         selectEmployee(employee) {
             if(employee == this.employeeSelected) {
                 this.employeeSelected = ''
@@ -394,6 +437,12 @@ export default {
             }
         },
 
+        /* Kiểm tra các nhân viên đang focus
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
         checkEmployeesFocus(id) {
             for(var i = 0; i < this.employeesIDFocused.length; i++) {
                 if(id == this.employeesIDFocused[i]) {
@@ -404,12 +453,24 @@ export default {
             return false; 
         },
 
+        /* Kiểm tra 1 nhân viên đang được chọn
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
         checkEmployeeSelected(employee) {
             if(employee == this.employeeSelected) 
                 return true;
             return false; 
         },
 
+        /* Lùi trang
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
         previousPage() {
             if(this.currentPage != 1) {
                 this.currentPage--;
@@ -417,6 +478,12 @@ export default {
             }
         },
 
+        /* Next trang
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
         nextPage() {
             if(this.currentPage != this.totalPage) {
                 this.currentPage++;
@@ -424,6 +491,12 @@ export default {
             }
         },
 
+        /* Về trang đầu
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
         firstPage() {
             if(this.currentPage != 1) {
                 this.currentPage = 1;
@@ -431,6 +504,12 @@ export default {
             }
         },
 
+        /* Tới trang cuối
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
         lastPage() {
             if(this.currentPage != this.totalPage) {
                 this.currentPage = this.totalPage;
@@ -495,6 +574,8 @@ export default {
             selectedEmployeeByIds: [],
             employeesIDFocused: [],
             employeeSelected: '',
+            employeesSelected: [],
+            employeesSelectedByID: [],
             employees: [
             ],
             employeesNoLimit: [],
@@ -559,34 +640,23 @@ export default {
             Author: Tuan 
             Date: 10/12/2022 
         */
-        selectAll: {
-            /*
-                @param {}
-                @returns this.Employees ? this.selectedEmployeesByIDs.length == this.Employees.length : false;
-            */
+        selectAllEmployees: {
             get: function () {
-                if (this.employeesNoLimit.length != 0)
-                    return this.employees ? this.selectedEmployeesByIDs.length == this.Employees.length : false;
-                else return false;
+                return this.employees ? this.employeesSelectedByID.length == this.employees.length : false;
             },
-            /*
-                @param {fixed_asset_id}
-                @returns void
-            */
+
             set: function (value) {
-                var selectedEmployeesByIDs = [];
+                var employeesSelectedByID = [];
 
                 if (value) {
-                    
-                    this.Employees.forEach(function (asset) {
-                        selectedEmployeesByIDs.push(asset.fixed_asset_id);
+                    this.employees.forEach(function (employee) {
+                        employeesSelectedByID.push(employee.EmployeeId);
                     });
                 }
 
-                this.selectedEmployeesByIDs = selectedEmployeesByIDs;
+                this.employeesSelectedByID = employeesSelectedByID;
             }
         },
-
         /* Thực hiện format trường Số lượng
             Object
             Author: Tuan 

@@ -34,10 +34,6 @@
     transform-origin: bottom center;
 }
 
-.dropdown--page .dropdown__list {
-    padding: 2px 0 2px 0;
-}
-
 .dropdown--page .dropdown__item {
     height: 32px;
     line-height: 32px;

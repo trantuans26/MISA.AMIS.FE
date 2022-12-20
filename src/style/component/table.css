@@ -254,8 +254,6 @@ td.table__col--function {
 
 .table__subnumber {
     padding: 0 6.5px;
-    box-sizing: border-box;
-
 }
 
 .table__subnumber::selection,
@@ -265,6 +263,7 @@ td.table__col--function {
 }
 .table__subnumber--focus {
     border: 1px solid rgb(224, 224, 224);
+    padding-top: 1px;
     font-family: notosans bold;
 }
 
