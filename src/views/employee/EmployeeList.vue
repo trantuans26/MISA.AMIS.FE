@@ -3,7 +3,7 @@
         <div class="content__header">
             <div class="content__title">{{this.contentTitle}}</div>
             <div class="btn btn--add"
-                @click="isDisplayModal = true"
+                @click="isDisplayModal = true, updateFunction = false"
             >{{this.contentAdd}}</div>
         </div>
 
@@ -42,7 +42,7 @@
                                 <th class="table__col table__col--left table__col--identity" data-title="Số chứng minh nhân dân">{{this.textIdentity}}</th>
                                 <th class="table__col table__col--left table__col--positionName">{{this.textRole}}</th>
                                 <th class="table__col table__col--left table__col--departmentName">{{this.textOrganizationName}}</th>
-                                <th class="table__col table__col--right table__col--bankNumber">{{this.textBankNumber}}</th>
+                                <th class="table__col table__col--left table__col--bankNumber">{{this.textBankNumber}}</th>
                                 <th class="table__col table__col--left table__col--bankName">{{this.textBankName}}</th>
                                 <th class="table__col--left table__col--bankBranch" data-title="Chi nhánh tài khoản ngân hàng">{{this.textBankBranch}}</th>
                                 <th class="table__col--center table__col--function">{{this.textFunction}}</th>
@@ -55,10 +55,11 @@
                             <tbody>
                                 <tr 
                                     class="table__row" 
+                                    tabindex="1"
                                     v-for="(employee) in this.employees"
                                     :key="employee"
-                                    :class="{'table__row--checked': checkBackground(employee.EmployeeId), 'table__row--focus': checkEmployeesFocus(employee.EmployeeId)}"   
-                                    @click="focusEmployeesByID(employee.EmployeeId)"
+                                    :class="{'table__row--checked': checkEmployee(employee.EmployeeId)}" 
+                                    
                                 >
                                     <td class="table__col table__col--center table__col--check">
  <!--                                        <input type="checkbox" 
@@ -77,18 +78,20 @@
                                             </ul>
                                         </span>
                                     </td>
-                                    <td class="table__col table__col--left table__col--employeeCode">{{employee.EmployeeCode}}</td>
-                                    <td class="table__col table__col--left table__col--employeeName">{{employee.FullName}}</td>
-                                    <td class="table__col table__col--left table__col--gender">Nam {{employee.EmployeeGenderName}}</td>
-                                    <td class="table__col table__col--center table__col--birthday">26/06/2001{{employee.EmployeeBirthday}}</td>
-                                    <td class="table__col table__col--left table__col--identity">0342060019785{{employee.EmployeeIdentity}}</td>
-                                    <td class="table__col table__col--left table__col--positionName">{{employee.PositionName}}</td>
-                                    <td class="table__col table__col--left table__col--departmentName">{{employee.DepartmentName}}</td>
-                                    <td class="table__col table__col--right table__col--bankNumber">223123123231{{employee.EmployeeBankNumber}}</td>
-                                    <td class="table__col table__col--left table__col--bankName">Techcombank{{employee.EmployeeBankName}}</td>
-                                    <td class="table__col--left table__col--bankBranch">Hà Nội{{employee.EmployeeBankBranch}}</td>
+                                    <td class="table__col table__col--left table__col--employeeCode" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{employee.EmployeeCode}}</td>
+                                    <td class="table__col table__col--left table__col--employeeName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{employee.EmployeeName}}</td>
+                                    <td class="table__col table__col--left table__col--gender" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{employee.Gender}}</td>
+                                    <td class="table__col table__col--center table__col--birthday" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">26/06/2001{{employee.EmployeeBirthday}}</td>
+                                    <td class="table__col table__col--left table__col--identity" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">0342060019785{{employee.EmployeeIdentity}}</td>
+                                    <td class="table__col table__col--left table__col--positionName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{employee.PositionName}}</td>
+                                    <td class="table__col table__col--left table__col--departmentName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{employee.DepartmentName}}</td>
+                                    <td class="table__col table__col--left table__col--bankNumber" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">223123123231{{employee.EmployeeBankNumber}}</td>
+                                    <td class="table__col table__col--left table__col--bankName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">Techcombank{{employee.EmployeeBankName}}</td>
+                                    <td class="table__col--left table__col--bankBranch" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">Hà Nội{{employee.EmployeeBankBranch}}</td>
                                     <td class="table__col--right table__col--function">
-                                        <span class="table__col--update">Sửa</span>
+                                        <span class="table__col--update"
+                                            @click="focusEmployee(employee), isDisplayModal = true, updateFunction = true"
+                                        >Sửa</span>
                                         <span class="table__col--more"
                                             tabindex="1"
                                             @click="this.selectEmployee(employee)"
@@ -134,39 +137,40 @@
                                 :class="{'table__item--disable': this.currentPage == 1}"
                             >Trước</span>
                             <span class="table__subnumber" tabindex="1" 
+                                v-show="this.totalPage > 1"
                                 @click="firstPage()"
                                 :class="{'table__subnumber--focus': this.currentPage == 1}"
                             >1</span>
                             <span class="table__subnumber" tabindex="1" v-show="this.currentPage > 2">...</span>
                             <span class="table__subnumber" tabindex="1" 
-                                v-show="this.currentPage < 3"
+                                v-show="this.currentPage < 3  && this.totalPage > 2"
                                 @click="this.currentPage=2, loadAPI()"
                                 :class="{'table__subnumber--focus': this.currentPage == 2}"
                             >2</span>
                             <span class="table__subnumber" tabindex="1" 
-                                v-show="this.currentPage < 3"
+                                v-show="this.currentPage < 3  && this.totalPage > 3"
                                 @click="this.currentPage=3, loadAPI()"
                             >3</span>
 
                             <span class="table__subnumber" tabindex="1"
-                                v-show="this.currentPage > 2 && this. currentPage < this.totalPage - 1"
+                                v-show="this.currentPage > 2 && this. currentPage < this.totalPage - 1 && this.totalPage > 3"
                                 @click="this.currentPage--, loadAPI()"
                             >{{ this.currentPage - 1 }}</span>
                             <span class="table__subnumber table__subnumber--focus" tabindex="1" 
-                                v-show="this.currentPage > 2 && this. currentPage < this.totalPage - 1"
+                                v-show="this.currentPage > 2 && this. currentPage < this.totalPage - 1 && this.totalPage > 3"
                             >{{ this.currentPage }}</span>
                             <span class="table__subnumber" tabindex="1" 
-                                v-show="this.currentPage > 2 && this. currentPage < this.totalPage - 1"
+                                v-show="this.currentPage > 2 && this. currentPage < this.totalPage - 1 && this.totalPage > 3"
                                 @click="this.currentPage++, loadAPI()"
                             >{{ this.currentPage + 1 }}</span>
 
                             <span class="table__subnumber" tabindex="1" v-show="this.currentPage < this.totalPage - 1">...</span>
                             <span class="table__subnumber" tabindex="1"
-                                v-show="this.currentPage > this.totalPage-2"
+                                v-show="this.currentPage > this.totalPage-2  && this.totalPage > 3"
                                 @click="this.currentPage = this.totalPage-2, loadAPI()"
                             >{{ this.totalPage-2 }}</span>
                             <span class="table__subnumber" tabindex="1" 
-                                v-show="this.currentPage > this.totalPage-2"
+                                v-show="this.currentPage > this.totalPage-2  && this.totalPage > 3"
                                 @click="this.currentPage = this.totalPage-1, loadAPI()"  
                                 :class="{'table__subnumber--focus': this.currentPage == this.totalPage-1}"
                             >{{ this.totalPage-1 }}</span>
@@ -185,7 +189,10 @@
         </div>
     </div>
 
-    <EmployeeDetail v-if="isDisplayModal"></EmployeeDetail>
+    <EmployeeDetail 
+        v-if="isDisplayModal"
+        :update="updateFunction"
+    ></EmployeeDetail>
 
     <BDialog
         class="dialog--delete"
@@ -287,7 +294,6 @@ export default {
         loadAPI() {
             let me = this;
             try {
-
                 axios
                 .get(`${Resource.Url.Employees}/filter?employeeFilter=${me.filter.employeeFilter}&pageSize=${me.filter.pageSize}&pageNumber=${me.currentPage}`)
                 .then((resource) => {
@@ -297,19 +303,7 @@ export default {
                 })
                 .catch((error) => {
                     console.log('error: ', error.status);
-                });
- 
-             /*    axios
-                .get(`${Resource.Url.Employees}/filter?keyword=${me.filter.keyword}&fixedAssetCategoryId=${me.filter.fixedAssetCategoryId}&departmentId=${me.filter.departmentId}&pageSize=600&pageIndex=1`)
-                .then((resource) => {
-                    me.updateTotalPageIndex(resource.data.length);
-                    me.employeesNoLimit = resource.data;
-                    me.totalAllEmployees = resource.data.length;
-                    console.log("No filter:" + resource.data);
                 })
-                .catch((error) => {
-                    console.log('error' + error.status);
-                }); */
             } catch (e) {
                 console.log(e);
             }
@@ -352,42 +346,7 @@ export default {
             setTimeout(() => this.isShowSuccessDeleteToast = false, 4000); 
         },
 
-        /* Binding css cho dòng được chọn
-            @param {}
-            @returns void
-            Author: Tuan 
-            Date: 10/12/2022 
-        */
-        checkBackground(id) {
-            for(var i = 0; i < this.selectedEmployeeByIds.length; i++) {
-                if(id == this.selectedEmployeeByIds[i]) {
-                    return true;
-                }
-            }
-
-            return false;
-        },
-
-        /* Focus các nhân viên
-            @param {}
-            @returns void
-            Author: Tuan 
-            Date: 10/12/2022 
-        */
-        focusEmployeesByID(id) {
-            let bool = true;
-
-            for(var i = 0; i < this.employeesIDFocused.length; i++) {
-                if(id == this.employeesIDFocused[i]) {
-                    this.employeesIDFocused.splice(i,1);
-                    bool = false;
-                    break;
-                }
-            }
-
-            if(bool) this.employeesIDFocused.push(id);
-        },
-
+        //#region Click events
         /* Check các nhân viên với checkbox
             @param {}
             @returns void
@@ -407,22 +366,6 @@ export default {
             if(bool) this.employeesSelectedByID.push(id);
         },
 
-        /* Check các nhân viên với checkbox
-            @param {}
-            @returns void
-            Author: Tuan 
-            Date: 10/12/2022 
-        */
-        checkEmployee(id) {
-            for(var i = 0; i < this.employeesSelectedByID.length; i++) {
-                if(id == this.employeesSelectedByID[i]) {
-                    return true;
-                }
-            }
-
-            return false
-        },
-
         /* Chọn 1 nhân viên thao tác các chức năng
             @param {}
             @returns void
@@ -437,19 +380,43 @@ export default {
             }
         },
 
+        /* Focus 1 nhân viên
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
+        focusEmployee(employee) {
+            this.employeeFocused = employee;
+        },
+        //#endregion
+
+        //#region Check events
+            /* Check các nhân viên với checkbox
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
+        checkEmployee(id) {
+            for(var i = 0; i < this.employeesSelectedByID.length; i++) {
+                if(id == this.employeesSelectedByID[i]) {
+                    return true;
+                }
+            }
+            return false
+        },
+
         /* Kiểm tra các nhân viên đang focus
             @param {}
             @returns void
             Author: Tuan 
             Date: 10/12/2022 
         */
-        checkEmployeesFocus(id) {
-            for(var i = 0; i < this.employeesIDFocused.length; i++) {
-                if(id == this.employeesIDFocused[i]) {
-                    return true;
-                }
+        checkEmployeeFocused(employee) {
+            if(employee == this.employeeFocused) {
+                return true;
             }
-
             return false; 
         },
 
@@ -464,7 +431,9 @@ export default {
                 return true;
             return false; 
         },
+        //#endregion
 
+        //#region Filter & Paging 
         /* Lùi trang
             @param {}
             @returns void
@@ -516,6 +485,11 @@ export default {
                 this.loadAPI();
             }
         },
+        //#endregion
+
+        
+
+
 
         /*  Hàm xử lý exception gửi về từ backend hiện ra cho người dùng
             @param {int} status: trạng thái bên backend trả về
@@ -554,25 +528,18 @@ export default {
 
     data() {
         return {
-            sucess: {
-                icon: "icon--sucessToast",
-                title: "Thành công",
-                text: "Công việc đã bị xoá",
-            },
-            warning: {
-                icon: "icon--sucessToast",
-                title: "Cảnh báo",
-                text: "Dữ liệu của bạn đã bị thay đổi bởi người dùng khác",
-            },
-
+            //#region Data xử lý sự kiện show
             isShowDropdownPage: false,
             isShowLoading: false,
             isShowSuccessDeleteToast: false,
             isShowDeleteDialog: false,
             isShowMoreFunction: false,
             isDisplayModal: false,
-            selectedEmployeeByIds: [],
-            employeesIDFocused: [],
+            //#endregion Data xử lý sự kiện show
+
+
+            updateFunction: false,
+            employeeFocused: [],
             employeeSelected: '',
             employeesSelected: [],
             employeesSelectedByID: [],
@@ -585,8 +552,8 @@ export default {
             currentPage: 1,
             filter: {
                 employeeFilter: '',
-                pageSize: '20',
-                pageNumber: '',
+                pageSize: 20,
+                pageNumber: 0,
                 keyword: '',
             },
 
@@ -613,8 +580,8 @@ export default {
             textStop: Resource.TextVi.Table.Stop,
             textRecordPerPage: Resource.TextVi.Table.RecordPerPage,
             //#endregion Data table
+
             v$: useValidate(), // validate dữ liệu (sử dụng vuelidate)
-            
         }
     },
 
@@ -634,6 +601,8 @@ export default {
         },
     },
 
+
+    
     computed: {
         /* Chọn tất cả dòng
             Object
@@ -657,128 +626,7 @@ export default {
                 this.employeesSelectedByID = employeesSelectedByID;
             }
         },
-        /* Thực hiện format trường Số lượng
-            Object
-            Author: Tuan 
-            Date: 10/12/2022 
-        */
-        quantityFormat: {
-            get: function() {
-                if (this.assetModal.quantity == null || this.assetModal.quantity == 0 || this.assetModal.quantity == "") return 0;
-                return this.formatCurrency(parseInt(this.assetModal.quantity));
-            },
-                // setter
-            set: function(number) {
-                number = this.formatNum(number);
-                this.assetModal.quantity = number;
-            }
-        },
 
-        /* Thực hiện format trường Nguyên giá đồng thời tính lại giá trị hao mòn năm
-            Object
-            Author: Tuan 
-            Date: 10/12/2022 
-        */
-        costFormat: {
-            get: function() {
-                if (this.assetModal.cost == null || this.assetModal.cost == 0 || this.assetModal.cost == "") return 0;
-                return this.formatCurrency(parseInt(this.assetModal.cost));
-            },
-                // setter
-            set: function(number) {
-                number = this.formatNum(number);
-                if (number != 0 && number != null && number != '') {
-                    this.assetModal.cost = number;
-                    this.assetModal.depreciation = (this.assetModal.depreciationRate*0.01 * this.assetModal.cost);
-                    this.assetModal.depreciation = Math.floor(this.assetModal.depreciation);
-                } else {
-                    this.assetModal.cost = '';
-                }
-            }
-        },
-
-        /* Thực hiện format số năm sử dụng
-            Object
-            Author: Tuan 
-            Date: 10/12/2022 
-        */
-        lifeTimeFormat: {
-            get: function() {
-                if (this.assetModal.lifeTime == null || this.assetModal.lifeTime == 0 || this.assetModal.lifeTime == "" || this.assetModal.lifeTime == Infinity) return 0;
-                return this.formatCurrency(parseInt(this.assetModal.lifeTime));
-
-            },
-            set: function(number) {
-                number = this.formatNum(number);
-                if (number == null || number == 0 || number == "" || number == Infinity) {
-                    this.assetModal.lifeTime = '';
-                    this.assetModal.depreciationRate = '';
-                } else {
-                    this.assetModal.lifeTime = number;
-                    this.assetModal.depreciationRate = (100 / number).toFixed(2);
-                    this.assetModal.depreciation = (parseFloat(this.assetModal.depreciationRate)*0.01 * this.assetModal.cost);
-                    this.assetModal.depreciation = Math.floor(this.assetModal.depreciation);
-                }
-            }
-        },
-
-        /* Thực hiện format tỷ lệ hao mòn đồng thời tính lại giá trị hao mòn năm
-            Object
-            Author: Tuan 
-            Date: 10/12/2022 
-        */
-        depreciationRateFormat: {
-            get: function() {
-                let rate = this.assetModal.depreciationRate;
-                if (rate == null || rate == '0' || rate == "") 
-                    return "00,00";     
-                return this.formatDecimal(rate);
-            },
-
-            set: function(number) {
-                let tmp = number;
-                tmp = tmp.replaceAll(',', '.');
-                if (tmp == null || tmp == '' || tmp == 0) {
-                    this.assetModal.depreciationRate = 0;
-                    this.assetModal.lifeTime = 0;
-                    this.assetModal.depreciation = 0;
-                } else if (isNaN(this.assetModal.lifeTime) || isNaN(tmp)) {
-                    this.assetModal.lifeTime = 0;
-                    this.assetModal.depreciation = 0;
-                } else {
-                    this.assetModal.depreciationRate =  tmp;
-                    this.assetModal.depreciation = (parseFloat(tmp)*0.01 * this.assetModal.cost);
-                    this.assetModal.depreciation = Math.floor(this.assetModal.depreciation);
-                    this.assetModal.lifeTime = Math.floor((100 / tmp));
-                }
-            }
-        },
-
-        /* Tự động thêm tên tài sản khi điền mã tài sản
-            Object
-            Author: Tuan 
-            Date: 10/12/2022 
-        */
-        departmentSelection: {
-            get: function() {
-                return this.assetModal.departmentCode;
-            },
-
-            set: function(code) {
-                this.assetModal.departmentCode = code;
-                for(var i=0; i<this.departments.length; i++) {
-                    if(this.departments[i].department_code == code) {
-                        this.assetModal.departmentName = this.departments[i].department_name;
-                        this.assetModal.departmentId = this.departments[i].department_id;
-                        break;
-                    } else {
-                        this.assetModal.departmentName = ""
-                        this.assetModal.departmentId = ""                   
-                    }
-                }         
-            }
-        },
-        
         /* Tự động thêm tên tài sản khi điền mã tài sản
             Object
             Author: Tuan 

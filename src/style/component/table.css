@@ -9,7 +9,9 @@
     --tableHeader-color: rgb(229, 232, 236);
     --tableBody-color: rgb(255, 255, 255);
     --tableBorder-color: rgb(199, 199, 199);
-    --tableRow-colorcheck: rgb(242, 249, 255);
+    --tableRow-colorfocus: rgb(242, 249, 255);
+    --tableRow-colorcheck: rgb(229, 243, 255);
+    
 }
 .table__function {
     display: flex;
@@ -121,14 +123,20 @@
 .table__body table tbody tr:hover,
 .table__body table tbody tr:hover .table__col--function,
 .table__body table tbody tr:hover .table__col--check {
+    background-color: var(--tableRow-colorfocus) !important;
+}
+
+.table__body table tbody tr:focus,
+.table__body table tbody tr:focus .table__col--function,
+.table__body table tbody tr:focus .table__col--check {
     background-color: var(--tableRow-colorcheck) !important;
 }
 
-.table__row--focus,
-.table__row--focus > .table__col--check,
-.table__row--focus > .table__col--function {
+.table__row--checked,
+.table__row--checked > .table__col--check,
+.table__row--checked > .table__col--function {
     background-color: var(--tableRow-colorcheck) !important;
-}
+} 
 
 .table__row--space {
     height: 58px !important;
@@ -254,6 +262,7 @@ td.table__col--function {
 
 .table__subnumber {
     padding: 0 6.5px;
+    cursor: pointer;
 }
 
 .table__subnumber::selection,

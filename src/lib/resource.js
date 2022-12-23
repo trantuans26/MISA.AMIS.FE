@@ -4,7 +4,7 @@
  */
 export default {
     Url:{
-        Employees: "https://cukcuk.manhnv.net/api/v1/Employees",
+        Employees: "https://amis.manhnv.net/api/v1/Employees",
         Departments: "https://cukcuk.manhnv.net/api/v1/Departments",
         Positions: "https://cukcuk.manhnv.net/api/v1/Positions",
     },
@@ -101,6 +101,24 @@ export default {
             BankAccountNumber: "Tài khoản ngân hàng",
             BankName: "Tên ngân hàng",
             BankBranch: "Chi nhánh",
+
+            /* Tên chức năng */
+            Cancel: "Huỷ",
+            Close: "Đóng",
+            Save: "Cất",
+            Insert: "Thêm",
+            Update: "Sửa",
+            Accept: "Đồng ý",
+            Yes: "Có",
+            No: "Không",
         },
+
+        ErrorMessage: {
+            DuplicateCode: "Mã nhân viên đã tồn tại.",
+            EmptyCode: "Mã nhân viên không được để trống.",
+            EmptyName: "Tên nhân viên không được để trống.",
+            EmptyDepartmentName: "Tên đơn vị không được để trống.",
+
+        }
     }
 }

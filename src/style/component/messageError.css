@@ -7,8 +7,10 @@
     color: #ed4337;
     z-index: 1;
     font-size: 11px;
+    display: none;
 }
 
-.input--error +.message--hasError {
+
+.input--error:hover +.message--hasError {
     display: block;
 }

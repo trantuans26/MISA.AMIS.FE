@@ -42,7 +42,7 @@
 }
 
 .input--error {
-    border: 1.5px solid #ed4337;
+    border: 1.5px solid #ed4337 !important;
 }
 
 /* Begin: Search input */

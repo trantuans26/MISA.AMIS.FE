@@ -219,8 +219,14 @@
 	height: 16px;
 }
 
-.icon--warning {
+.icon--warningDialog {
 	background-position: -592px -456px;
+	width: 48px;
+    height: 48px;
+}
+
+.icon--errorDialog {
+	background-position: -24px -954px;
 	width: 48px;
     height: 48px;
 }

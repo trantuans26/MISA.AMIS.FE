@@ -4,7 +4,7 @@
             <div class="dialog__body">
                 <div class="dialog__icon">
                     <slot name="icon">
-                        <i class="icon icon--warning"></i>
+                        <i class="icon icon--warningDialog"></i>
                     </slot>
                 </div>
                 <div class="dialog__message">
@@ -14,16 +14,16 @@
                 </div>
             </div>
 
-            <div class="dialog__footer">
-                <slot name="footer">
+            <slot name="footer">
+                <div class="dialog__footer dialog__footer--2button">
                     <div class="btn btn--dialog"
                         @click="this.$emit('closeDialog', false), this.$emit('deleteEmployee')"
                     >Có</div>
                     <div class="btn btn--outline btn--dialog"
                         @click="this.$emit('closeDialog', false)"
                     >Không</div>
-                </slot>
-            </div>
+                </div>
+            </slot>
         </div>
     </div>
 </template>
