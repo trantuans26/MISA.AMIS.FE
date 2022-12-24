@@ -70,7 +70,10 @@
                                             :checked="checkEmployee(employee.EmployeeId)"
                                             @click="clickCheckEmployee(employee.EmployeeId)"
                                         >
-                                        <span class="dropdown dropdown--function" v-show="checkEmployeeSelected(employee)">
+                                        <span class="dropdown dropdown--function" 
+                                            tabindex="1"
+                                            v-show="checkEmployeeSelected(employee) && isShowDropdownFunction"
+                                        >
                                             <ul class="dropdown__list">
                                                 <li class="dropdown__item">Nhân bản</li>
                                                 <li class="dropdown__item" @click="isShowDeleteDialog = true">Xoá</li>
@@ -80,8 +83,8 @@
                                     </td>
                                     <td class="table__col table__col--left table__col--employeeCode" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{employee.EmployeeCode}}</td>
                                     <td class="table__col table__col--left table__col--employeeName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{employee.EmployeeName}}</td>
-                                    <td class="table__col table__col--left table__col--gender" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{employee.Gender}}</td>
-                                    <td class="table__col table__col--center table__col--birthday" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">26/06/2001{{employee.EmployeeBirthday}}</td>
+                                    <td class="table__col table__col--left table__col--gender" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{this.formatGender(employee.Gender)}}</td>
+                                    <td class="table__col table__col--center table__col--birthday" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{formatDate(employee.DateOfBirth)}}</td>
                                     <td class="table__col table__col--left table__col--identity" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">0342060019785{{employee.EmployeeIdentity}}</td>
                                     <td class="table__col table__col--left table__col--positionName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{employee.PositionName}}</td>
                                     <td class="table__col table__col--left table__col--departmentName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{employee.DepartmentName}}</td>
@@ -94,8 +97,8 @@
                                         >Sửa</span>
                                         <span class="table__col--more"
                                             tabindex="1"
-                                            @click="this.selectEmployee(employee)"
-                                            
+                                            @click="this.selectEmployee(employee), isShowDropdownFunction = true"
+                                            @blur="hideDropDownFunction()"
                                         >
                                             <i class="icon icon--functiondown"></i>
                                         </span>
@@ -112,7 +115,11 @@
                     <span class="table__record">Tổng số: <b>{{totalRecord}}</b> bản ghi</span>
                     <div class="table__page">
                         <div class="table__size">
-                            <div class="item--caretdown" @click="this.isShowDropdownPage = !this.isShowDropdownPage">
+                            <div class="item--caretdown" 
+                                tabindex="1"
+                                @click="this.isShowDropdownPage = !this.isShowDropdownPage"
+                                @focusout="false"
+                            >
                                 <i class="icon icon--caretdown"></i>
                             </div>
                             <input class="input table__sizeInput" 
@@ -122,11 +129,11 @@
                             >
                             <span class="dropdown dropdown--page" v-show="this.isShowDropdownPage">
                                 <ul class="dropdown__list">
-                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 10}" @click="this.filter.pageSize = 10, loadAPI()">10{{textRecordPerPage}}</li>
-                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 20}" @click="this.filter.pageSize = 20, loadAPI()">20{{textRecordPerPage}}</li>
-                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 30}" @click="this.filter.pageSize = 30, loadAPI()">30{{textRecordPerPage}}</li>
-                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 50}" @click="this.filter.pageSize = 50, loadAPI()">50{{textRecordPerPage}}</li>
-                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 100}" @click="this.filter.pageSize = 100, loadAPI()">100{{textRecordPerPage}}</li>
+                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 10}" @click="this.filter.pageSize = 10, this.currentPage = 1, loadAPI()">10{{textRecordPerPage}}</li>
+                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 20}" @click="this.filter.pageSize = 20, this.currentPage = 1, loadAPI()">20{{textRecordPerPage}}</li>
+                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 30}" @click="this.filter.pageSize = 30, this.currentPage = 1, loadAPI()">30{{textRecordPerPage}}</li>
+                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 50}" @click="this.filter.pageSize = 50, this.currentPage = 1, loadAPI()">50{{textRecordPerPage}}</li>
+                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 100}" @click="this.filter.pageSize = 100, this.currentPage = 1, loadAPI()">100{{textRecordPerPage}}</li>
                                 </ul>
                             </span>
                         </div>
@@ -141,9 +148,9 @@
                                 @click="firstPage()"
                                 :class="{'table__subnumber--focus': this.currentPage == 1}"
                             >1</span>
-                            <span class="table__subnumber" tabindex="1" v-show="this.currentPage > 2">...</span>
+                            <span class="table__subnumber" tabindex="1" v-show="this.currentPage > 2 && this.totalPage > 3">...</span>
                             <span class="table__subnumber" tabindex="1" 
-                                v-show="this.currentPage < 3  && this.totalPage > 2"
+                                v-show="(this.currentPage < 3 || this.totalPage == 3) && this.totalPage > 2"
                                 @click="this.currentPage=2, loadAPI()"
                                 :class="{'table__subnumber--focus': this.currentPage == 2}"
                             >2</span>
@@ -164,7 +171,7 @@
                                 @click="this.currentPage++, loadAPI()"
                             >{{ this.currentPage + 1 }}</span>
 
-                            <span class="table__subnumber" tabindex="1" v-show="this.currentPage < this.totalPage - 1">...</span>
+                            <span class="table__subnumber" tabindex="1" v-show="this.currentPage < this.totalPage - 1 && this.totalPage > 3">...</span>
                             <span class="table__subnumber" tabindex="1"
                                 v-show="this.currentPage > this.totalPage-2  && this.totalPage > 3"
                                 @click="this.currentPage = this.totalPage-2, loadAPI()"
@@ -191,7 +198,8 @@
 
     <EmployeeDetail 
         v-if="isDisplayModal"
-        :update="updateFunction"
+        @closeModal="isDisplayModal = $event" 
+        @showSuccessToast="showSucessToast()"
     ></EmployeeDetail>
 
     <BDialog
@@ -200,25 +208,39 @@
         v-show="this.isShowDeleteDialog"
         @closeDialog="(this.isShowDeleteDialog = $event)"
         @deleteEmployee="deleteEmployeeByID(), showSucessDeleteToast()"
-    ></BDialog>
+    >
+    </BDialog>
 
+    <!-- Begin: Toast thông báo xoá -->
     <BToast
         v-show="this.isShowSuccessDeleteToast"
         @closeToast="this.isShowSuccessDeleteToast = false"
     ></BToast>
+    <!-- End: Toast thông báo xoá -->
 
-    <TheLoading v-show="this.isShowLoading"></TheLoading>
+    <!-- Begin: Toast thông báo thêm|sửa -->
+    <BToast
+        v-show="this.isShowSuccessToast"
+        @closeToast="this.isShowSuccessToast = false"
+    >
+        <template #text>
+            {{ this.updateFunction ? this.textToastMessage.success.update : this.textToastMessage.success.insert }}
+        </template>
+    </BToast>
+    <!-- End: Toast thông báo thêm|sửa -->
+
+    <BLoading v-show="this.isShowLoading"></BLoading>
 </template>
 
 <script>
 import axios from "axios";
 import Resource from "@/lib/resource";
 /* import TheDelete from "@/components/function/delete/TheDelete.vue"; */
-/* import moment from 'moment' */
+import moment from 'moment'
 import Enum from "../../lib/enum.js";
 import useValidate from '@vuelidate/core'
 import {required} from '@vuelidate/validators'
-import TheLoading from '@/components/loading/TheLoading.vue'
+import BLoading from '@/components/loading/BLoading.vue'
 import EmployeeDetail from "./EmployeeDetail.vue";
 import BDialog from "@/components/base/dialog/BDialog.vue";
 import BToast from "@/components/base/toast/BToast.vue";
@@ -228,7 +250,7 @@ import BToast from "@/components/base/toast/BToast.vue";
 export default {
     name: "EmployeeList",
     components: {
-        TheLoading,
+        BLoading,
         EmployeeDetail,
         BDialog,
         BToast,
@@ -343,7 +365,35 @@ export default {
         */
         showSucessDeleteToast() {
             this.isShowSuccessDeleteToast = true;
-            setTimeout(() => this.isShowSuccessDeleteToast = false, 4000); 
+            setTimeout(() => this.isShowSuccessDeleteToast = false, 2400); 
+        },
+
+        /* Show toast thêm|sửa thành công
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 17/12/2022 
+        */
+        showSucessToast() {
+            this.isShowSuccessToast = true;
+            setTimeout(() => this.isShowSuccessToast = false, 2400); 
+        },
+
+        hideDropDownFunction() {
+            this.isShowDropdownFunction = true;
+            setTimeout(() => this.isShowDropdownFunction = false, 200); 
+        },
+
+        /* formatDate
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 17/12/2022 
+        */
+        formatDate(value){
+            if (value) {
+                return (moment(String(value)).format('DD/MM/YYYY'));
+            }
         },
 
         //#region Click events
@@ -487,9 +537,16 @@ export default {
         },
         //#endregion
 
-        
-
-
+        /*  Format giới tính tinyint sang text
+            @param {int} status: trạng thái bên backend trả về
+            @returns void
+            Date: 21/11/2022 
+         */
+        formatGender(value) {
+            if(value == 0) return "Nam";
+            else if (value == 1) return "Nữ";
+            else if (value == 2) return "Khác";
+        },
 
         /*  Hàm xử lý exception gửi về từ backend hiện ra cho người dùng
             @param {int} status: trạng thái bên backend trả về
@@ -530,8 +587,10 @@ export default {
         return {
             //#region Data xử lý sự kiện show
             isShowDropdownPage: false,
+            isShowDropdownFunction: false,
             isShowLoading: false,
             isShowSuccessDeleteToast: false,
+            isShowSuccessToast: false,
             isShowDeleteDialog: false,
             isShowMoreFunction: false,
             isDisplayModal: false,
@@ -580,6 +639,14 @@ export default {
             textStop: Resource.TextVi.Table.Stop,
             textRecordPerPage: Resource.TextVi.Table.RecordPerPage,
             //#endregion Data table
+
+            textToastMessage: { // Nội dung Toast
+                success: {
+                    title: Resource.TextVi.ToastMessage.Success.Title,
+                    insert: Resource.TextVi.ToastMessage.Success.Insert,
+                    update: Resource.TextVi.ToastMessage.Success.Update,
+                } 
+            },
 
             v$: useValidate(), // validate dữ liệu (sử dụng vuelidate)
         }

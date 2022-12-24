@@ -29,5 +29,5 @@ BEGIN
 -- Running test: CALL Proc_Employee_INSERT('1343d389-1cc2-4ab7-88f6-423b4e874d0f', 'NV-22222', 'Tuấn', '469b3ece-744a-45d5-957d-e8c757976496', 'Designer', NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Tuan', NOW(), NULL, NULL)
 
     INSERT INTO employee (EmployeeID, EmployeeCode, DepartmentID, EmployeeName, DateOfBirth, Gender, IdentityNumber, IdentityDate, IdentityPlace, Address, Phone, Fax, Email, BankNumber, BankName, BankBranch, CreatedBy, CreatedDate)
-    VALUES (UUID(), $EmployeeCode, $DepartmentID, $EmployeeName, $DateOfBirth, $Gender, $IdentityNumber, $IdentityDate, $IdentityPlace, $Address, $Phone, $Fax, $Email, $BankNumber, $BankName, $BankBranch, $CreatedBy, $CreatedDate);
+    VALUES ($EmployeeID, $EmployeeCode, $DepartmentID, $EmployeeName, $DateOfBirth, $Gender, $IdentityNumber, $IdentityDate, $IdentityPlace, $Address, $Phone, $Fax, $Email, $BankNumber, $BankName, $BankBranch, $CreatedBy, $CreatedDate);
 END

@@ -86,7 +86,7 @@ export default {
             InsertModal: "Thêm nhân viên",
             UpdateModal: "Thông tin nhân viên",
             EmployeeCode: "Mã",
-            FullName: "Tên",
+            EmployeeName: "Tên",
             DateOfBirth: "Ngày sinh",
             Gender: "Giới tính",
             DepartmentName: "Đơn vị",
@@ -113,12 +113,42 @@ export default {
             No: "Không",
         },
 
+        Dialog: {
+            Save: "Cất",
+            NotSave: "Không cất",
+            No: "Không",
+            Yes: "Có",
+            Close: "Đóng",
+            Cancel: "Huỷ bỏ",
+            Delete: "Xoá",
+            Accept: "Đồng ý",
+            Title: {
+                Delete: "Xoá nhân viên",
+                Change: "Dữ liệu đã thay đổi",    
+                Error: "Có lỗi!",         
+            },
+            Text: {
+                Save: "Bạn có muốn cất không?",
+                Employee: "Nhân viên",
+                After: "đang chọn sẽ bị xoá."
+            }
+        },
+
         ErrorMessage: {
             DuplicateCode: "Mã nhân viên đã tồn tại.",
             EmptyCode: "Mã nhân viên không được để trống.",
             EmptyName: "Tên nhân viên không được để trống.",
             EmptyDepartmentName: "Tên đơn vị không được để trống.",
 
+        },
+
+        ToastMessage: {
+            Success: {
+                Title: "Thành công!",
+                Delete: "Nhân viên đã bị xoá.",
+                Insert: "Nhân viên đã được thêm.",
+                Update: "Nhân viên đã được thay đổi."
+            }
         }
     }
 }

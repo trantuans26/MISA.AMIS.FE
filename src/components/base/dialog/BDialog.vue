@@ -2,26 +2,26 @@
     <div class="dialog">
         <div class="dialog__box">
             <div class="dialog__body">
-                <div class="dialog__icon">
-                    <slot name="icon">
-                        <i class="icon icon--warningDialog"></i>
+                <div class="dialog__title">
+                    <slot name="title">
+                        {{ this.textDialog.title.delete }}
                     </slot>
                 </div>
                 <div class="dialog__message">
                     <slot name="message">
-                        Bạn có thực sự muốn xoá Nhân viên &#60;{{message}}&#62; không?
+                        {{ this.textEmployee + ' &#60;' + message + '&#62; ' + this.textAfter}}
                     </slot>
                 </div>
             </div>
 
             <slot name="footer">
-                <div class="dialog__footer dialog__footer--2button">
-                    <div class="btn btn--dialog"
+                <div class="dialog__footer">
+                    <div class="btn btn--dialog btn--red"
                         @click="this.$emit('closeDialog', false), this.$emit('deleteEmployee')"
-                    >Có</div>
+                    >{{ textDialog.delete }}</div>
                     <div class="btn btn--outline btn--dialog"
                         @click="this.$emit('closeDialog', false)"
-                    >Không</div>
+                    >{{ textDialog.cancel }}</div>
                 </div>
             </slot>
         </div>
@@ -29,6 +29,7 @@
 </template>
   
 <script>
+import Resource from "@/lib/resource";
 
 export default {
     name: "BDialog",
@@ -54,6 +55,19 @@ export default {
     data() {
         return {
             show: false,
+
+            textDialog: {
+                close: Resource.TextVi.Dialog.Close,
+                save: Resource.TextVi.Dialog.Save,
+                cancel: Resource.TextVi.Dialog.Cancel,
+                delete: Resource.TextVi.Dialog.Delete,
+                title: {
+                    delete: Resource.TextVi.Dialog.Title.Delete,
+                }
+            },
+
+            textEmployee: Resource.TextVi.Dialog.Text.Employee,
+            textAfter: Resource.TextVi.Dialog.Text.After,
         };
     },
 

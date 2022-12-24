@@ -1,4 +1,6 @@
-
+:root {
+    --dialogContent-color: #1F1F1F;
+}
 @keyframes popFromCenter {
     0% {
     opacity: 0;
@@ -30,42 +32,49 @@
 
 .dialog__box {
     background-color: #fff;
-    box-shadow: 0 5px 20px 0 rgb(0 0 0 / 10%);
+    box-shadow: 0 4px 16px rgba(23,27,42,0.078);
     border-radius: 3px;
-    width: 444px;
-    min-width: 444px;
-    padding: 32px;
+    width: 416px;
+    min-width: 416px;
+    padding: 24px;
+    display:  flex;
+    flex-direction: column;
+    justify-content: space-between;
     animation: popFromCenter 300ms ease-in-out forwards;
 }
 
 .dialog__body {
-    display: flex;
-    align-items: flex-start;
+
 }
 
-.dialog__icon {
-
+.dialog__title {
+    color: var(--dialogContent-color);
+    font-weight: 700;
+    font-size:  20px;
+    height: 24px;
+    line-height: 24px;
 }
 
 .dialog__message {
     overflow:unset;
     max-height: 400px;
-    margin-bottom: 32px;
-    padding-left: 16px;
-    padding-top: 16px;
+    min-height: 17px;
+    margin: 24px 0;
+    font-size: 14px;
+    color: var(--dialogContent-color);
 }
 
 .dialog__footer {
     display: flex;
     flex-direction: row-reverse;
-    padding-top: 20px;
-    border-top: 1px solid #b8bcc3;
+}
+
+.dialog__footer .btn--dialog {
+    margin-left: 8px;
+    min-width: 80px;
+    height: 36px;
 }
 
 .dialog__footer--1button {
     justify-content: center;
-}
-
-.dialog__footer--2button {
-    justify-content: space-between;
 }

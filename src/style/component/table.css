@@ -25,7 +25,7 @@
     align-items: center;
     position: relative;
     overflow: hidden;
-    border-radius: 2px;
+    border-radius: 4px;
 }
 
 .table__search i {
@@ -171,11 +171,11 @@ td.table__col--check {
     margin-right: var(--tableSpace-width);
     position: sticky;
     right: 0%; 
-    border-left: 1px solid var(--tableBorder-color);
 }
 
 th.table__col--function {
     background-color: var(--tableHeader-color);
+    border-left: 1px solid var(--tableBorder-color);
 }
 
 td.table__col--function {
@@ -186,6 +186,7 @@ td.table__col--function {
     color: #0075c0;
     align-items: center;
     z-index: 0.5;
+    border-left: 1px dotted var(--tableBorder-color);
 }
 
 .table__col--update {
@@ -242,7 +243,7 @@ td.table__col--function {
 
 
 .table__sizeInput {
-    border-radius: 2px;
+    border-radius: 4px;
 }
 
 
@@ -272,6 +273,7 @@ td.table__col--function {
 }
 .table__subnumber--focus {
     border: 1px solid rgb(224, 224, 224);
+    border-radius: 4px;
     padding-top: 1px;
     font-family: notosans bold;
 }
@@ -286,12 +288,13 @@ td.table__col--function {
 }
 /* Begin: Footer */
 
-
-
-
 .table__col {
-    border-right: 1px solid var(--tableBorder-color);
+    border-right: 1px dotted var(--tableBorder-color);
     padding: 0 10px;
+}
+
+th.table__col {
+    border-right: 1px solid var(--tableBorder-color);
 }
 
 .table__col--left {

@@ -7,10 +7,14 @@
 
             <div class="toast__body">
                 <span class="toast__title">
-                    {{this.sucess.title}}!
+                    <slot name="title">
+                        {{this.sucess.title}}!
+                    </slot>
                 </span>
                 <span class="toast__text">
-                    {{this.sucess.text}}.
+                    <slot name="text">
+                        {{this.sucess.text}}.
+                    </slot>
                 </span>
             </div>
 

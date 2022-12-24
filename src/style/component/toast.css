@@ -4,11 +4,20 @@
 @keyframes sideInTop {
     from {
         opacity: 0.5;
-        transform: translateY(calc(100% - 100px));
+        transform: translateY(calc(100% - 200px));
     } 
     to {
         opacity: 1;
         transform: translateY(0);   
+    }
+}
+
+@keyframes faceIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1; 
     }
 }
 
@@ -37,7 +46,7 @@
     margin: 20px 0;
     padding: 16px;
     z-index: 999;
-    animation: sideInTop ease 0.5s, faceOut linear 1s 4s;
+    animation: sideInTop ease 0.28s, faceOut linear 1s 4s;
 }
 
 .toast__icon {

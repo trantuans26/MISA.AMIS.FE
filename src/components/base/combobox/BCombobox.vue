@@ -1,4 +1,4 @@
-    <template>
+<template>
     <div :class="cbbClass"         
         @click="this.show = !this.show"
     >

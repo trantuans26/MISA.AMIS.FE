@@ -1,6 +1,7 @@
 :root {
-    --btn-color: #2ca01c;
-    --btn-color-hover: #35bf22;
+    --btn-color: #50b83c;
+    --btn-color-hover: #57C841;
+    --btn-color-active: #118044;
     --btn-text-color: #fff;
 }
 
@@ -8,7 +9,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 34px;
+    height: 36px;
     padding: 0 16px; 
     border: unset;
     border-radius: 4px;
@@ -16,30 +17,37 @@
     background-color: var(--btn-color);  
     color: var(--btn-text-color);
     outline: none;
-    font-weight: 600;
-}
-
-.btn:hover,
-.btn:focus {
-    background-color: var(--btn-color-hover);
+    font-weight: 500;
+    font-size: 14px;
     box-sizing: border-box;
 }
 
+.btn:hover {
+    background-color: var(--btn-color-hover);
+}
+
+.btn:active,
+.btn:focus {
+    background-color: var(--btn-color-active);
+}
+
 .btn--outline {
-    border: 1px solid rgb(141, 144, 150);
+    border: 1px solid #E6E6E6;
     background-color: white;  
-    color: black;
+    color: #212121;
     box-shadow: none;
     border-radius: 3px;
+
 }
 
 .btn--outline:hover,
 .btn--outline:active {
-    background-color: rgb(210, 211, 214);  
+    background-color: #f6f6f6;  
 }
 
+.btn--outline:active,
 .btn--outline:focus {
-    background-color: rgb(210, 211, 214);  
+    background-color: rgb(235, 235, 235);  
 }
 
 .btn--dialog {
@@ -71,16 +79,30 @@
 }
 
 .btn__tabRollback {
+    position: absolute;
     outline: none;
     background-color: #fff;
     border: none;
 }
 
+.btn--red {
+    background-color: #DE3617 !important;
+}
+
+.btn--red:hover {
+    background-color: #ff4e1b !important;
+}
+
+.btn--red:active {
+    background-color: rgb(171, 41, 17) !important;
+}
 .btn--disable {
     background-color: #f5f4f4;
     border: none !important;
     pointer-events: none;
 }
+
+
 
 .btn--disable .icon--del {
     background-position: -419px -111px;

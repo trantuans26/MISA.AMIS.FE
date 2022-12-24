@@ -1,13 +1,13 @@
 <template>
     <div class="modal modal--open">                     
         <div class="modal__main"
-            @submit.prevent="onSubmit"
+            @submit.prevent="onSubmit()"
         >
             <div class="modal__section modal__icon">
                 <div class="modal__support">
                     <i class="icon icon--support"></i>
                 </div>
-                <div class="modal__close" @click="onCancel()">
+                <div class="modal__close" @click="onClose()">
                     <i class="icon icon--close"></i>
                 </div>
             </div>
@@ -36,12 +36,12 @@
             
                             <div class="modal__item modal__item--fill">
                                 <label class="modal__label">
-                                    {{this.textFullName}} <em>*</em>
+                                    {{this.textEmployeeName}} <em>*</em>
                                 </label>
                                 <input class="input input--modal" type="text"
-                                    ref="fullnameFocusing" 
-                                    :class="{'input--error': this.isSubmited && !this.employeeModal.fullName}"
-                                    v-model.trim="this.employeeModal.fullName"
+                                    ref="employeeNameFocusing" 
+                                    :class="{'input--error': this.isSubmited && !this.employeeModal.employeeName}"
+                                    v-model.trim="this.employeeModal.employeeName"
                                     maxlength="255"
                                 >
                                 <base-message-error text="Tên nhân viên"></base-message-error>
@@ -190,7 +190,7 @@
                                 {{this.textPhone}}
                             </label>
                             <input
-                                class="input input--modal input--220" type="text"  
+                                class="input input--modal input--174" type="text"  
                                 v-model.trim="this.employeeModal.phone"
                                 placeholder=""
                                 maxlength="50"
@@ -203,7 +203,7 @@
                                 {{this.textContact}}
                             </label>
                             <input
-                                class="input input--modal input--220" type="text"  
+                                class="input input--modal input--174" type="text"  
                                 v-model.trim="this.employeeModal.contact"
                                 placeholder=""
                                 maxlength="50"
@@ -231,7 +231,7 @@
                                 {{this.textBankAccountNumber}}
                             </label>
                             <input
-                                class="input input--modal input--220" type="text"  
+                                class="input input--modal input--174" type="text"  
                                 v-model.trim="this.employeeModal.bankAccountNumber"
                                 placeholder=""
                                 maxlength="50"
@@ -244,7 +244,7 @@
                                 {{this.textBankName}}
                             </label>
                             <input
-                                class="input input--modal input--220" type="text"  
+                                class="input input--modal input--174" type="text"  
                                 v-model.trim="this.employeeModal.bankName"
                                 placeholder=""
                                 maxlength="50"
@@ -257,7 +257,7 @@
                                 {{this.textBankBranch}}
                             </label>
                             <input
-                                class="input input--modal input--220" type="text"  
+                                class="input input--modal" type="text"  
                                 v-model.trim="this.employeeModal.bankBranch"
                                 placeholder=""
                                 maxlength="50"
@@ -272,8 +272,8 @@
             <!-- Begin: Modal footer -->
             <footer class="modal__section modal__footer">
                 <div class="modal__footer--start">
-                    <button class="btn btn__save btn__save--space" @click="onSubmit()">Cất và Thêm</button>
-                    <div tabindex="0" class="btn btn--outline">Cất</div> 
+                    <button class="btn btn__save btn__save--space" @click="onSubmit(), this.saveAndInsert = true">Cất và Thêm</button>
+                    <div tabindex="0" class="btn btn--outline" @click="onSubmit(), this.saveAndInsert = false">Cất</div> 
                 </div>
 
                 <div class="modal__footer--end">
@@ -283,29 +283,70 @@
             </footer>
             <!-- END: Modal footer -->
         </div>
-
-        <BDialog
-            v-show="this.isShowValidate"
-        >
-            <template #icon>
-                <div>
-                    <i class="icon icon--errorDialog"></i>
-                </div>
-            </template>
-
-            <template #message>
-                <p>{{this.errorMessage}}</p>
-            </template>
-
-            <template #footer>
-                <div class="dialog__footer dialog__footer--1button">
-                    <div class="btn btn--dialog"
-                        @click="this.isShowValidate = false, this.errorMessage = ''"
-                    >{{ this.textFunctionClose }}</div>
-                </div>
-            </template>
-        </BDialog>
     </div>
+
+    <!-- Begin: Dialog validate dữ liệu -->
+    <BDialog
+        v-show="this.isShowValidate"
+    >
+        <template #title>
+            {{ this.textDialog.title.error }}
+        </template>
+
+        <template #message>
+            <p>{{this.errorMessage}}</p>
+        </template>
+
+        <template #footer>
+            <div class="dialog__footer">
+                <div class="btn btn--dialog btn--red"
+                    @click="this.isShowValidate = false, this.errorMessage = ''"
+                >{{ this.textFunctionClose }}</div>
+            </div>
+        </template>
+    </BDialog>
+    <!-- End: Dialog validate dữ liệu -->
+
+    <!-- Begin: Dialog click icon đóng modal -->
+    <BDialog
+        v-show="this.isShowCloseDialog"
+    >
+        <template #title>
+            {{ this.textDialog.title.change }}
+        </template>
+
+        <template #message>
+            <p>{{this.textDialog.text.save}}</p>
+        </template>
+
+        <template #footer>
+            <div class="dialog__footer">
+                <div class="btn btn--dialog"
+                    @click="false"
+                >{{ this.textDialog.yes }}</div>
+
+                <div class="btn btn--dialog btn--outline"
+                    @click="closeModal(true)"
+                >{{ this.textDialog.no }}</div>
+
+                <div class="btn btn--dialog btn--outline"
+                    @click="closeModal(false)"
+                >{{ this.textFunctionCancel }}</div>
+            </div>
+        </template>
+    </BDialog>
+    <!-- End: Dialog click icon đóng modal -->
+
+    <!-- Begin: Toast thông báo -->
+    <BToast
+        v-show="this.isShowSuccessToast"
+        @closeToast="this.isShowSuccessToast = false"
+    >
+        <template #text>
+            {{ this.$parent.updateFunction ? this.textToastMessage.success.update : this.textToastMessage.success.insert }}
+        </template>
+    </BToast>
+    <!-- End: Toast thông báo -->
 </template>
 
 <script>
@@ -313,6 +354,7 @@ import axios from "axios";
 import moment from 'moment'
 import Resource from "@/lib/resource";
 import BDialog from "@/components/base/dialog/BDialog.vue";
+import BToast from "@/components/base/toast/BToast.vue";
 import useValidate from '@vuelidate/core';
 import {required} from '@vuelidate/validators';
 import BaseMessageError from "@/components/base/message/BaseMessageError.vue";
@@ -322,6 +364,7 @@ export default {
     components: {
         BaseMessageError,
         BDialog,
+        BToast
     },
 
     props: [
@@ -352,16 +395,17 @@ export default {
   
         if(me.$parent.updateFunction) {
             me.titleModal = me.textUpdateModal;
+            me.employeeModal.employeeID = me.$parent.employeeFocused.EmployeeId;
             me.employeeModal.employeeCode = me.$parent.employeeFocused.EmployeeCode;
-            me.employeeModal.fullName = me.$parent.employeeFocused.EmployeeName;
+            me.employeeModal.employeeName = me.$parent.employeeFocused.EmployeeName;
             me.employeeModal.departmentId = me.$parent.employeeFocused.DepartmentId;
             me.employeeModal.departmentCode = me.$parent.employeeFocused.DepartmentCode;
             me.employeeModal.departmentName = me.$parent.employeeFocused.DepartmentName;
             me.employeeModal.positionName = me.$parent.employeeFocused.PositionName;
-            me.employeeModal.dateOfBirth = (moment(String(me.$parent.employeeFocused.DateOfBirth)).format('YYYY-MM-DD'));
+            me.employeeModal.dateOfBirth = this.formatDate(me.$parent.employeeFocused.DateOfBirth);
             me.employeeModal.gender = me.$parent.employeeFocused.Gender;
             me.employeeModal.identityNumber = me.$parent.employeeFocused.IdentityNumber;
-            me.employeeModal.identityDate = (moment(String(me.$parent.employeeFocused.IdentityDate)).format('YYYY-MM-DD'));
+            me.employeeModal.identityDate = this.formatDate(me.$parent.employeeFocused.IdentityDate);
             me.employeeModal.identityPlace = me.$parent.employeeFocused.IdentityPlace;
             me.employeeModal.address = me.$parent.employeeFocused.Address;
             me.employeeModal.phone = me.$parent.employeeFocused.PhoneNumber;
@@ -418,44 +462,42 @@ export default {
                 axios
                 .post(Resource.Url.Employees, {
                     "employeeCode": this.employeeModal.employeeCode,
-                    "firstName": "Tuan",
-                    "lastName": "Tuan",
                     "employeeName": this.employeeModal.employeeName,
-                    "gender": 0,
-                    "dateOfBirth": "2022-12-22T09:53:59.901Z",
-                    "phoneNumber": "string",
-                    "email": "string",
-                    "address": "string",
-                    "identityNumber": "string",
-                    "identityDate": "2022-12-22T09:53:59.901Z",
-                    "identityPlace": "string",
-                    "joinDate": "2022-12-22T09:53:59.901Z",
-                    "martialStatus": 0,
-                    "educationalBackground": 0,
+                    "gender": this.employeeModal.gender,
+                    "dateOfBirth": this.employeeModal.dateOfBirth,
+                    "phoneNumber": this.employeeModal.phoneNumber,
+                    "email": this.employeeModal.email,
+                    "address": this.employeeModal.address,
+                    "identityNumber": this.employeeModal.identityNumber,
+                    "identityDate": this.employeeModal.identityDate,
+                    "identityPlace": this.employeeModal.identityPlace,
                     "departmentId": "142cb08f-7c31-21fa-8e90-67245e8b283e",
-                    "workStatus": 0,
-                    "personalTaxCode": "string",
-                    "salary": 0,
-                    "telephoneNumber": "string",
-                    "bankAccountNumber": "string",
-                    "bankName": "string",
-                    "bankBranchName": "string",
-                    "bankProvinceName": "string",
-                    "employeePosition": "string",
+                    "telephoneNumber": this.employeeModal.phone,
+                    "bankAccountNumber": this.employeeModal.bankNumber,
+                    "bankName": this.employeeModal.bankName,
+                    "bankBranchName": this.employeeModal.bankBranch,
+                    "employeePosition": this.employeeModal.jobPosition,
                     "departmentCode": "string",
                     "departmentName": "string",
-                    "qualificationName": "string",
                     "createdDate": "2022-12-22T09:53:59.901Z",
                     "createdBy": "string",
-                    "modifiedDate": "2022-12-22T09:53:59.901Z",
-                    "modifiedBy": "string"
                 })
                 .then(() => {
                     /* Close modal */
                     // Reload data
-                    this.loadAPI();
-
-
+                    this.$parent.loadAPI();
+                    this.loadModal();
+                    if (this.saveAndInsert) {
+                        this.$emit('closeModal', true)
+                    } else {
+                        this.$emit('showSuccessToast');
+                        this.$emit('closeModal', false);
+                    } 
+                    this.showSuccessToast();
+                })
+                .catch((error) => {
+                    var status = error.response.status;
+                    console.error(status);
                 });
             } catch (error) {
                 console.log(error);
@@ -468,103 +510,44 @@ export default {
             Author: Tuan 
             Date: 17/11/2022 
         */
-       apiUpdateEmployee() {
-
-       },
-
-        /* Sửa 1 tài sản
-            @param {}
-            @returns void
-            Author: Tuan 
-            Date: 17/11/2022 
-        */
-        updateFixedAsset() {
+        apiUpdateEmployee() {
             try {                                   
                 axios
-                .put(`${Resource.Url.FixedAssets}/${this.employeeModal.fixedAssetId}`, {
-                    "fixed_asset_code": this.employeeModal.fixedAssetCode,
-                    "fixed_asset_name": this.employeeModal.fixedAssetName,
-                    "department_id": this.employeeModal.departmentId,
-                    "department_code": this.employeeModal.departmentCode,
-                    "department_name": this.employeeModal.departmentName,
-                    "fixed_asset_category_id": this.employeeModal.categoryId,
-                    "fixed_asset_category_code": this.employeeModal.categoryCode,
-                    "fixed_asset_category_name": this.employeeModal.categoryName,
-                    "purchase_date": this.employeeModal.purchaseDate,
-                    "cost": this.employeeModal.cost,
-                    "quantity": this.employeeModal.quantity,
-                    "depreciation_rate": this.employeeModal.depreciationRate,
-                    "tracked_year": this.employeeModal.trackedYear,
-                    "life_time": this.employeeModal.lifeTime,
-                    "production_date": this.employeeModal.productionDate,
-                    "active": 0
+                .put(`${Resource.Url.Employees}/${this.employeeModal.employeeID}`, {
+                    "employeeCode": this.employeeModal.employeeCode,
+                    "employeeName": this.employeeModal.employeeName,
+                    "gender": this.employeeModal.gender,
+                    "dateOfBirth": this.employeeModal.dateOfBirth,
+                    "phoneNumber": this.employeeModal.phoneNumber,
+                    "email": this.employeeModal.email,
+                    "address": this.employeeModal.address,
+                    "identityNumber": this.employeeModal.identityNumber,
+                    "identityDate": this.employeeModal.identityDate,
+                    "identityPlace": this.employeeModal.identityPlace,
+                    "departmentId": "142cb08f-7c31-21fa-8e90-67245e8b283e",
+                    "telephoneNumber": this.employeeModal.phone,
+                    "bankAccountNumber": this.employeeModal.bankNumber,
+                    "bankName": this.employeeModal.bankName,
+                    "bankBranchName": this.employeeModal.bankBranch,
+                    "employeePosition": this.employeeModal.jobPosition,
+                    "departmentCode": "string",
+                    "departmentName": "string",
+                    "modifiedDate": "2022-12-22T09:53:59.901Z",
+                    "modifiedBy": this.author,
                 })
                 .then(() => {
-                    // Close modal 
-
-                    // Reload data
-                    this.loadAPI();
-
-                    // Close modal
-                    this.closeModalAction();
-
-                    // Display success toast message 
+                    this.$parent.loadAPI();
+                    this.loadModal();
+                    if (this.saveAndInsert) {
+                        this.$emit('closeModal', true)
+                    } else {
+                        this.$emit('showSuccessToast');
+                        this.$emit('closeModal', false);
+                    } 
                     this.showSuccessToast();
                 })
                 .catch((error) => {
-                    var status = error.response.status;
-                    this.handleException(status);
-                });
-            } catch (error) {
-                console.log(error);
-            }
-        },
-
-        /* Thêm 1 tài sản
-            @param {}
-            @returns void
-            Author: Tuan 
-            Date: 17/11/2022 
-        */
-        insertFixedAsset() {
-            try {
-                axios
-                .post(Resource.Url.Employees, {
-                    "fixed_asset_code": this.employeeModal.fixedAssetCode,
-                    "fixed_asset_name": this.employeeModal.fixedAssetName,
-                    "department_id": this.employeeModal.departmentId,
-                    "department_code": this.employeeModal.departmentCode,
-                    "department_name": this.employeeModal.departmentName,
-                    "fixed_asset_category_id": this.employeeModal.categoryId,
-                    "fixed_asset_category_code": this.employeeModal.categoryCode,
-                    "fixed_asset_category_name": this.employeeModal.categoryName,
-                    "purchase_date": this.employeeModal.purchaseDate,
-                    "production_date": this.employeeModal.productionDate,
-                    "cost": this.employeeModal.cost,
-                    "quantity": this.employeeModal.quantity,
-                    "depreciation_rate": this.employeeModal.depreciationRate,
-                    "tracked_year": this.employeeModal.trackedYear,
-                    "life_time": this.employeeModal.lifeTime,
-                    "active": 1,
-                    "created_by": "string",
-                    "created_date": "2022-11-27T14:26:42.330Z",
-                    "modified_by": "string",
-                    "modified_date": "2022-11-27T14:26:42.330Z" 
-                })
-                .then(() => {
-                    /* Close modal */
-                    // Reload data
-                    this.loadAPI();
-
-                    // Close modal
-                    this.closeModalAction();
-
-                    // Display success toast message 
-                    this.showSuccessToast();
-                })
-                .catch((error) => {
-                    var status = error.response;
-                    console.log(status);
+                    console.error(error);
                 });
             } catch (error) {
                 console.log(error);
@@ -585,6 +568,7 @@ export default {
                 .get(`${Resource.Url.Employees}/NewEmployeeCode`)
                 .then((resource) => {
                     me.employeeModal.employeeCode = resource.data;
+                    console.log('resset code');
                 })
                 .catch((error) => {
                     console.log('error: ', error.status);
@@ -594,6 +578,30 @@ export default {
             }
         },
         //#endregion Call API
+
+        //#region Modal chức năng
+        /* Cất nhân viên
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 24/12/2022 
+        */
+        onSubmit() {
+            this.isSubmited = true;
+            
+            try {
+                if(this.validateForm()) {
+                    if(this.$parent.updateFunction) {
+                        this.apiUpdateEmployee();
+                    } else {
+                        this.apiInsertEmployee();
+                    }
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        },
+        //#endregion Modal chức năng
 
         //#region Modal click events 
         /* Ẩn dropdown khi blur
@@ -662,7 +670,7 @@ export default {
             @param {}
             @returns void
             Author: Tuan 
-            Date: 23/10/2022 
+            Date: 24/12/2022 
         */
         tabRollback() {
             this.focusFirst();
@@ -672,7 +680,7 @@ export default {
             @param {}
             @returns void
             Author: Tuan 
-            Date: 23/10/2022 
+            Date: 24/12/2022 
         */
         focusFirst() {
             let me = this;
@@ -684,67 +692,90 @@ export default {
             @param {}
             @returns void
             Author: Tuan 
-            Date: 23/10/2022 
+            Date: 24/12/2022 
         */
-        onCancel() {
+        onClose() {
             /* Mở cảnh báo */
-            this.isDisplayAlert = true;
+            this.isShowCloseDialog = true;
         },
 
-        /* Đóng modal khi đồng ý cảnh báo
+        /* Đóng modal khi đối số là true
             @param {}
             @returns void
             Author: Tuan 
-            Date: 23/10/2022 
+            Date: 24/12/2022 
         */
         closeModal(bool) {
             if(bool) this.closeModalAction();
-            this.isDisplayAlert = false;
+            this.isShowCloseDialog = false;
         },
 
         /* Các nghiệp vụ khi đóng modal
             @param {}
             @returns void
             Author: Tuan 
-            Date: 23/10/2022 
+            Date: 24/12/2022 
         */
         closeModalAction() {
             this.isSubmited = false;
             this.$parent.isDisplayModal = false;
-            this.htmlToastSaveSuccess = "";
-            this.htmlError = "";
         },
 
 
         //#endregion Modal click events 
 
-        //#region Modal processing ui
-        /* Check dữ liệu khi lưu
+        //#region Modal xử lý hiển thị
+
+
+        /* Load lại form modal trống
             @param {}
             @returns void
             Author: Tuan 
-            Date: 23/10/2022 
+            Date: 24/12/2022 
         */
-        onSubmit() {
-            this.isSubmited = true;
-            
-            try {
-                if(this.validateForm()) {
-                    this.apiInsertEmployee();
-                }
-            } catch (e) {
-                console.log(e);
-            }
+        loadModal() {
+            let me = this;
+            me.isSubmited = false;
+
+            me.getNewEmployeeCode();
+            me.employeeModal.employeeID = '';
+            me.employeeModal.employeeName = '';
+            me.employeeModal.departmentId = '';
+            me.employeeModal.departmentCode = '';
+            me.employeeModal.departmentName = '';
+            me.employeeModal.positionName = '';
+            me.employeeModal.dateOfBirth = '';
+            me.employeeModal.gender = 0;
+            me.employeeModal.identityNumber = '';
+            me.employeeModal.identityDate = '';
+            me.employeeModal.identityPlace = '';
+            me.employeeModal.address = '';
+            me.employeeModal.phone = '';
+            me.employeeModal.contact = '';
+            me.employeeModal.email = '';
+            me.employeeModal.bankAccountNumber = '';
+            me.employeeModal.bankName = '';
+            me.employeeModal.bankBranch = '';
+        },
+
+        /* Show toast thêm thành công
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 17/12/2022 
+        */
+        showSuccessToast() {
+            this.isShowSuccessToast = true;
+            setTimeout(() => this.isShowSuccessToast = false, 2400); 
         },
         //#endregion Modal processing ui
 
-        
         //#region Modal format support
         /* formatDate
             @param {}
             @returns void
             Author: Tuan 
-            Date: 23/10/2022 
+            Date: 24/12/2022 
         */
         formatDate(value){
             if (value) {
@@ -827,7 +858,7 @@ export default {
                 if (this.v$.employeeModal.employeeCode.$error) {
                     me.errorMessage += this.textErrorMessage.EmptyCode;
                     me.$nextTick(() => me.$refs.employeeCodeFocusing.focus());
-                } else if (me.v$.employeeModal.fullName.$error) {
+                } else if (me.v$.employeeModal.employeeName.$error) {
                     me.errorMessage = this.textErrorMessage.EmptyName;
                 } else if (me.v$.employeeModal.departmentName.$error) {
                     me.errorMessage = this.textErrorMessage.EmptyDepartmentName;
@@ -845,7 +876,7 @@ export default {
         // Các trường cần validate thiếu
         employeeModal: { 
             employeeCode: { required },
-            fullName: { required },
+            employeeName: { required },
             departmentName: { required },
         },
     },
@@ -858,23 +889,28 @@ export default {
             errorMessage: "", // Thông điệp hiện trong dialog cảnh báo lỗi validate
             //#endregion
 
+            //#region Toast 
+            isShowSuccessToast: false, // Hiển thị toast message
+
+            //#endregion Toast
+
             //#region Data Modal 
             employeeModal: { // Dữ liệu form modal
                 employeeID: '',
                 employeeCode: '',
-                fullName: '',
+                employeeName: '',
                 dateOfBirth: "",
                 gender: 0,
-                departmentName: "",
+                departmentID: "",
                 identityNumber: "",
                 identityDate: "",
-                positionName: "",
+                jobPosition: "",
                 identityPlace: "",
                 address: "",
                 phone: "",
                 contact: "",
                 email: "",
-                bankAccountNumber: "",
+                bankNumber: "",
                 bankName: "",
                 bankBranch: "",
             },
@@ -887,19 +923,21 @@ export default {
             validateBackendShow: false,
             hasError: false,
             displayModal: false, /* Hiển thị modal */
-            isDisplayAlert: false, /* Hiển thị cảnh báo khi huỷ*/
+            isShowCloseDialog: false, /* Hiển thị cảnh báo khi huỷ*/
             htmlToastSaveSuccess: "", /* Hiển thị thông báo lưu dữ liệu thành công */
             htmlError: "", /* Hiển thị lỗi cảnh báo input */
             isDisplayValidate: false, // Toggle thông báo validate dữ liệu
             textValidate: '', // Dữ liệu thông báo
             textExceptionMsg: "", // Thông điệp trong cảnh báo lỗi backend
             backendError: false, // Có hiển thị dialog cảnh báo lỗi từ backend không
-            /* Begin: Tên các nội dung */
+            saveAndInsert: false, // Cất và Thêm
+
+            //#region Tên title và các label
             titleModal: Resource.TextVi.Modal.InsertModal,
             textInsertModal: Resource.TextVi.Modal.InsertModal,
             textUpdateModal: Resource.TextVi.Modal.UpdateModal,
             textEmployeeCode: Resource.TextVi.Modal.EmployeeCode, 
-            textFullName: Resource.TextVi.Modal.FullName,
+            textEmployeeName: Resource.TextVi.Modal.EmployeeName,
             textDateOfBirth: Resource.TextVi.Modal.DateOfBirth,
             textGender: Resource.TextVi.Modal.Gender,
             textDepartmentName: Resource.TextVi.Modal.DepartmentName,
@@ -914,9 +952,9 @@ export default {
             textBankAccountNumber: Resource.TextVi.Modal.BankAccountNumber,
             textBankName: Resource.TextVi.Modal.BankName,
             textBankBranch: Resource.TextVi.Modal.BankBranch,
-            /* End: Tên các nội dung */
+            //#endregion Tên title và các label
 
-            /* Begin: Tên các chức năng */
+            //#region Tên các chức năng
             textFunctionClose: Resource.TextVi.Modal.Close,
             textFunctionCancel: Resource.TextVi.Modal.Cancel,
             textFunctionInsert: Resource.TextVi.Modal.Insert,
@@ -925,13 +963,39 @@ export default {
             textFunctionAccept: Resource.TextVi.Modal.Accept,
             textFunctionYes: Resource.TextVi.Modal.Yes,
             textFunctionNo: Resource.TextVi.Modal.No,
-            /* End: Tên các chức năng */
+            //#endregion Tên các chức năng
+
             //#endregion Data Modal
 
             textErrorMessage: { // Nội dung mã lỗi
                 EmptyCode: Resource.TextVi.ErrorMessage.EmptyCode,
                 EmptyName: Resource.TextVi.ErrorMessage.EmptyName,
                 EmptyDepartmentName: Resource.TextVi.ErrorMessage.EmptyDepartmentName,
+            },
+
+            textToastMessage: { // Nội dung Toast
+                success: {
+                    title: Resource.TextVi.ToastMessage.Success.Title,
+                    insert: Resource.TextVi.ToastMessage.Success.Insert,
+                    update: Resource.TextVi.ToastMessage.Success.Update,
+                } 
+            },
+
+            textDialog: {
+                save: Resource.TextVi.Dialog.Save,
+                notSave: Resource.TextVi.Dialog.NotSave,
+                yes: Resource.TextVi.Dialog.Yes,
+                no: Resource.TextVi.Dialog.No,
+                close: Resource.TextVi.Dialog.Close,
+                cancel: Resource.TextVi.Dialog.Cancel,
+                accept: Resource.TextVi.Dialog.Accept,
+                title: {
+                    error: Resource.TextVi.Dialog.Title.Error,
+                    change: Resource.TextVi.Dialog.Title.Change,
+                },
+                text: {
+                    save: Resource.TextVi.Dialog.Text.Save,
+                }
             },
 
             placeholder : {

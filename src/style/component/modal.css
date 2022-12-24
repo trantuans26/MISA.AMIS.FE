@@ -18,7 +18,7 @@
 .modal__main {
     position: relative;
     animation: modalFadeIn ease 0.5s;
-    border-radius: 3.5px;
+    border-radius: 4px;
     overflow: hidden;
     background-color: #ffffff;
 }
@@ -66,17 +66,16 @@
 
 .modal__top {
     display: flex;
-    margin-bottom: 16px;
 }
 
 .modal__topLeft {
     width: 50%;
-    padding-right: 18px;
+    padding-right: 24px;
 }
 
 .modal__line {
     display: flex;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .modal__item {
@@ -177,40 +176,27 @@
 
 .modal__footer {
     border-top: 1px solid rgb(224, 224, 224);
-    height: 80px;
-    align-items: center;
+    padding: 20px 0 0 0;
+    margin: 32px;
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;
+    box-sizing: border-box;
 }
 
 .modal__footer--start {
+    height: 100%;
     display: flex;
     flex-direction: row-reverse;
 }
+
+
 .modal__footer .btn__save {
     margin-left: 10px;
 }
 
 .modal__input--quantity {
     position: relative;
-}
-
-.spin {
-    position: absolute;
-    right: 5.6%;
-    width: 8px;
-    height: 8px;
-    opacity: 0;
-    cursor: pointer;
-}
-
-.spin--up {
-    top: 21%;
-}
-
-.spin--down {
-    bottom: 21%;
 }
 
 @keyframes modalFadeIn {
