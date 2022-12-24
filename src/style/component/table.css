@@ -142,6 +142,12 @@
     height: 58px !important;
     border: none !important;
 }
+
+.table__row--space:hover,
+.table__row--space:focus {
+    opacity: 0 !important;
+}
+
 .table__col--check {
     display: flex;
     align-items: center;
@@ -191,6 +197,14 @@ td.table__col--function {
 
 .table__col--update {
     cursor: pointer;
+    line-height: 0;
+    padding: 8px 4px;
+    border: 1px solid rgba(0, 0, 0, 0);   
+}
+
+.table__col--update:active {
+    border: 1px solid #0075c0;   
+
 }
 
 .table__col--more {
@@ -311,22 +325,28 @@ th.table__col {
 
 .table__col--employeeCode {
     min-width: 140px;
+    width: 140px;
 }
 
 .table__col--employeeName {
     min-width: 180px;
+    width: 180px;
 }
 
 .table__col--gender {
     min-width: 100px;
+    width: 100px;
 }
 
 .table__col--birthday {
     min-width: 100px;
+    width: 100px;
 }
 
 .table__col--identity {
     min-width: 130px;
+    width: 130px;
+    max-width: 130px;
 }
 
 .table__col--positionName {

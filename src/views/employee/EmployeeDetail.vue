@@ -31,7 +31,7 @@
                                     type="text" 
                                     maxlength="100"
                                 >
-                                <base-message-error text="Mã nhân viên"></base-message-error>
+                                <base-message-error :text="this.textEmployeeCode"></base-message-error>
                             </div>
             
                             <div class="modal__item modal__item--fill">
@@ -44,7 +44,7 @@
                                     v-model.trim="this.employeeModal.employeeName"
                                     maxlength="255"
                                 >
-                                <base-message-error text="Tên nhân viên"></base-message-error>
+                                <base-message-error :text="this.textEmployeeName"></base-message-error>
                             </div>
                         </div>
 
@@ -64,7 +64,7 @@
                                         placeholder="Chọn đơn vị"
                                         maxlength="50"
                                     >
-                                    <base-message-error text="Đơn vị"></base-message-error>
+                                    <base-message-error :text="this.textDepartmentName"></base-message-error>
                                     <div class="item--caretdown">
                                         <i class="icon icon--caretdown"></i>
                                     </div>
@@ -84,7 +84,7 @@
                                     placeholder=""
                                     maxlength="50"
                                 >
-                                <base-message-error text="Chức danh"></base-message-error>
+                                <base-message-error :text="this.textPositionName"></base-message-error>
                             </div>
                         </div>
                     </div>    
@@ -103,7 +103,7 @@
                                         v-model.trim="this.employeeModal.dateOfBirth"
                                         class="input input--modal"  
                                     >
-                                    <base-message-error text="Ngày mua"></base-message-error>
+                                    <base-message-error :text="this.textDateOfBirth"></base-message-error>
                                 </div>
                             </div>
             
@@ -131,7 +131,7 @@
                                     placeholder=""
                                     maxlength="50"
                                 >
-                                <base-message-error text="Số CMND"></base-message-error>
+                                <base-message-error :text="textIdentityNumber"></base-message-error>
                             </div>
 
                             <div class="modal__item">
@@ -144,7 +144,7 @@
                                         v-model.trim="this.employeeModal.identityDate"
                                         class="input input--modal"  
                                     >
-                                    <base-message-error text="Ngày cấp"></base-message-error>
+                                    <base-message-error :text="this.textIdentityDate"></base-message-error>
                                 </div>
                             </div>
                         </div>
@@ -161,7 +161,7 @@
                                     placeholder=""
                                     maxlength="50"
                                 >
-                                <base-message-error text="Nơi cấp"></base-message-error>
+                                <base-message-error :text="this.textIdentityPlace"></base-message-error>
                             </div>
                         </div>
                     </div>
@@ -180,7 +180,7 @@
                                 :placeholder="this.placeholder.address"
                                 maxlength="50"
                             >
-                            <base-message-error text="Địa chỉ"></base-message-error>
+                            <base-message-error :text="this.textAddress"></base-message-error>
                         </div>
                     </div>
 
@@ -195,7 +195,7 @@
                                 placeholder=""
                                 maxlength="50"
                             >
-                            <base-message-error text="ĐT di động"></base-message-error>
+                            <base-message-error :text="this.textPhone"></base-message-error>
                         </div>
 
                         <div class="modal__item">
@@ -208,7 +208,7 @@
                                 placeholder=""
                                 maxlength="50"
                             >
-                            <base-message-error text="ĐT cố định"></base-message-error>
+                            <base-message-error :text="this.textContact"></base-message-error>
                         </div>
 
                         <div class="modal__item">
@@ -218,10 +218,10 @@
                             <input
                                 class="input input--modal input--220" type="text"  
                                 v-model.trim="this.employeeModal.email"
-                                placeholder=""
+                                placeholder="example@email.com"
                                 maxlength="50"
                             >
-                            <base-message-error text="Email"></base-message-error>
+                            <base-message-error :text="this.textEmail"></base-message-error>
                         </div>
                     </div>
 
@@ -322,7 +322,7 @@
         <template #footer>
             <div class="dialog__footer">
                 <div class="btn btn--dialog"
-                    @click="false"
+                    @click="onSubmit(), closeModal(false)"
                 >{{ this.textDialog.yes }}</div>
 
                 <div class="btn btn--dialog btn--outline"

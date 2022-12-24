@@ -70,16 +70,6 @@
                                             :checked="checkEmployee(employee.EmployeeId)"
                                             @click="clickCheckEmployee(employee.EmployeeId)"
                                         >
-                                        <span class="dropdown dropdown--function" 
-                                            tabindex="1"
-                                            v-show="checkEmployeeSelected(employee) && isShowDropdownFunction"
-                                        >
-                                            <ul class="dropdown__list">
-                                                <li class="dropdown__item">Nhân bản</li>
-                                                <li class="dropdown__item" @click="isShowDeleteDialog = true">Xoá</li>
-                                                <li class="dropdown__item">Ngưng sử dụng</li>
-                                            </ul>
-                                        </span>
                                     </td>
                                     <td class="table__col table__col--left table__col--employeeCode" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{employee.EmployeeCode}}</td>
                                     <td class="table__col table__col--left table__col--employeeName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{employee.EmployeeName}}</td>
@@ -91,18 +81,27 @@
                                     <td class="table__col table__col--left table__col--bankNumber" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">223123123231{{employee.EmployeeBankNumber}}</td>
                                     <td class="table__col table__col--left table__col--bankName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">Techcombank{{employee.EmployeeBankName}}</td>
                                     <td class="table__col--left table__col--bankBranch" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">Hà Nội{{employee.EmployeeBankBranch}}</td>
-                                    <td class="table__col--right table__col--function">
+                                    <td class="table__col--function table__col--function">
                                         <span class="table__col--update"
                                             @click="focusEmployee(employee), isDisplayModal = true, updateFunction = true"
                                         >Sửa</span>
                                         <span class="table__col--more"
                                             tabindex="1"
-                                            @click="this.selectEmployee(employee), isShowDropdownFunction = true"
-                                            @blur="hideDropDownFunction()"
+                                            @click="selectEmployee(employee)"
+                                            @blur="deselectEmployee()"
                                         >
                                             <i class="icon icon--functiondown"></i>
                                         </span>
                                     </td>
+                                    <span class="dropdown dropdown--function" 
+                                        v-show="checkEmployeeSelected(employee)"
+                                    >
+                                        <ul class="dropdown__list">
+                                            <li class="dropdown__item">Nhân bản</li>
+                                            <li class="dropdown__item" @click="showDeletDialog()">Xoá</li>
+                                            <li class="dropdown__item">Ngưng sử dụng</li>
+                                        </ul>
+                                    </span>
                                 </tr> 
                                 <tr class="table__row table__row--space"></tr>
                             </tbody>
@@ -118,9 +117,9 @@
                             <div class="item--caretdown" 
                                 tabindex="1"
                                 @click="this.isShowDropdownPage = !this.isShowDropdownPage"
-                                @focusout="false"
+                                @blur="hideDropdownPage()"
                             >
-                                <i class="icon icon--caretdown"></i>
+                                <i class="icon icon--caretdown" :class="{'icon--caretdownRotate': this.isShowDropdownPage}"></i>
                             </div>
                             <input class="input table__sizeInput" 
                                 type="text"
@@ -204,8 +203,8 @@
 
     <BDialog
         class="dialog--delete"
-        :message="this.employeeSelected.EmployeeCode"
-        v-show="this.isShowDeleteDialog"
+        :message="this.employeeDeleted.EmployeeCode"
+        v-if="this.isShowDeleteDialog"
         @closeDialog="(this.isShowDeleteDialog = $event)"
         @deleteEmployee="deleteEmployeeByID(), showSucessDeleteToast()"
     >
@@ -237,13 +236,13 @@ import axios from "axios";
 import Resource from "@/lib/resource";
 /* import TheDelete from "@/components/function/delete/TheDelete.vue"; */
 import moment from 'moment'
-import Enum from "../../lib/enum.js";
 import useValidate from '@vuelidate/core'
 import {required} from '@vuelidate/validators'
 import BLoading from '@/components/loading/BLoading.vue'
 import EmployeeDetail from "./EmployeeDetail.vue";
 import BDialog from "@/components/base/dialog/BDialog.vue";
 import BToast from "@/components/base/toast/BToast.vue";
+/* import BComboboxIcon from "@/components/base/combobox/BComboboxIcon.vue"; */
 /* import TheLoading from "@/components/base/loading/TheLoading.vue"; */
 /* import BaseMessageError from "@/components/base/message/BaseMessageError.vue"; */
 
@@ -254,6 +253,7 @@ export default {
         EmployeeDetail,
         BDialog,
         BToast,
+/*         BComboboxIcon, */
     },
     props: [
         'sidebarmini',
@@ -340,12 +340,11 @@ export default {
         deleteEmployeeByID() {
             try {
                 axios
-                .delete(`${Resource.Url.Employees}/${this.employeeSelected.EmployeeId}`)
+                .delete(`${Resource.Url.Employees}/${this.employeeDeleted.EmployeeId}`)
                 .then(() => {
                     // Reload data
                     this.loadAPI();
-                    this.employeeSelected = '';
-
+                    this.employeeDeleted = '';
                     // Display success toast message 
                     //this.showDeleteSuccessToast();
                 })
@@ -377,11 +376,6 @@ export default {
         showSucessToast() {
             this.isShowSuccessToast = true;
             setTimeout(() => this.isShowSuccessToast = false, 2400); 
-        },
-
-        hideDropDownFunction() {
-            this.isShowDropdownFunction = true;
-            setTimeout(() => this.isShowDropdownFunction = false, 200); 
         },
 
         /* formatDate
@@ -416,6 +410,16 @@ export default {
             if(bool) this.employeesSelectedByID.push(id);
         },
 
+        /* Bỏ chọn nhân viên thao tác các chức năng
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
+        deselectEmployee() {
+            setTimeout(() => this.employeeSelected = '', 100); 
+        },
+
         /* Chọn 1 nhân viên thao tác các chức năng
             @param {}
             @returns void
@@ -428,6 +432,17 @@ export default {
             } else {
                 this.employeeSelected = employee;
             }
+        },
+
+        /* Show cảnh báo khi chọn xoá
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
+        showDeletDialog() {
+            this.isShowDeleteDialog = true;
+            this.employeeDeleted = this.employeeSelected;
         },
 
         /* Focus 1 nhân viên
@@ -484,6 +499,16 @@ export default {
         //#endregion
 
         //#region Filter & Paging 
+        /* Show dropdown chọn số bản ghi trên 1 trang
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
+        hideDropdownPage() {
+            setTimeout(() => this.isShowDropdownPage = false, 100); 
+        },
+
         /* Lùi trang
             @param {}
             @returns void
@@ -547,47 +572,12 @@ export default {
             else if (value == 1) return "Nữ";
             else if (value == 2) return "Khác";
         },
-
-        /*  Hàm xử lý exception gửi về từ backend hiện ra cho người dùng
-            @param {int} status: trạng thái bên backend trả về
-            @returns void
-            Date: 21/11/2022 
-         */
-        handleException(status) {
-            try {
-                switch (status) {
-                case Enum.StatusCode.BADREQUEST:
-                    this.textExceptionMsg = Resource.ExceptionMsg.BADREQUEST;
-                    this.validateBackendShow = true;
-                    break;
-                case Enum.StatusCode.FORBIDDEN:
-                    this.textExceptionMsg = Resource.ExceptionMsg.FORBIDDEN;
-                    this.validateBackendShow = true;
-                    break;
-                case Enum.StatusCode.NOTFOUND:
-                    this.textExceptionMsg = Resource.ExceptionMsg.NOTFOUND;
-                    this.validateBackendShow = true;
-                    break;
-                case Enum.StatusCode.UNAUTHORIZED:
-                    this.textExceptionMsg = Resource.ExceptionMsg.UNAUTHORIZED;
-                    this.validateBackendShow = true;
-                    break;
-                case Enum.StatusCode.NTERNALSERVERERROR:
-                    this.textExceptionMsg = Resource.ExceptionMsg.NTERNALSERVERERROR;
-                    this.validateBackendShow = true;
-                    break;
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        },
     },
 
     data() {
         return {
             //#region Data xử lý sự kiện show
             isShowDropdownPage: false,
-            isShowDropdownFunction: false,
             isShowLoading: false,
             isShowSuccessDeleteToast: false,
             isShowSuccessToast: false,
@@ -600,6 +590,7 @@ export default {
             updateFunction: false,
             employeeFocused: [],
             employeeSelected: '',
+            employeeDeleted: '',
             employeesSelected: [],
             employeesSelectedByID: [],
             employees: [

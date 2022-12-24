@@ -19,7 +19,7 @@
     height: 32px;
 }
 
-.icon--total {
+src/lib/resource.js.icon--total {
     background-position: -33px -1630px;
 	width: 18px;
 	height: 20px;
@@ -195,6 +195,10 @@
     transition: transform .15s linear;
 }
 
+.icon--caretdownRotate {
+	transform: rotate(180deg);
+}
+
 .icon--functiondown {
 	background-position: -900px -365px;
 	width: 8px;
@@ -266,6 +270,7 @@
     right: 0.8%;
     bottom: 5%;
     box-sizing: border-box;
+	border-radius: 2px;
 }
 
 .item--caretdown:hover {

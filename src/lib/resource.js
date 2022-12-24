@@ -130,7 +130,7 @@ export default {
             Text: {
                 Save: "Bạn có muốn cất không?",
                 Employee: "Nhân viên",
-                After: "đang chọn sẽ bị xoá."
+                After: "sẽ bị xoá."
             }
         },
 

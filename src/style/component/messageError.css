@@ -11,6 +11,6 @@
 }
 
 
-.input--error:hover +.message--hasError {
+.input--error +.message--hasError {
     display: block;
 }

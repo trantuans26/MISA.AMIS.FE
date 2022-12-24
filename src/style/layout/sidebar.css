@@ -298,4 +298,5 @@
 .sidebar--minimize [data-title]:after {
     bottom: 1vh;
     right: -160%;
+    z-index: 4;
 } 
