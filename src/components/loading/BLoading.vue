@@ -1,5 +1,5 @@
 <template>
-  <div class="loading">
+  <div class="loading" >
       <div class="loader icon icon--loader"></div>
   </div>
 </template>
@@ -9,9 +9,9 @@
 
 </script>
 
-<style scoped>
+<style>
 .loading {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
@@ -25,6 +25,11 @@
     justify-content: center;
     
 }
+
+.loading--table {
+  background-color: rgba(0, 0, 0, 0.01);
+}
+
 .loader {
   animation: spin 1.2s linear infinite;
 }

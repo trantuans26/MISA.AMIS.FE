@@ -14,6 +14,14 @@
 
             <header class="modal__section modal__header">
                 <div class="modal__title">{{titleModal}}</div>
+                <div class="modal__checkbox modal__customer">
+                    <input type="checkbox">
+                    <p>{{ textCustomer }}</p>
+                </div>
+                <div class="modal__checkbox modal__supplier">
+                    <input type="checkbox">
+                    <p>{{ textSupplier }}</p>
+                </div>
             </header>
 
             <!-- Begin: Modal body -->
@@ -60,7 +68,7 @@
                                     <input  class="input input--haveicon input--modal" type="text"
                                         ref="DepartmentNameFocusing" 
                                         v-model.trim="this.employeeModal.departmentName"
-                                        :class="{'input--error': this.isSubmited && !this.employeeModal.departmentName}"
+                                        :class="{'input--error': this.isSubmited && !this.employeeModal.departmentName, 'input--focused': isShowDropdownDepartment}"
                                         placeholder="Chọn đơn vị"
                                         maxlength="50"
                                     >
@@ -85,6 +93,7 @@
                                                 v-for="department in this.departments"
                                                 :key="department"
                                                 @click="selectDepartment(department)"
+                                                :class="{'dropdown__item--focus': checkDepartment(department)}"
                                             >
                                                 <p>{{ department.DepartmentName }} </p>  
                                             </li>
@@ -144,7 +153,7 @@
                         <!-- Số CMND / Ngày cấp -->
                         <div class="modal__line">
                             <div class="modal__item modal__item--fill">
-                                <label class="modal__label" data-title="Số Chứng Minh Nhân Dân">
+                                <label class="modal__label" :data-title="textTooltip.identityNumber">
                                     {{this.textIdentityNumber}}
                                 </label>
                                 <input 
@@ -208,7 +217,7 @@
 
                     <div class="modal__line">
                         <div class="modal__item">
-                            <label class="modal__label" data-title="Điện thoại di dộng">
+                            <label class="modal__label" :data-title="textTooltip.phone">
                                 {{this.textPhone}}
                             </label>
                             <input
@@ -221,7 +230,7 @@
                         </div>
 
                         <div class="modal__item">
-                            <label class="modal__label"  data-title="Điện thoại cố định">
+                            <label class="modal__label" :data-title="textTooltip.fax">
                                 {{this.textContact}}
                             </label>
                             <input
@@ -258,7 +267,7 @@
                                 placeholder=""
                                 maxlength="50"
                             >
-                            <base-message-error text="Tài khoản ngân hàng"></base-message-error>
+                            <base-message-error :text="this.textBankAccountNumber"></base-message-error>
                         </div>
 
                         <div class="modal__item">
@@ -271,7 +280,7 @@
                                 placeholder=""
                                 maxlength="50"
                             >
-                            <base-message-error text="Tên ngân hàng"></base-message-error>
+                            <base-message-error :text="this.textBankName"></base-message-error>
                         </div>
 
                         <div class="modal__item">
@@ -284,7 +293,7 @@
                                 placeholder=""
                                 maxlength="50"
                             >
-                            <base-message-error text="Chi nhánh"></base-message-error>
+                            <base-message-error :text="this.textBankBranch"></base-message-error>
                         </div>
                     </div>
                 </div>
@@ -423,7 +432,7 @@ export default {
             me.employeeModal.employeeID = me.$parent.employeeFocused.EmployeeId;
             me.employeeModal.employeeCode = me.$parent.employeeFocused.EmployeeCode;
             me.employeeModal.employeeName = me.$parent.employeeFocused.EmployeeName;
-            me.employeeModal.departmentId = me.$parent.employeeFocused.DepartmentId;
+            me.employeeModal.departmentID = me.$parent.employeeFocused.DepartmentId;
             me.employeeModal.departmentCode = me.$parent.employeeFocused.DepartmentCode;
             me.employeeModal.departmentName = me.$parent.employeeFocused.DepartmentName;
             me.employeeModal.positionName = me.$parent.employeeFocused.PositionName;
@@ -482,26 +491,26 @@ export default {
             Date: 17/11/2022 
         */
         apiInsertEmployee() {
-/*             let me = this; */
+            let me = this;
             try {
                 axios
                 .post(Resource.Url.Employees, {
-                    "employeeCode": this.employeeModal.employeeCode,
-                    "employeeName": this.employeeModal.employeeName,
-                    "gender": this.employeeModal.gender,
-                    "dateOfBirth": this.employeeModal.dateOfBirth,
-                    "phoneNumber": this.employeeModal.phoneNumber,
-                    "email": this.employeeModal.email,
-                    "address": this.employeeModal.address,
-                    "identityNumber": this.employeeModal.identityNumber,
-                    "identityDate": this.employeeModal.identityDate,
-                    "identityPlace": this.employeeModal.identityPlace,
-                    "departmentId": "142cb08f-7c31-21fa-8e90-67245e8b283e",
-                    "telephoneNumber": this.employeeModal.phone,
-                    "bankAccountNumber": this.employeeModal.bankNumber,
-                    "bankName": this.employeeModal.bankName,
-                    "bankBranchName": this.employeeModal.bankBranch,
-                    "employeePosition": this.employeeModal.jobPosition,
+                    "employeeCode": me.employeeModal.employeeCode,
+                    "employeeName": me.employeeModal.employeeName,
+                    "gender": me.employeeModal.gender,
+                    "dateOfBirth": me.employeeModal.dateOfBirth,
+                    "phoneNumber": me.employeeModal.phoneNumber,
+                    "email": me.employeeModal.email,
+                    "address": me.employeeModal.address,
+                    "identityNumber": me.employeeModal.identityNumber,
+                    "identityDate": me.employeeModal.identityDate,
+                    "identityPlace": me.employeeModal.identityPlace,
+                    "departmentId": me.employeeModal.departmentID,
+                    "telephoneNumber": me.employeeModal.phone,
+                    "bankAccountNumber": me.employeeModal.bankNumber,
+                    "bankName": me.employeeModal.bankName,
+                    "bankBranchName": me.employeeModal.bankBranch,
+                    "employeePosition": me.employeeModal.jobPosition,
                     "departmentCode": "string",
                     "departmentName": "string",
                     "createdDate": "2022-12-22T09:53:59.901Z",
@@ -510,19 +519,22 @@ export default {
                 .then(() => {
                     /* Close modal */
                     // Reload data
-                    this.$parent.loadAPI();
-                    this.loadModal();
-                    if (this.saveAndInsert) {
-                        this.$emit('closeModal', true)
+                    me.$parent.loadAPI();
+                    me.loadModal();
+                    if (me.saveAndInsert) {
+                        me.$emit('closeModal', true)
                     } else {
-                        this.$emit('showSuccessToast');
-                        this.$emit('closeModal', false);
+                        me.$emit('showSuccessToast');
+                        me.$emit('closeModal', false);
                     } 
-                    this.showSuccessToast();
+                    me.showSuccessToast();
                 })
                 .catch((error) => {
-                    var status = error.response.status;
-                    console.error(status);
+                    var res = error.response;
+                    console.log(res.data);
+                    me.errorMessage += res.data.userMsg;
+                    me.isShowValidate = true;
+                    
                 });
             } catch (error) {
                 console.log(error);
@@ -536,43 +548,47 @@ export default {
             Date: 17/11/2022 
         */
         apiUpdateEmployee() {
-            try {                                   
+            let me = this;
+            try {                                       
                 axios
-                .put(`${Resource.Url.Employees}/${this.employeeModal.employeeID}`, {
-                    "employeeCode": this.employeeModal.employeeCode,
-                    "employeeName": this.employeeModal.employeeName,
-                    "gender": this.employeeModal.gender,
-                    "dateOfBirth": this.employeeModal.dateOfBirth,
-                    "phoneNumber": this.employeeModal.phoneNumber,
-                    "email": this.employeeModal.email,
-                    "address": this.employeeModal.address,
-                    "identityNumber": this.employeeModal.identityNumber,
-                    "identityDate": this.employeeModal.identityDate,
-                    "identityPlace": this.employeeModal.identityPlace,
-                    "departmentId": "142cb08f-7c31-21fa-8e90-67245e8b283e",
-                    "telephoneNumber": this.employeeModal.phone,
-                    "bankAccountNumber": this.employeeModal.bankNumber,
-                    "bankName": this.employeeModal.bankName,
-                    "bankBranchName": this.employeeModal.bankBranch,
-                    "employeePosition": this.employeeModal.jobPosition,
+                .put(`${Resource.Url.Employees}/${me.employeeModal.employeeID}`, {
+                    "employeeCode": me.employeeModal.employeeCode,
+                    "employeeName": me.employeeModal.employeeName,
+                    "gender": me.employeeModal.gender,
+                    "dateOfBirth": me.employeeModal.dateOfBirth,
+                    "phoneNumber": me.employeeModal.phoneNumber,
+                    "email": me.employeeModal.email,
+                    "address": me.employeeModal.address,
+                    "identityNumber": me.employeeModal.identityNumber,
+                    "identityDate": me.employeeModal.identityDate,
+                    "identityPlace": me.employeeModal.identityPlace,
+                    "departmentId": me.employeeModal.departmentID,
+                    "telephoneNumber": me.employeeModal.phone,
+                    "bankAccountNumber": me.employeeModal.bankNumber,
+                    "bankName": me.employeeModal.bankName,
+                    "bankBranchName": me.employeeModal.bankBranch,
+                    "employeePosition": me.employeeModal.jobPosition,
                     "departmentCode": "string",
                     "departmentName": "string",
                     "modifiedDate": "2022-12-22T09:53:59.901Z",
-                    "modifiedBy": this.author,
+                    "modifiedBy": me.author,
                 })
                 .then(() => {
-                    this.$parent.loadAPI();
-                    this.loadModal();
-                    if (this.saveAndInsert) {
-                        this.$emit('closeModal', true)
+                    me.$parent.loadAPI();
+                    me.loadModal();
+                    if (me.saveAndInsert) {
+                        me.$emit('closeModal', true)
                     } else {
-                        this.$emit('showSuccessToast');
-                        this.$emit('closeModal', false);
+                        me.$emit('showSuccessToast');
+                        me.$emit('closeModal', false);
                     } 
-                    this.showSuccessToast();
+                    me.showSuccessToast();
                 })
                 .catch((error) => {
-                    console.error(error);
+                    var res = error.response;
+                    console.log(res.data);
+                    me.errorMessage += res.data.userMsg;
+                    me.isShowValidate = true;
                 });
             } catch (error) {
                 console.log(error);
@@ -662,10 +678,16 @@ export default {
             setTimeout(() => this.isShowDropdownDepartment = false, 200); 
         },
 
+        /* Chọn đơn vị
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
         selectDepartment(department) {
             if(department) {
                 this.employeeModal.departmentName = department.DepartmentName;
-                this.employeeModal.departmentID = department.DepartmentID;
+                this.employeeModal.departmentID = department.DepartmentId;
                 this.employeeModal.departmentCode = department.DepartmentCode;
             } else {
                 this.employeeModal.departmentName = '';
@@ -673,6 +695,19 @@ export default {
                 this.employeeModal.departmentCode = '';
             }
 
+        },
+
+        /* Kiểm tra đơn vị
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
+        checkDepartment(department) {
+            if(department.Department == this.employeeModal.departmentName) {
+                return true;
+            }
+            return false;
         },
 
         /* Tab rollback về mã tài sản
@@ -749,7 +784,7 @@ export default {
             me.getNewEmployeeCode();
             me.employeeModal.employeeID = '';
             me.employeeModal.employeeName = '';
-            me.employeeModal.departmentId = '';
+            me.employeeModal.departmentID = '';
             me.employeeModal.departmentCode = '';
             me.employeeModal.departmentName = '';
             me.employeeModal.positionName = '';
@@ -911,6 +946,8 @@ export default {
                 dateOfBirth: "",
                 gender: 0,
                 departmentID: "",
+                departmentCode: '',
+                departmentName: '',
                 identityNumber: "",
                 identityDate: "",
                 jobPosition: "",
@@ -943,6 +980,10 @@ export default {
             titleModal: Resource.TextVi.Modal.InsertModal,
             textInsertModal: Resource.TextVi.Modal.InsertModal,
             textUpdateModal: Resource.TextVi.Modal.UpdateModal,
+
+            textCustomer: Resource.TextVi.Modal.Customer,
+            textSupplier: Resource.TextVi.Modal.Supplier,
+
             textEmployeeCode: Resource.TextVi.Modal.EmployeeCode, 
             textEmployeeName: Resource.TextVi.Modal.EmployeeName,
             textDateOfBirth: Resource.TextVi.Modal.DateOfBirth,
@@ -1011,6 +1052,13 @@ export default {
                 text: {
                     save: Resource.TextVi.Dialog.Text.Save,
                 }
+            },
+
+            textTooltip: { // Nội dung tooltip
+                identityNumber: Resource.TextVi.Tooltip.IdentityNumber,
+                phone: Resource.TextVi.Tooltip.Phone,
+                fax: Resource.TextVi.Tooltip.Fax,
+
             },
 
             placeholder : {
@@ -1125,31 +1173,6 @@ export default {
                     this.employeeModal.depreciation = Math.floor(this.employeeModal.depreciation);
                     this.employeeModal.lifeTime = Math.floor((100 / tmp));
                 }
-            }
-        },
-
-        /* Tự động thêm tên tài sản khi điền mã tài sản
-            Object
-            Author: Tuan 
-            Date: 30/10/2022 
-        */
-        departmentSelection: {
-            get: function() {
-                return this.employeeModal.departmentCode;
-            },
-
-            set: function(code) {
-                this.employeeModal.departmentCode = code;
-                for(var i=0; i<this.departments.length; i++) {
-                    if(this.departments[i].department_code == code) {
-                        this.employeeModal.departmentName = this.departments[i].department_name;
-                        this.employeeModal.departmentId = this.departments[i].department_id;
-                        break;
-                    } else {
-                        this.employeeModal.departmentName = ""
-                        this.employeeModal.departmentId = ""                   
-                    }
-                }         
             }
         },
         

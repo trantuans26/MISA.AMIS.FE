@@ -18,7 +18,7 @@
                     <i class="icon icon--search"></i>
                 </div>
                 <div class="table__reset"
-                    data-title="Tải lại dữ liệu"
+                    :data-title="textTooltip.reload"
                     @click="loadAPI()"
                 ><i class="icon icon--reset"></i></div>
                 <div class="table__space--20grey"></div>
@@ -39,12 +39,12 @@
                                 <th class="table__col table__col--left table__col--employeeName">{{this.textEmployeeName}}</th>
                                 <th class="table__col table__col--left table__col--gender">{{this.textGender}}</th>
                                 <th class="table__col table__col--center table__col--birthday">{{this.textBirthday}}</th>
-                                <th class="table__col table__col--left table__col--identity" data-title="Số chứng minh nhân dân">{{this.textIdentity}}</th>
+                                <th class="table__col table__col--left table__col--identity" :data-title="textTooltip.identityNumber">{{this.textIdentity}}</th>
                                 <th class="table__col table__col--left table__col--positionName">{{this.textRole}}</th>
                                 <th class="table__col table__col--left table__col--departmentName">{{this.textOrganizationName}}</th>
                                 <th class="table__col table__col--left table__col--bankNumber">{{this.textBankNumber}}</th>
                                 <th class="table__col table__col--left table__col--bankName">{{this.textBankName}}</th>
-                                <th class="table__col--left table__col--bankBranch" data-title="Chi nhánh tài khoản ngân hàng">{{this.textBankBranch}}</th>
+                                <th class="table__col--left table__col--bankBranch" :data-title="textTooltip.bankBranch">{{this.textBankBranch}}</th>
                                 <th class="table__col--center table__col--function">{{this.textFunction}}</th>
                             </thead>
                         </table>
@@ -124,6 +124,7 @@
                             <input class="input table__sizeInput" 
                                 type="text"
                                 v-bind:value="this.filter.pageSize + textRecordPerPage"
+                                :class="{'input--focused': isShowDropdownPage}"
                                 readonly
                             >
                             <span class="dropdown dropdown--page" v-show="this.isShowDropdownPage">
@@ -190,6 +191,10 @@
                             >Sau</span>
                         </div>
                     </div>
+                </div>
+
+                <div class="loading loading--table">
+                    <div class="loader icon icon--loader"></div>
                 </div>
             </div>
         </div>
@@ -639,6 +644,13 @@ export default {
                 } 
             },
 
+            textTooltip: { // Nội dung tooltip
+                identityNumber: Resource.TextVi.Tooltip.IdentityNumber,
+                phone: Resource.TextVi.Tooltip.Phone,
+                fax: Resource.TextVi.Tooltip.Fax,
+                bankBranch: Resource.TextVi.Tooltip.BankBranch,
+                reload: Resource.TextVi.Tooltip.Reload,
+            },
             v$: useValidate(), // validate dữ liệu (sử dụng vuelidate)
         }
     },

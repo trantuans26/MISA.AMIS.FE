@@ -85,6 +85,10 @@ export default {
         Modal:{
             InsertModal: "Thêm nhân viên",
             UpdateModal: "Thông tin nhân viên",
+
+            Customer: "Là khách hàng",
+            Supplier: "Là nhà cung cấp",
+
             EmployeeCode: "Mã",
             EmployeeName: "Tên",
             DateOfBirth: "Ngày sinh",
@@ -155,6 +159,14 @@ export default {
             DepartmentCode: "Mã đơn vị",
             DepartmentName: "Tên đơn vị",
             NoChoice: "Chọn đơn vị"
+        },
+
+        Tooltip: {
+            IdentityNumber: "Số Chứng Minh Nhân Dân",
+            Phone: "Điện thoại di động",
+            Fax: "Điện thoại cố định",
+            BankBranch: "Chi nhánh tài khoản ngân hàng",
+            Reload: "Tải lại dữ liệu"
         }
     }
 }
