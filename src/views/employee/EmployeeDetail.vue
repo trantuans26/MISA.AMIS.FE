@@ -65,9 +65,31 @@
                                         maxlength="50"
                                     >
                                     <base-message-error :text="this.textDepartmentName"></base-message-error>
-                                    <div class="item--caretdown">
-                                        <i class="icon icon--caretdown"></i>
+                                    <div class="item--caretdown"
+                                        tabindex="1"
+                                        @click="isShowDropdownDepartment = !isShowDropdownDepartment"
+                                        @blur="hideDropdownDepartment()"
+                                    >
+                                        <i class="icon icon--caretdown"
+                                            :class="{'icon--caretdownRotate' : isShowDropdownDepartment}"
+                                        ></i>
                                     </div>
+                                    <span class="dropdown dropdown--department" v-show="isShowDropdownDepartment">
+                                        <ul class="dropdown__list">
+                                            <li class="dropdown__item"
+                                                @click="selectDepartment()"
+                                            > 
+                                                - {{ this.textDropdownNoChoice }} - 
+                                            </li>
+                                            <li class="dropdown__item"
+                                                v-for="department in this.departments"
+                                                :key="department"
+                                                @click="selectDepartment(department)"
+                                            >
+                                                <p>{{ department.DepartmentName }} </p>  
+                                            </li>
+                                        </ul>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -288,6 +310,7 @@
     <!-- Begin: Dialog validate dữ liệu -->
     <BDialog
         v-show="this.isShowValidate"
+        @closeDialog="(this.isShowValidate = $event), this.errorMessage = ''"
     >
         <template #title>
             {{ this.textDialog.title.error }}
@@ -310,6 +333,7 @@
     <!-- Begin: Dialog click icon đóng modal -->
     <BDialog
         v-show="this.isShowCloseDialog"
+        @closeDialog="(closeModal($event))"
     >
         <template #title>
             {{ this.textDialog.title.change }}
@@ -392,7 +416,8 @@ export default {
         let me = this;
 
         me.$nextTick(() => me.$refs.employeeCodeFocusing.focus());
-  
+        me.apiGetAllDepartments();
+
         if(me.$parent.updateFunction) {
             me.titleModal = me.textUpdateModal;
             me.employeeModal.employeeID = me.$parent.employeeFocused.EmployeeId;
@@ -563,7 +588,6 @@ export default {
         getNewEmployeeCode() {
             let me = this;
             try {
-
                 axios
                 .get(`${Resource.Url.Employees}/NewEmployeeCode`)
                 .then((resource) => {
@@ -577,6 +601,30 @@ export default {
                 console.log(e);
             }
         },
+
+        /* Lấy tất cả đơn vị
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 17/11/2022 
+        */
+        apiGetAllDepartments() {
+            let me = this;
+            try {
+                axios
+                .get(`${Resource.Url.Departments}`)
+                .then((resource) => {
+                    me.departments = resource.data;
+                    console.log('departments: ', me.departments);
+                })
+                .catch((error) => {
+                    console.log('error: ', error.status);
+                })
+            } catch (e) {
+                console.log(e);
+            }
+        },
+
         //#endregion Call API
 
         //#region Modal chức năng
@@ -604,66 +652,27 @@ export default {
         //#endregion Modal chức năng
 
         //#region Modal click events 
-        /* Ẩn dropdown khi blur
+        /* Ẩn dropdown đơn vị
             @param {}
             @returns void
             Author: Tuan 
             Date: 10/12/2022 
         */
-        hideCategoryModal() {
-            setTimeout(() => {
-                this.category.showModal = false;
-            }, 200);  
+        hideDropdownDepartment() {
+            setTimeout(() => this.isShowDropdownDepartment = false, 200); 
         },
 
-        /* Ẩn dropdown khi blur
-            @param {}
-            @returns void
-            Author: Tuan 
-            Date: 10/12/2022 
-        */
-        hideDepartmentModal() {
-            setTimeout(() => {
-                this.department.showModal = false;
-            }, 200);  
-        },
-
-        /* Đưa phòng ban vào input modal
-            @param {option} giá trị đc chọn trong vòng lặp for
-            @returns void
-            Author: Tuan 
-            Modified Date: 4/11/2022 
-        */
-        departmentSelectDrilldown(option) {
-            if(option.department_id == this.employeeModal.departmentId) {
-                this.employeeModal.departmentId = '';
-                this.employeeModal.departmentCode = '';
+        selectDepartment(department) {
+            if(department) {
+                this.employeeModal.departmentName = department.DepartmentName;
+                this.employeeModal.departmentID = department.DepartmentID;
+                this.employeeModal.departmentCode = department.DepartmentCode;
+            } else {
                 this.employeeModal.departmentName = '';
-            } else {
-                this.employeeModal.departmentId = option.department_id;
-                this.employeeModal.departmentCode = option.department_code;
-                this.employeeModal.departmentName = option.department_name;     
+                this.employeeModal.departmentID = '';
+                this.employeeModal.departmentCode = '';
             }
-        },  
 
-        /* Đưa tài sản vào input modal
-            @param {option} giá trị đc chọn trong vòng lặp for
-            @returns void
-            Author: Tuan 
-            Modified Date: 4/11/2022 
-        */
-        categorySelectDrilldown(option) {
-            if(option.fixed_asset_category_id == this.employeeModal.categoryId) {
-                this.employeeModal.categoryId = '';
-                this.employeeModal.categoryCode = ''
-                this.employeeModal.categoryName = ''
-            } else {
-                this.employeeModal.categoryId = option.fixed_asset_category_id;
-                this.employeeModal.categoryCode = option.fixed_asset_category_code;
-                this.employeeModal.categoryName = option.fixed_asset_category_name;     
-                this.employeeModal.depreciationRate = option.depreciation_rate;
-                this.employeeModal.lifeTime = option.life_time;
-            }
         },
 
         /* Tab rollback về mã tài sản
@@ -916,6 +925,8 @@ export default {
             },
             employeeCodeUpdate: '',
 
+            Departments: [], // Danh sách đơn vị
+
             notifyShow: false, // Có hiển thị dialog cảnh báo hay không
             heightAlertValidate: 1,
             errorArray: [], // Dãy chứa các lỗi validate
@@ -924,10 +935,6 @@ export default {
             hasError: false,
             displayModal: false, /* Hiển thị modal */
             isShowCloseDialog: false, /* Hiển thị cảnh báo khi huỷ*/
-            htmlToastSaveSuccess: "", /* Hiển thị thông báo lưu dữ liệu thành công */
-            htmlError: "", /* Hiển thị lỗi cảnh báo input */
-            isDisplayValidate: false, // Toggle thông báo validate dữ liệu
-            textValidate: '', // Dữ liệu thông báo
             textExceptionMsg: "", // Thông điệp trong cảnh báo lỗi backend
             backendError: false, // Có hiển thị dialog cảnh báo lỗi từ backend không
             saveAndInsert: false, // Cất và Thêm
@@ -964,6 +971,14 @@ export default {
             textFunctionYes: Resource.TextVi.Modal.Yes,
             textFunctionNo: Resource.TextVi.Modal.No,
             //#endregion Tên các chức năng
+
+            //#region Dropdown 
+            textDropdownDepartmentCode: Resource.TextVi.Dropdown.DepartmentCode,
+            textDropdownDepartmentName: Resource.TextVi.Dropdown.DepartmentName,
+            textDropdownNoChoice: Resource.TextVi.Dropdown.NoChoice,
+            isShowDropdownDepartment: false,
+
+            //#endregion Dropdown
 
             //#endregion Data Modal
 

@@ -5,7 +5,7 @@
 export default {
     Url:{
         Employees: "https://amis.manhnv.net/api/v1/Employees",
-        Departments: "https://cukcuk.manhnv.net/api/v1/Departments",
+        Departments: "https://amis.manhnv.net/api/v1/Departments",
         Positions: "https://cukcuk.manhnv.net/api/v1/Positions",
     },
 
@@ -125,7 +125,7 @@ export default {
             Title: {
                 Delete: "Xoá nhân viên",
                 Change: "Dữ liệu đã thay đổi",    
-                Error: "Có lỗi!",         
+                Error: "Có lỗi",         
             },
             Text: {
                 Save: "Bạn có muốn cất không?",
@@ -149,6 +149,12 @@ export default {
                 Insert: "Nhân viên đã được thêm.",
                 Update: "Nhân viên đã được thay đổi."
             }
+        },
+
+        Dropdown: {
+            DepartmentCode: "Mã đơn vị",
+            DepartmentName: "Tên đơn vị",
+            NoChoice: "Chọn đơn vị"
         }
     }
 }

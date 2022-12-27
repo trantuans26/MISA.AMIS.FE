@@ -1,6 +1,12 @@
 <template>
     <div class="dialog">
         <div class="dialog__box">
+            <div class="dialog__close"
+                @click="this.$emit('closeDialog', false)"
+            >
+                <i class="icon icon--closeDialog"></i>
+            </div>
+
             <div class="dialog__body">
                 <div class="dialog__title">
                     <slot name="title">

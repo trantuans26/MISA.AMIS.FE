@@ -417,7 +417,7 @@ export default {
             Date: 10/12/2022 
         */
         deselectEmployee() {
-            setTimeout(() => this.employeeSelected = '', 100); 
+            setTimeout(() => this.employeeSelected = '', 200); 
         },
 
         /* Chọn 1 nhân viên thao tác các chức năng
@@ -499,14 +499,14 @@ export default {
         //#endregion
 
         //#region Filter & Paging 
-        /* Show dropdown chọn số bản ghi trên 1 trang
+        /* Ẩn dropdown chọn số bản ghi trên 1 trang
             @param {}
             @returns void
             Author: Tuan 
             Date: 10/12/2022 
         */
         hideDropdownPage() {
-            setTimeout(() => this.isShowDropdownPage = false, 100); 
+            setTimeout(() => this.isShowDropdownPage = false, 200); 
         },
 
         /* Lùi trang

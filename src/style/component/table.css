@@ -9,9 +9,10 @@
     --tableHeader-color: rgb(229, 232, 236);
     --tableBody-color: rgb(255, 255, 255);
     --tableBorder-color: rgb(199, 199, 199);
-    --tableRow-colorfocus: rgb(242, 249, 255);
-    --tableRow-colorcheck: rgb(229, 243, 255);
-    
+    --tableRow-colorfocus-old: rgb(242, 249, 255);
+    --tableRow-colorcheck-old: rgb(229, 243, 255);
+    --tableRow-colorfocus: #EEF8EC;
+    --tableRow-colorcheck: #DCF1D8;
 }
 .table__function {
     display: flex;

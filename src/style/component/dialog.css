@@ -31,6 +31,7 @@
 }
 
 .dialog__box {
+    position: relative;
     background-color: #fff;
     box-shadow: 0 4px 16px rgba(23,27,42,0.078);
     border-radius: 3px;
@@ -41,6 +42,16 @@
     flex-direction: column;
     justify-content: space-between;
     animation: popFromCenter 300ms ease-in-out forwards;
+}
+
+.dialog__close {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    right: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .dialog__body {
