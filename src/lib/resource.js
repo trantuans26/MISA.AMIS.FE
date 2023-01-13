@@ -4,9 +4,8 @@
  */
 export default {
     Url:{
-        Employees: "https://amis.manhnv.net/api/v1/Employees",
-        Departments: "https://amis.manhnv.net/api/v1/Departments",
-        Positions: "https://cukcuk.manhnv.net/api/v1/Positions",
+        Employees: "https://localhost:44368/api/v1/Employees",
+        Departments: "https://localhost:44368/api/v1/Departments",
     },
 
     // Các thông báo exception gửi về từ backend hiện ra cho người dùng
@@ -96,15 +95,20 @@ export default {
             DepartmentName: "Đơn vị",
             IdentityNumber: "Số CMND",
             IdentityDate: "Ngày cấp",
-            PositionName: "Chức danh",
+            JobPosition: "Chức danh",
             IdentityPlace: "Nơi cấp",
             Address: "Địa chỉ",
             Phone: "ĐT di động",
-            Contact: "ĐT cố định",
+            Fax: "ĐT cố định",
             Email: "Email",
-            BankAccountNumber: "Tài khoản ngân hàng",
+            BankNumber: "Tài khoản ngân hàng",
             BankName: "Tên ngân hàng",
             BankBranch: "Chi nhánh",
+
+            Placeholder: {
+                Department: "Chọn đơn vị",
+                Address: "VD: Số 82 Duy Tân, Dịch Vọng, Cầu Giấy, Hà Nội",
+            },
 
             /* Tên chức năng */
             Cancel: "Huỷ",
@@ -128,22 +132,23 @@ export default {
             Accept: "Đồng ý",
             Title: {
                 Delete: "Xoá nhân viên",
-                Change: "Dữ liệu đã thay đổi",    
-                Error: "Có lỗi",         
+                Change: "Dữ liệu đã bị thay đổi.",    
+                Error: "Thông báo",         
             },
             Text: {
                 Save: "Bạn có muốn cất không?",
-                Employee: "Nhân viên",
-                After: "sẽ bị xoá."
+                Employee: "Bạn có thực sự muốn xoá Nhân viên",
+                After: "không?"
             }
         },
 
         ErrorMessage: {
-            DuplicateCode: "Mã nhân viên đã tồn tại.",
-            EmptyCode: "Mã nhân viên không được để trống.",
-            EmptyName: "Tên nhân viên không được để trống.",
-            EmptyDepartmentName: "Tên đơn vị không được để trống.",
-
+            EmployeeCode: "Mã nhân viên",
+            DuplicateCode: "đã tồn tại trong hệ thống, vui lòng kiểm tra lại",
+            EmptyCode: "Mã nhân viên không được để trống",
+            EmptyName: "Tên nhân viên không được để trống",
+            EmptyDepartmentName: "Tên đơn vị không được để trống",
+            InvalidEmail: "Email không đúng định dạng",
         },
 
         ToastMessage: {

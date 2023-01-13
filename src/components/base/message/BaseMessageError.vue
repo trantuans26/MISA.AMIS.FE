@@ -1,5 +1,7 @@
 <template>
-    <div class="message--hasError" hidden>{{text}} không được để trống</div>
+    <div class="message--hasError" hidden>
+        <slot name="message"> {{text}} không được để trống </slot>
+    </div>
 </template>
 
 <script>

@@ -1,101 +1,454 @@
 <template>
-    <div :class="cbbClass"         
-        @click="this.show = !this.show"
+  <div class="combobox" 
+  >
+    <input type="text" class="input input--haveicon input--modal combobox__input" 
+      v-model="textInput" 
+      :class="{'input--error': this.isRequired && !this.textInput}"   
+      @input="inputOnChange" 
+      @blur="inputOnBlur, isRequired = true"
+      @keydown="selectItemUpDown" 
+      :placeholder="propPlaceholder"
+      @click="isRequired = false"
+      />
+    <base-message-error :text="fieldName"></base-message-error>
+
+    <button class="button combobox__button" 
+      @click="btnSelectDataOnClick(), isRequired = false"
+      @blur="isRequired = true" 
+      @keydown="selectItemUpDown" 
+      tabindex="-1"
     >
-        <slot name="iconFilter"> 
-            <div class="combobox__icon">
-                <i class="icon icon--filter"></i>
-            </div>   
-        </slot>
-
-        <slot name="input">
-            <input class="input" 
-                :class="inputClass"
-                type="text" 
-                :value="filter"  
-                v-on:change.enter="this.show = !this.show" 
-                readonly
-                @blur="hideDrilldown()"             
-            >
-        </slot>
-        
-        <div class="combobox__icon--dropdown" :class="dropdownClass"> 
-            <i class="icon icon--dropdown"></i>
+      <i class="icon icon--caretdown"
+        :class="{'icon--caretdownRotate' : isShowListData}"
+      ></i>
+    </button>
+    <div v-show="isShowListData" class="combobox__data" 
+      ref="combobox__data" 
+      v-clickoutside="hideListData"
+    >
+      <a class="combobox__item" 
+        v-for="(item, index) in dataFilter" 
+        :class="{
+        'combobox__item--focus': index == indexItemFocus,
+        'combobox__item--selected': index == indexItemSelected,
+        }" 
+        :key="item[this.propValue]" 
+        :ref="'toFocus_' + index" 
+        :value="item[this.propValue]"
+        @click="itemOnSelect(item, index)" 
+        @focus="saveItemFocus(index)" 
+        @keydown="selectItemUpDown(index)"
+        @keyup="selectItemUpDown(index)" 
+        tabindex="1"
+      >
+        <div class="combobox__item-icon">
+          <img 
+            v-show="index == indexItemSelected" 
+            :src="require('./icon/check.png')" alt="" srcset="" width="14"
+            height="11" 
+          />
         </div>
-
-
-        <div class="drilldown" 
-            :class="drilldownClass" 
-            v-show="this.show" 
-        >
-            <slot name="drilldown">
-                <ul class="drilldown__box" >
-                    <li 
-                        class="drilldown__item" 
-                        tabindex="0" 
-                        :class="drilldownItemClass"
-                        :inlist="list"
-                        v-for='item in list' 
-                        @click="filterCategory(item)"
-                        v-on:change.enter="filterCateorgy(item)"
-                        :key="item"
-                    >
-                        <div class="drilldown__check"><i class="fa-solid fa-check"></i></div>
-                        <div class="drilldown__name">{{item.fixed_asset_category_name}}</div>
-                    </li>
-                </ul>
-            </slot>
-        </div>
-
+          
+        <span>{{ item[this.propText] }}</span>
+      </a>
     </div>
+  </div>
 </template>
-  
 <script>
+/* eslint-disable */
+import BaseMessageError from "@/components/base/message/BaseMessageError.vue";
 
-export default {
-    name: "BCombobox",
-    props: [
-        "cbbClass",
-        "inputClass",
-        "drilldownClass",
-        "drilldownItemClass",
-        "dropdownClass",
-        "filter",
-        "tabindex",
-    ],
-    
-    created() {
-
-    },
-
-    updated() {
-
-    },
-
-    watch: {
-
-    },
-
-    methods: {
-        hideDrilldown() {
-            let me = this;
-            setTimeout(() => {
-                    me.show = false;
-            }, 200); 
-        }
-    },
-
-    data() {
-        return {
-            show: false,
-        };
-    },
-
+/**
+ * Gán sự kiện nhấn click chuột ra ngoài combobox data (ẩn data list đi)
+ * TTTuan (13/01/2023)
+ */
+const clickoutside = {
+  mounted(el, binding, vnode, prevVnode) {
+    el.clickOutsideEvent = (event) => {
+      // Nếu element hiện tại không phải là element đang click vào
+      // Hoặc element đang click vào không phải là button trong combobox hiện tại thì ẩn đi.
+      if (
+        !(
+          (
+            el === event.target || // click phạm vi của combobox__data
+            el.contains(event.target) || //click vào element con của combobox__data
+            el.previousElementSibling.contains(event.target)
+          ) //click vào element button trước combobox data (nhấn vào button thì hiển thị)
+        )
+      ) {
+        // Thực hiện sự kiện tùy chỉnh:
+        binding.value(event, el);
+        // vnode.context[binding.expression](event); // vue 2
+      }
+    };
+    document.body.addEventListener("click", el.clickOutsideEvent);
+  },
+  beforeUnmount: (el) => {
+    document.body.removeEventListener("click", el.clickOutsideEvent);
+  },
 };
 
-</script>
-  
-<style scoped>
+function removeVietnameseTones(str) {
+  str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+  str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+  str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+  str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+  str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+  str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+  str = str.replace(/đ/g, "d");
+  str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+  str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+  str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+  str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+  str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+  str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+  str = str.replace(/Đ/g, "D");
+  // Some system encode vietnamese combining accent as individual utf-8 characters
+  // Một vài bộ encode coi các dấu mũ, dấu chữ như một kí tự riêng biệt nên thêm hai dòng này
+  str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // ̀ ́ ̃ ̉ ̣  huyền, sắc, ngã, hỏi, nặng
+  str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
+  // Remove extra spaces
+  // Bỏ các khoảng trắng liền nhau
+  str = str.replace(/ + /g, " ");
+  str = str.trim();
+  // Remove punctuations
+  // Bỏ dấu câu, kí tự đặc biệt
+  str = str.replace(
+    /!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g,
+    " "
+  );
+  return str;
+}
 
+const keyCode = {
+  Enter: 13,
+  ArrowUp: 38,
+  ArrowDown: 40,
+  ESC: 27,
+};
+
+export default {
+  name: "BCombobox",
+  directives: {
+    clickoutside,
+  },
+  props: {
+    baseValue: String,
+    setID: String,
+    url: String,
+    propValue: String,
+    propCode: String,
+    propText: String,
+    fieldName: String,
+    propPlaceholder: String,
+    isLoadData: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  components: {
+    BaseMessageError,
+  },
+  methods: {
+    /**
+     * Lưu lại index của item đã focus
+     * TTTuan (13/01/2023)
+     */
+    saveItemFocus(index) {
+      this.indexItemFocus = index;
+    },
+
+    /**
+     * Ẩn danh sách item
+     * TTTuan (13/01/2023)
+     */
+    hideListData() {
+      this.isShowListData = false;
+    },
+
+    /**
+     * Mở validate
+     * TTTuan (13/01/2023)
+     */
+    validateOn() {
+      this.$emit('validateOn', true);
+    },
+
+    /**
+     * Đóng validate
+     * TTTuan (13/01/2023)
+     */
+     validateOff() {
+      this.$emit('validateOff', false);
+    },
+
+    /**
+     * Nhấn vào button thì hiển thị hoặc ẩn List Item
+     * TTTuan (13/01/2023)
+     */
+    btnSelectDataOnClick() {
+      this.dataFilter = this.data;
+      this.isShowListData = !this.isShowListData;
+    },
+
+    /**
+     * Click chọn item trong danh sách
+     * TTTuan (13/01/2023)
+     */
+    itemOnSelect(item, index) {
+      let me = this;
+      const text = item[me.propText];
+      me.selectedID = item[me.propValue];
+      me.selectedCode = item[me.propCode];
+      me.textInput = text; // Hiển thị text lên input.
+      me.indexItemSelected = index;
+      me.isShowListData = false;
+
+      me.$emit('getID', me.selectedID);
+      me.$emit('getCode', me.selectedCode);
+      me.$emit('getName', me.textInput);
+    },
+
+    /**
+     * Nhập text thì thực hiện filter dữ liệu và hiển thị
+     * TTTuan (13/01/2023)
+     */
+    inputOnChange() {
+      var me = this;
+      // Thực hiện lọc các phần tử phù hợp trong data:
+      this.dataFilter = this.data.filter((e) => {
+        let text = removeVietnameseTones(me.textInput)
+          .toLowerCase()
+          .replace(" ", "");
+        let textOfItem = removeVietnameseTones(e[me.propText])
+          .toLowerCase()
+          .replace(" ", "");
+        return textOfItem.includes(text);
+      });
+      this.isShowListData = true;
+    },
+
+    /**
+     * Lựa chọn item bằng cách nhấn các phím lên, xuống trên bàn phím
+     * TTTuan (13/01/2023)
+     */
+    selectItemUpDown() {
+      var me = this;
+      var keyCodePress = event.keyCode;
+      var elToFocus = null;
+      switch (keyCodePress) {
+        case keyCode.ESC:
+          this.isShowListData = false;
+          break;
+        case keyCode.ArrowDown:
+          this.isShowListData = true;
+          elToFocus = this.$refs[`toFocus_${me.indexItemFocus + 1}`];
+          if (
+            this.indexItemFocus == null ||
+            !elToFocus ||
+            elToFocus.length == 0
+          ) {
+            this.indexItemFocus = 0;
+          } else {
+            this.indexItemFocus += 1;
+          }
+          break;
+        case keyCode.ArrowUp:
+          this.isShowListData = true;
+          elToFocus = this.$refs[`toFocus_${me.indexItemFocus - 1}`];
+          if (
+            this.indexItemFocus == null ||
+            !elToFocus ||
+            elToFocus.length == 0
+          ) {
+            this.indexItemFocus = this.dataFilter.length - 1;
+          } else {
+            this.indexItemFocus -= 1;
+          }
+          break;
+        case keyCode.Enter:
+          elToFocus = this.$refs[`toFocus_${me.indexItemFocus}`];
+          if (elToFocus && elToFocus.length > 0) {
+            elToFocus[0].click();
+            this.isShowListData = false;
+          }
+          break;
+        default:
+          break;
+      }
+    },
+
+    /**
+     * Validate dữ liệu.
+     * Author: QuangNV (19/12/2022)
+     */
+    inputOnBlur() {
+    }
+  },
+
+  created() {
+    // Thực hiện lấy dữ liệu từ api:
+    if (this.url) {
+      fetch(this.url)
+        .then((res) => res.json())
+        .then((res) => {
+          this.data = res;
+          this.dataFilter = res;
+        })
+
+        .catch((res) => {
+          console.log(res);
+        });
+    }
+    this.selectedID = this.setID;
+    this.textInput = this.baseValue;
+
+
+  },
+  data() {
+    return {
+      data: [], // data gốc
+      textInput: null,
+      selectedID: null,
+      selectedCode: null,
+      dataFilter: [], // data đã được filter
+      isShowListData: false, // Hiển thị list data hay không
+      indexItemFocus: null, // Index của item focus hiện tại
+      indexItemSelected: null, // Index của item được selected
+      isRequired: false,
+    };
+  },
+
+  watch: {
+    inputText: {
+      immediate: true,
+      handler(val, oldVal) {
+        this.inputText = val
+      }
+    },
+  }
+};
+</script>
+<style scoped>
+:root {
+    --comboboxItem-colorChecked: #2ca01c;
+    --comboboxText-colorChecked: rgb(63, 168, 50);
+}
+
+.combobox {
+  position: relative;
+  /* flex-direction: row; */
+  display: flex;
+  height: 36px;
+  border-radius: 4px;
+  box-sizing: border-box;
+
+}
+
+.combobox__button {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(90, 90, 90);
+  border-radius: 0 4px 4px 0;
+  right: 1px;
+  top: 1.5px;
+  outline: none;
+  border: none;
+  border-left: unset;
+  height: 29px;
+  width: 29px;
+  border-radius: 3px 3px 3px 3px;
+  background-color: #fff;
+  cursor: pointer;
+  min-width: unset !important;
+  outline: none;
+}
+
+.combobox__button:hover,
+.combobox__button:focus {
+  background-color: rgb(224, 224, 224);
+  color: #000;
+}
+
+.combobox__data {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0px;
+  position: absolute;
+  overflow: auto;
+  width: 100%;
+  height: 160px;
+  top: 100%;
+  left: 0;
+  border-radius: 4px;
+  background-color: #fff;
+  box-shadow: 0px 3px 6px #00000016;
+  z-index: 999;
+}
+
+.combobox__data::-webkit-scrollbar {
+	width: 10px;
+}
+
+.combobox__data::-webkit-scrollbar-track {
+    background-color: rgb(241, 241, 241);
+	border-radius: 3px;
+}
+
+.combobox__data::-webkit-scrollbar-thumb {
+	border-radius: 3px;
+	background-color: #9E9E9E;
+}
+
+.combobox__item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  line-height: 32px;
+  padding-left: 10px;
+  height: 32px;
+  cursor: pointer;
+  outline: none;
+}
+
+.combobox__item-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.combobox__item-icon--selected {
+  width: 14px;
+  height: 11px;
+}
+
+.combobox__item:hover,
+.combobox__item:focus,
+.combobox__item--focus,
+.combobox__item--hover {
+  background-color: #e9ebee;
+  color: rgb(63, 168, 50);
+}
+
+.combobox__item--selected {
+  pointer-events: none;
+  background-color: #2ca01c;
+  color: #fff;
+}
+
+.input-err .combobox__input,
+.input-err .combobox__input~.combobox__button {
+  border-color: #E61D1D;
+}
+
+.combobox__input:focus,
+.combobox__input:focus~.combobox__button {
+  border-color: #2ca01c;
+}
 </style>
-  

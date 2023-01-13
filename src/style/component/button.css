@@ -1,8 +1,10 @@
 :root {
-    --btn-color: #50b83c;
-    --btn-color-hover: #57C841;
-    --btn-color-active: #118044;
-    --btn-text-color: #fff;
+    --btn__bgColor: #2ca01c;
+    --btn__bgColor--hover: #35bf22;
+    --btn__bgColor--focus: #1d6d13;
+    --btn__txtColor: #fff;
+    --btnOutline__bgColor--hover: #d2d3d6;
+    --btnOutline__bgColor--focus: #bbbcbc;
 }
 
 .btn {
@@ -14,25 +16,25 @@
     border: unset;
     border-radius: 4px;
     cursor: pointer;
-    background-color: var(--btn-color);  
-    color: var(--btn-text-color);
+    background-color: var(--btn__bgColor);  
+    color: var(--btn__txtColor);
     outline: none;
-    font-weight: 500;
-    font-size: 14px;
+    font-weight: 600;
+    font-size: 13px;
     box-sizing: border-box;
 }
 
 .btn:hover {
-    background-color: var(--btn-color-hover);
+    background-color: var(--btn__bgColor--hover);
 }
 
 .btn:active,
 .btn:focus {
-    background-color: var(--btn-color-active);
+    background-color: var(--btn__bgColor--focus);
 }
 
 .btn--outline {
-    border: 1px solid #E6E6E6;
+    border: 1px solid #8d9096;
     background-color: white;  
     color: #212121;
     box-shadow: none;
@@ -40,14 +42,13 @@
 
 }
 
-.btn--outline:hover,
-.btn--outline:active {
-    background-color: #f6f6f6;  
+.btn--outline:hover {
+    background-color: var(--btnOutline__bgColor--hover);  
 }
 
 .btn--outline:active,
 .btn--outline:focus {
-    background-color: rgb(235, 235, 235);  
+    background-color: var(--btnOutline__bgColor--focus);  
 }
 
 .btn--dialog {
@@ -96,6 +97,20 @@
 .btn--red:active {
     background-color: rgb(171, 41, 17) !important;
 }
+
+.btn--warning {
+    background-color: rgb(255, 197, 0);
+    color: #000;
+}
+
+.btn--warning:hover {
+    background-color: rgb(255, 212, 0);
+}
+
+.btn--warning:active {
+    background-color: rgb(204, 157, 0);
+}
+
 .btn--disable {
     background-color: #f5f4f4;
     border: none !important;

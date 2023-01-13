@@ -1,3 +1,7 @@
+:root {
+    --dropdownItem-colorChecked: #2ca01c;
+    --dropdownText-colorChecked: rgb(63, 168, 50);
+}
 @keyframes opacity {
     0%   { opacity: 0; }
     100% { opacity: 1; }
@@ -46,12 +50,12 @@
 }
 
 .dropdown--page .dropdown__item:hover {
-    color: rgb(63, 168, 50);
+    color: var(--dropdownText-colorChecked);
 }
 
 .dropdown--page .dropdown__item--focus {
-    background-color: #50b83c;
-    color: #fff;
+    background-color: var(--dropdownItem-colorChecked) !important;
+    color: #fff !important;
 }
 
 .dropdown--department {
@@ -90,12 +94,16 @@
 }
 
 .dropdown--department .dropdown__item:hover {
-    color: rgb(63, 168, 50);
+    color: var(--dropdownText-colorChecked);
 }
 
-.dropdown--department .dropdown__item--focus {
-    background-color: #50b83c;
-    color: #fff;
+.dropdown--department .dropdown__item--focused {
+    color: var(--dropdownText-colorChecked);
+}
+
+.dropdown--department .dropdown__item--selected {
+    background-color: var(--dropdownItem-colorChecked) !important;
+    color: #fff !important;
 }
 
 .dropdown__list {
@@ -133,9 +141,12 @@
     background-color: rgba(0, 0, 0, 0);
 }
 
+.dropdown__item p::selection {
+    background-color: rgba(0, 0, 0, 0);
+}
 .dropdown__item:hover {
     background-color: rgb(232, 233, 236);
-    color: rgb(95, 192, 49)
+    color: var(--dropdownText-colorChecked);
 }
 
 .dropdown__header {

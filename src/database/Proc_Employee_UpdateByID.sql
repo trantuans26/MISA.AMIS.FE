@@ -6,9 +6,9 @@ IN $DepartmentID char(36), -- ID đơn vị
 IN $JobPosition char(100), -- Chức danh
 IN $DateOfBirth date, -- ngày sinh nhân viên
 IN $Gender tinyint, -- giới tính nhân viên
-IN $IdentityNumber varchar(255), -- số chứng minh nhân dân
-IN $IdentityDate date, -- ngày cấp chứng minh nhân dân
-IN $IdentityPlace varchar(255), -- nơi cấp chứng minh nhân dân
+IN $IdentityNumber varchar(255), -- số chứng nhân dân
+IN $IdentityDate date, -- ngày cấp chứng nhân dân
+IN $IdentityPlace varchar(255), -- nơi cấp chứng nhân dân
 IN $Address varchar(255), -- địa chỉ nhân viên
 IN $Phone varchar(50), -- số điện thoại cá nhân
 IN $Fax varchar(50), -- số điện thoại cá nhân
@@ -25,7 +25,7 @@ BEGIN
 -- Auth: TTTuan
 -- Created date: 22/12/2022
 -- Desc: Sửa 1 nhân viên theo ID
--- Modified by: TTTuan (22/12/2022)
+-- Modified by: TTTu(22/12/2022)
 -- Running test: CALL Proc_Employee_UpdateByID('1343d389-1cc2-4ab7-88f6-423b4e874d0f', 'NV-1046', 'Tuấn', '469b3ece-744a-45d5-957d-e8c757976496', 'Designer', NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  NULL, NULL, 'Tuan', NOW())
 
   IF $DepartmentID IS NULL THEN

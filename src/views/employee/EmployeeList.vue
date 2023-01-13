@@ -13,13 +13,13 @@
                     <input class="input input--search"
                         type="text" :placeholder="this.textSearchPlaceholder"
                         v-model.trim="this.filter.employeeFilter"
-                        v-on:keyup.enter="loadAPI()"
+                        v-on:keyup.enter="this.currentPage = 1, loadAPI()"
                     >
-                    <i class="icon icon--search"></i>
+                    <i class="icon icon--search" @click="this.filter.employeeFilter = 'haha', this.currentPage = 1, loadAPI()"></i>
                 </div>
                 <div class="table__reset"
                     :data-title="textTooltip.reload"
-                    @click="loadAPI()"
+                    @click="this.currentPage = 1, loadAPI()"
                 ><i class="icon icon--reset"></i></div>
                 <div class="table__space--20grey"></div>
             </div>
@@ -58,7 +58,7 @@
                                     tabindex="1"
                                     v-for="(employee) in this.employees"
                                     :key="employee"
-                                    :class="{'table__row--checked': checkEmployee(employee.EmployeeId)}" 
+                                    :class="{'table__row--checked': checkEmployee(employee.employeeID)}" 
                                     
                                 >
                                     <td class="table__col table__col--center table__col--check">
@@ -67,20 +67,20 @@
                                             v-model='this.employeesSelectedByID' 
                                         > -->
                                         <input type="checkbox" 
-                                            :checked="checkEmployee(employee.EmployeeId)"
-                                            @click="clickCheckEmployee(employee.EmployeeId)"
+                                            :checked="checkEmployee(employee.employeeID)"
+                                            @click="clickCheckEmployee(employee.employeeID)"
                                         >
                                     </td>
-                                    <td class="table__col table__col--left table__col--employeeCode" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{employee.EmployeeCode}}</td>
-                                    <td class="table__col table__col--left table__col--employeeName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{employee.EmployeeName}}</td>
-                                    <td class="table__col table__col--left table__col--gender" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{this.formatGender(employee.Gender)}}</td>
-                                    <td class="table__col table__col--center table__col--birthday" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{formatDate(employee.DateOfBirth)}}</td>
-                                    <td class="table__col table__col--left table__col--identity" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">0342060019785{{employee.EmployeeIdentity}}</td>
-                                    <td class="table__col table__col--left table__col--positionName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{employee.PositionName}}</td>
-                                    <td class="table__col table__col--left table__col--departmentName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">{{employee.DepartmentName}}</td>
-                                    <td class="table__col table__col--left table__col--bankNumber" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">223123123231{{employee.EmployeeBankNumber}}</td>
-                                    <td class="table__col table__col--left table__col--bankName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">Techcombank{{employee.EmployeeBankName}}</td>
-                                    <td class="table__col--left table__col--bankBranch" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true">Hà Nội{{employee.EmployeeBankBranch}}</td>
+                                    <td class="table__col table__col--left table__col--employeeCode" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{employee.employeeCode}}</p> </td>
+                                    <td class="table__col table__col--left table__col--employeeName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{employee.employeeName}}</p> </td>
+                                    <td class="table__col table__col--left table__col--gender" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{this.formatGender(employee.gender)}}</p> </td>
+                                    <td class="table__col table__col--center table__col--birthday" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{formatDate(employee.dateOfBirth)}}</p> </td>
+                                    <td class="table__col table__col--left table__col--identity" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{employee.identityNumber}}</p> </td>
+                                    <td class="table__col table__col--left table__col--positionName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{employee.jobPosition}}</p> </td>
+                                    <td class="table__col table__col--left table__col--departmentName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{employee.departmentName}}</p> </td>
+                                    <td class="table__col table__col--left table__col--bankNumber" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{employee.bankNumber}}</p> </td>
+                                    <td class="table__col table__col--left table__col--bankName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{employee.bankName}}</p> </td>
+                                    <td class="table__col--left table__col--bankBranch" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{employee.bankBranch}}</p> </td>
                                     <td class="table__col--function table__col--function">
                                         <span class="table__col--update"
                                             @click="focusEmployee(employee), isDisplayModal = true, updateFunction = true"
@@ -129,11 +129,11 @@
                             >
                             <span class="dropdown dropdown--page" v-show="this.isShowDropdownPage">
                                 <ul class="dropdown__list">
-                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 10}" @click="this.filter.pageSize = 10, this.currentPage = 1, loadAPI()">10{{textRecordPerPage}}</li>
-                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 20}" @click="this.filter.pageSize = 20, this.currentPage = 1, loadAPI()">20{{textRecordPerPage}}</li>
-                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 30}" @click="this.filter.pageSize = 30, this.currentPage = 1, loadAPI()">30{{textRecordPerPage}}</li>
-                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 50}" @click="this.filter.pageSize = 50, this.currentPage = 1, loadAPI()">50{{textRecordPerPage}}</li>
-                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 100}" @click="this.filter.pageSize = 100, this.currentPage = 1, loadAPI()">100{{textRecordPerPage}}</li>
+                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 10}" @click="this.filter.pageSize = 10, this.currentPage = 1, employeesSelectedByID = [], loadAPI()">10{{textRecordPerPage}}</li>
+                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 20}" @click="this.filter.pageSize = 20, this.currentPage = 1, employeesSelectedByID = [], loadAPI()">20{{textRecordPerPage}}</li>
+                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 30}" @click="this.filter.pageSize = 30, this.currentPage = 1, employeesSelectedByID = [], loadAPI()">30{{textRecordPerPage}}</li>
+                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 50}" @click="this.filter.pageSize = 50, this.currentPage = 1, employeesSelectedByID = [], loadAPI()">50{{textRecordPerPage}}</li>
+                                    <li class="dropdown__item" :class="{'dropdown__item--focus': this.filter.pageSize == 100}" @click="this.filter.pageSize = 100, this.currentPage = 1, employeesSelectedByID = [], loadAPI()">100{{textRecordPerPage}}</li>
                                 </ul>
                             </span>
                         </div>
@@ -148,7 +148,9 @@
                                 @click="firstPage()"
                                 :class="{'table__subnumber--focus': this.currentPage == 1}"
                             >1</span>
-                            <span class="table__subnumber" tabindex="1" v-show="this.currentPage > 2 && this.totalPage > 3">...</span>
+                            <span class="table__subnumber" tabindex="1" 
+                                @click="this.currentPage -= 2, loadAPI()"
+                                v-show="this.currentPage > 2 && this.totalPage > 3">...</span>
                             <span class="table__subnumber" tabindex="1" 
                                 v-show="(this.currentPage < 3 || this.totalPage == 3) && this.totalPage > 2"
                                 @click="this.currentPage=2, loadAPI()"
@@ -171,7 +173,9 @@
                                 @click="this.currentPage++, loadAPI()"
                             >{{ this.currentPage + 1 }}</span>
 
-                            <span class="table__subnumber" tabindex="1" v-show="this.currentPage < this.totalPage - 1 && this.totalPage > 3">...</span>
+                            <span class="table__subnumber" tabindex="1" 
+                                @click="this.currentPage += 2, loadAPI()"
+                                v-show="this.currentPage < this.totalPage - 1 && this.totalPage > 3">...</span>
                             <span class="table__subnumber" tabindex="1"
                                 v-show="this.currentPage > this.totalPage-2  && this.totalPage > 3"
                                 @click="this.currentPage = this.totalPage-2, loadAPI()"
@@ -193,9 +197,7 @@
                     </div>
                 </div>
 
-                <div class="loading loading--table">
-                    <div class="loader icon icon--loader"></div>
-                </div>
+                <BLoading v-show="isShowLoadingTable" loadingClass="loading--table"></BLoading>
             </div>
         </div>
     </div>
@@ -208,7 +210,7 @@
 
     <BDialog
         class="dialog--delete"
-        :message="this.employeeDeleted.EmployeeCode"
+        :message="this.employeeDeleted.employeeCode"
         v-if="this.isShowDeleteDialog"
         @closeDialog="(this.isShowDeleteDialog = $event)"
         @deleteEmployee="deleteEmployeeByID(), showSucessDeleteToast()"
@@ -243,7 +245,7 @@ import Resource from "@/lib/resource";
 import moment from 'moment'
 import useValidate from '@vuelidate/core'
 import {required} from '@vuelidate/validators'
-import BLoading from '@/components/loading/BLoading.vue'
+import BLoading from '@/components/base/loading/BLoading.vue'
 import EmployeeDetail from "./EmployeeDetail.vue";
 import BDialog from "@/components/base/dialog/BDialog.vue";
 import BToast from "@/components/base/toast/BToast.vue";
@@ -274,9 +276,9 @@ export default {
         let me = this;
         try {
             me.isShowLoading = true; // Hiển thị loading data
-            setTimeout(() => me.isShowLoading = false, 500);
-
             me.loadAPI();
+
+            setTimeout(() => me.isShowLoading = false, 50);
         } catch (error) {
             console.log(error);
         }
@@ -320,13 +322,16 @@ export default {
         */
         loadAPI() {
             let me = this;
+            me.isShowLoadingTable = true;
             try {
                 axios
-                .get(`${Resource.Url.Employees}/filter?employeeFilter=${me.filter.employeeFilter}&pageSize=${me.filter.pageSize}&pageNumber=${me.currentPage}`)
+                .get(`${Resource.Url.Employees}/filter?keyword=${me.filter.employeeFilter}&pageSize=${me.filter.pageSize}&pageNumber=${me.currentPage}`)
                 .then((resource) => {
-                    me.employees = resource.data.Data;
-                    me.totalRecord = resource.data.TotalRecord;
-                    me.totalPage = resource.data.TotalPage;
+                    me.employees = resource.data.data;
+                    me.totalRecord = resource.data.totalRecord;
+                    me.totalPage = resource.data.totalPage;
+                    me.isShowLoadingTable = false;
+                    console.log("data", resource.data);
                 })
                 .catch((error) => {
                     console.log('error: ', error.status);
@@ -334,6 +339,26 @@ export default {
             } catch (e) {
                 console.log(e);
             }
+        },
+
+        /* Tìm kiếm nhân viên theo mã, tên, số điện thoại
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 17/12/2022 
+        */  
+        searchEmployee() {
+
+        },
+
+        /* Tải lại danh sách nhân viên
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 17/12/2022 
+        */
+        reloadEmployeeTable() {
+
         },
 
         /* Xoá 1 nhân viên theo ID
@@ -345,7 +370,7 @@ export default {
         deleteEmployeeByID() {
             try {
                 axios
-                .delete(`${Resource.Url.Employees}/${this.employeeDeleted.EmployeeId}`)
+                .delete(`${Resource.Url.Employees}/${this.employeeDeleted.employeeID}`)
                 .then(() => {
                     // Reload data
                     this.loadAPI();
@@ -462,7 +487,7 @@ export default {
         //#endregion
 
         //#region Check events
-            /* Check các nhân viên với checkbox
+        /* Check các nhân viên với checkbox
             @param {}
             @returns void
             Author: Tuan 
@@ -584,6 +609,7 @@ export default {
             //#region Data xử lý sự kiện show
             isShowDropdownPage: false,
             isShowLoading: false,
+            isShowLoadingTable: false,
             isShowSuccessDeleteToast: false,
             isShowSuccessToast: false,
             isShowDeleteDialog: false,
@@ -681,7 +707,7 @@ export default {
         */
         selectAllEmployees: {
             get: function () {
-                return this.employees ? this.employeesSelectedByID.length == this.employees.length : false;
+                return this.employees.length > 0 ? this.employeesSelectedByID.length == this.employees.length : false;
             },
 
             set: function (value) {
@@ -689,7 +715,7 @@ export default {
 
                 if (value) {
                     this.employees.forEach(function (employee) {
-                        employeesSelectedByID.push(employee.EmployeeId);
+                        employeesSelectedByID.push(employee.employeeID);
                     });
                 }
 

@@ -1,5 +1,7 @@
 <template>
-    <div class="modal modal--open">                     
+    <div class="modal modal--open">     
+        <BLoading v-show="isShowLoadingModal" loadingClass="loading--modal"></BLoading>
+
         <div class="modal__main"
             @submit.prevent="onSubmit()"
         >
@@ -14,13 +16,13 @@
 
             <header class="modal__section modal__header">
                 <div class="modal__title">{{titleModal}}</div>
-                <div class="modal__checkbox modal__customer">
-                    <input type="checkbox">
-                    <p>{{ textCustomer }}</p>
+                <div class="modal__checkbox modal--customer">
+                    <input id="modal_input--customer" type="checkbox">
+                    <label for="modal_input--customer">{{ textCustomer }}</label>
                 </div>
-                <div class="modal__checkbox modal__supplier">
-                    <input type="checkbox">
-                    <p>{{ textSupplier }}</p>
+                <div class="modal__checkbox modal--supplier">
+                    <input id="modal_input--supplier" type="checkbox">
+                    <label for="modal_input--supplier">{{ textSupplier }}</label>
                 </div>
             </header>
 
@@ -34,10 +36,12 @@
                                 <label class="modal__label">{{this.textEmployeeCode}} <em>*</em></label>
                                 <input class="input input--modal" 
                                     ref="employeeCodeFocusing" 
-                                    :class="{'input--error': this.isSubmited && !this.employeeModal.employeeCode}"
+                                    :class="{'input--error': this.isShowValidity.emptyEmployeeCode && !this.employeeModal.employeeCode}"
                                     v-model.trim="this.employeeModal.employeeCode"
                                     type="text" 
-                                    maxlength="100"
+                                    maxlength="20"
+                                    @click="this.isShowValidity.emptyEmployeeCode = false"
+                                    @blur = "this.isShowValidity.emptyEmployeeCode = true"
                                 >
                                 <base-message-error :text="this.textEmployeeCode"></base-message-error>
                             </div>
@@ -48,9 +52,11 @@
                                 </label>
                                 <input class="input input--modal" type="text"
                                     ref="employeeNameFocusing" 
-                                    :class="{'input--error': this.isSubmited && !this.employeeModal.employeeName}"
+                                    :class="{'input--error': this.isShowValidity.emptyEmployeeName && !this.employeeModal.employeeName}"
                                     v-model.trim="this.employeeModal.employeeName"
                                     maxlength="255"
+                                    @blur ="this.isShowValidity.emptyEmployeeName = true"
+                                    @click="this.isShowValidity.emptyEmployeeName = false"
                                 >
                                 <base-message-error :text="this.textEmployeeName"></base-message-error>
                             </div>
@@ -62,44 +68,64 @@
                                 <label class="modal__label">
                                     {{this.textDepartmentName}} <em>*</em>
                                 </label>
-                                <div class="modal__input--dropdown" 
+<!--                                 <div class="modal__input--dropdown" 
+
                                     @submit.prevent="onSubmit"
+                                    tabindex="1"
                                 >
                                     <input  class="input input--haveicon input--modal" type="text"
-                                        ref="DepartmentNameFocusing" 
+                                        ref="departmentFocusing" 
                                         v-model.trim="this.employeeModal.departmentName"
-                                        :class="{'input--error': this.isSubmited && !this.employeeModal.departmentName, 'input--focused': isShowDropdownDepartment}"
+                                        :class="{'input--error': this.isShowValidity.emptyDepartmentID && !this.employeeModal.departmentName, 'input--focused': isShowDropdownDepartment}"
                                         placeholder="Chọn đơn vị"
                                         maxlength="50"
+                                        @keydown="isShowDropdownDepartment = true"
+                                        @keydown.enter="isShowDropdownDepartment = !isShowDropdownDepartment"
+                                        @click ="this.isShowValidity.emptyDepartmentID = false"
+                                        @blur ="this.isShowValidity.emptyDepartmentID = true"
                                     >
                                     <base-message-error :text="this.textDepartmentName"></base-message-error>
-                                    <div class="item--caretdown"
+                                    <div class="item--caretdown" 
                                         tabindex="1"
-                                        @click="isShowDropdownDepartment = !isShowDropdownDepartment"
-                                        @blur="hideDropdownDepartment()"
+                                        @click="isShowDropdownDepartment = !isShowDropdownDepartment, this.isShowValidity.emptyDepartmentID = false"
+                                        @blur="hideDropdownDepartment(), this.isShowValidity.emptyDepartmentID = true"
                                     >
                                         <i class="icon icon--caretdown"
                                             :class="{'icon--caretdownRotate' : isShowDropdownDepartment}"
                                         ></i>
                                     </div>
-                                    <span class="dropdown dropdown--department" v-show="isShowDropdownDepartment">
+                                    <span class="dropdown dropdown--department" v-if="isShowDropdownDepartment">
                                         <ul class="dropdown__list">
                                             <li class="dropdown__item"
-                                                @click="selectDepartment()"
+                                                @click="selectDepartment(), isShowDropdownDepartment = true"
                                             > 
                                                 - {{ this.textDropdownNoChoice }} - 
                                             </li>
                                             <li class="dropdown__item"
-                                                v-for="department in this.departments"
-                                                :key="department"
+                                                v-for="(department) in this.departments"
+                                                :key="department.departmentName"
                                                 @click="selectDepartment(department)"
-                                                :class="{'dropdown__item--focus': checkDepartment(department)}"
+                                                :class="{'dropdown__item--selected': checkDepartmentSelected(department), 'dropdown__item--focused': checkDepartmentFocused(department)}"
                                             >
-                                                <p>{{ department.DepartmentName }} </p>  
+                                                <p>{{ department.departmentName }} </p>  
                                             </li>
                                         </ul>
                                     </span>
-                                </div>
+                                </div> -->
+                                <BCombobox
+                                    :url= "url.department"
+                                    propValue="departmentID"
+                                    propCode="departmentCode"
+                                    propText="departmentName"
+                                    :fieldName="this.textDepartmentName"
+                                    :propPlaceholder="this.placeholder.department"
+                                    :departmentID="employeeModal.departmentID" 
+                                    :baseValue="employeeModal.departmentName"
+                                    @getID = "employeeModal.departmentID = $event"
+                                    @getCode = "employeeModal.departmentCode = $event"
+                                    @getName = "employeeModal.departmentName = $event"
+                                >
+                                </BCombobox>
                             </div>
                         </div>
 
@@ -107,15 +133,15 @@
                         <div class="modal__line">
                             <div class="modal__item modal__item--fill">
                                 <label class="modal__label">
-                                    {{this.textPositionName}}
+                                    {{this.textJobPosition}}
                                 </label>
                                 <input 
                                     class="input input--modal" type="text"  
-                                    v-model.trim="this.employeeModal.positionName"
+                                    v-model.trim="this.employeeModal.jobPosition"
                                     placeholder=""
                                     maxlength="50"
                                 >
-                                <base-message-error :text="this.textPositionName"></base-message-error>
+                                <base-message-error :text="this.textJobPosition"></base-message-error>
                             </div>
                         </div>
                     </div>    
@@ -143,9 +169,9 @@
                                     {{this.textGender}}
                                 </label>
                                 <div class="modal__radio">
-                                    <input type="radio" v-model="this.employeeModal.gender" value="0"> <p>Nam</p>
-                                    <input type="radio" v-model="this.employeeModal.gender" value="1"> <p>Nữ</p>
-                                    <input type="radio" v-model="this.employeeModal.gender" value="2"> <p>Khác</p>
+                                    <input id="gender__male" type="radio" v-model="this.employeeModal.gender" value="0"> <label for="gender__male">Nam</label>
+                                    <input id="gender__female" type="radio" v-model="this.employeeModal.gender" value="1"> <label for="gender__female">Nữ</label>
+                                    <input id="gender__other" type="radio" v-model="this.employeeModal.gender" value="2"> <label for="gender__other">Khác</label>
                                 </div>
                             </div>
                         </div>
@@ -159,6 +185,8 @@
                                 <input 
                                     class="input input--haveicon input--modal" type="text"  
                                     v-model.trim="this.employeeModal.identityNumber"
+                                    @keydown="numbersOnly(event)"
+                                    @paste="formatIdentityNumber"
                                     placeholder=""
                                     maxlength="50"
                                 >
@@ -223,6 +251,7 @@
                             <input
                                 class="input input--modal input--174" type="text"  
                                 v-model.trim="this.employeeModal.phone"
+                                @keydown="numbersOnly(event)"
                                 placeholder=""
                                 maxlength="50"
                             >
@@ -231,15 +260,16 @@
 
                         <div class="modal__item">
                             <label class="modal__label" :data-title="textTooltip.fax">
-                                {{this.textContact}}
+                                {{this.textFax}}
                             </label>
                             <input
                                 class="input input--modal input--174" type="text"  
-                                v-model.trim="this.employeeModal.contact"
+                                v-model.trim="this.employeeModal.fax"
+                                @keydown="numbersOnly(event)"
                                 placeholder=""
                                 maxlength="50"
                             >
-                            <base-message-error :text="this.textContact"></base-message-error>
+                            <base-message-error :text="this.textFax"></base-message-error>
                         </div>
 
                         <div class="modal__item">
@@ -259,15 +289,16 @@
                     <div class="modal__line">
                         <div class="modal__item">
                             <label class="modal__label">
-                                {{this.textBankAccountNumber}}
+                                {{this.textBankNumber}}
                             </label>
                             <input
                                 class="input input--modal input--174" type="text"  
-                                v-model.trim="this.employeeModal.bankAccountNumber"
+                                v-model.trim="this.employeeModal.bankNumber"
+                                @keydown="numbersOnly(event)"
                                 placeholder=""
                                 maxlength="50"
                             >
-                            <base-message-error :text="this.textBankAccountNumber"></base-message-error>
+                            <base-message-error :text="this.textBankNumber"></base-message-error>
                         </div>
 
                         <div class="modal__item">
@@ -318,49 +349,74 @@
 
     <!-- Begin: Dialog validate dữ liệu -->
     <BDialog
-        v-show="this.isShowValidate"
-        @closeDialog="(this.isShowValidate = $event), this.errorMessage = ''"
+        v-show="this.isShowValidationDialog"
+        @closeDialog="(this.isShowValidationDialog = $event), this.errorMessage = ''"
     >
-        <template #title>
-            {{ this.textDialog.title.error }}
+        <template #icon>
+            <i class="icon icon--errorDialog"></i>
         </template>
 
         <template #message>
-            <p>{{this.errorMessage}}</p>
+            <p class="dialog__message--validate">{{this.errorMessage}}.</p>
         </template>
 
         <template #footer>
-            <div class="dialog__footer">
-                <div class="btn btn--dialog btn--red"
-                    @click="this.isShowValidate = false, this.errorMessage = ''"
+            <div class="dialog__footer dialog__footer--error">
+                <div class="btn btn--dialog"
+                    @click="closeValidationDialog()"
                 >{{ this.textFunctionClose }}</div>
             </div>
         </template>
     </BDialog>
     <!-- End: Dialog validate dữ liệu -->
 
+    <!-- Begin: Dialog check mã trùng -->
+    <BDialog
+        v-show="this.isShowValidationDialogBackend"
+        @closeDialog="(this.isShowValidationDialogBackend = $event), this.errorMessage = ''"
+    >
+        <template #icon>
+            <i class="icon icon--warningDialog"></i>
+        </template>
+
+        <template #message>
+            <p class="dialog__message--validate">{{this.errorMessage}}.</p>
+        </template>
+
+        <template #footer>
+            <div class="dialog__footer dialog__footer--warning">
+                <div class="btn btn--dialog"
+                    @click="closeValidationDialog()"
+                >{{ this.textFunctionAccept }}</div>
+            </div>
+        </template>
+    </BDialog>
+    <!-- End: Dialog check mã trùng -->
+
     <!-- Begin: Dialog click icon đóng modal -->
     <BDialog
         v-show="this.isShowCloseDialog"
         @closeDialog="(closeModal($event))"
     >
-        <template #title>
-            {{ this.textDialog.title.change }}
+        <template #icon>
+            <i class="icon icon--questionDialog"></i>
         </template>
 
         <template #message>
-            <p>{{this.textDialog.text.save}}</p>
+            <p class="dialog__message--question">{{this.textDialog.title.change + " " + this.textDialog.text.save}}</p>
         </template>
 
         <template #footer>
             <div class="dialog__footer">
-                <div class="btn btn--dialog"
-                    @click="onSubmit(), closeModal(false)"
-                >{{ this.textDialog.yes }}</div>
+                <div class="dialog__footer--right">
+                    <div class="btn btn--dialog margin__left--8"
+                        @click="onSubmit(), closeModal(false)"
+                    >{{ this.textDialog.yes }}</div>
 
-                <div class="btn btn--dialog btn--outline"
-                    @click="closeModal(true)"
-                >{{ this.textDialog.no }}</div>
+                    <div class="btn btn--dialog btn--outline"
+                        @click="closeModal(true)"
+                    >{{ this.textDialog.no }}</div>
+                </div>
 
                 <div class="btn btn--dialog btn--outline"
                     @click="closeModal(false)"
@@ -380,14 +436,18 @@
         </template>
     </BToast>
     <!-- End: Toast thông báo -->
+
 </template>
 
 <script>
 import axios from "axios";
 import moment from 'moment'
+import Enum from "@/lib/enum";
 import Resource from "@/lib/resource";
 import BDialog from "@/components/base/dialog/BDialog.vue";
 import BToast from "@/components/base/toast/BToast.vue";
+import BLoading from '@/components/base/loading/BLoading.vue'
+import BCombobox from "@/components/base/combobox/BCombobox.vue";
 import useValidate from '@vuelidate/core';
 import {required} from '@vuelidate/validators';
 import BaseMessageError from "@/components/base/message/BaseMessageError.vue";
@@ -397,7 +457,9 @@ export default {
     components: {
         BaseMessageError,
         BDialog,
-        BToast
+        BToast,
+        BLoading,
+        BCombobox,
     },
 
     props: [
@@ -429,25 +491,25 @@ export default {
 
         if(me.$parent.updateFunction) {
             me.titleModal = me.textUpdateModal;
-            me.employeeModal.employeeID = me.$parent.employeeFocused.EmployeeId;
-            me.employeeModal.employeeCode = me.$parent.employeeFocused.EmployeeCode;
-            me.employeeModal.employeeName = me.$parent.employeeFocused.EmployeeName;
-            me.employeeModal.departmentID = me.$parent.employeeFocused.DepartmentId;
-            me.employeeModal.departmentCode = me.$parent.employeeFocused.DepartmentCode;
-            me.employeeModal.departmentName = me.$parent.employeeFocused.DepartmentName;
-            me.employeeModal.positionName = me.$parent.employeeFocused.PositionName;
-            me.employeeModal.dateOfBirth = this.formatDate(me.$parent.employeeFocused.DateOfBirth);
-            me.employeeModal.gender = me.$parent.employeeFocused.Gender;
-            me.employeeModal.identityNumber = me.$parent.employeeFocused.IdentityNumber;
-            me.employeeModal.identityDate = this.formatDate(me.$parent.employeeFocused.IdentityDate);
-            me.employeeModal.identityPlace = me.$parent.employeeFocused.IdentityPlace;
-            me.employeeModal.address = me.$parent.employeeFocused.Address;
-            me.employeeModal.phone = me.$parent.employeeFocused.PhoneNumber;
-            me.employeeModal.contact = me.$parent.employeeFocused.Contact;
-            me.employeeModal.email = me.$parent.employeeFocused.Email;
-            me.employeeModal.bankAccountNumber = me.$parent.employeeFocused.BankAccountNumber;
-            me.employeeModal.bankName = me.$parent.employeeFocused.BankName;
-            me.employeeModal.bankBranch = me.$parent.employeeFocused.BankBranch;
+            me.employeeModal.employeeID = me.$parent.employeeFocused.employeeID;
+            me.employeeModal.employeeCode = me.$parent.employeeFocused.employeeCode;
+            me.employeeModal.employeeName = me.$parent.employeeFocused.employeeName;
+            me.employeeModal.departmentID = me.$parent.employeeFocused.departmentID;
+            me.employeeModal.departmentCode = me.$parent.employeeFocused.departmentCode;
+            me.employeeModal.departmentName = me.$parent.employeeFocused.departmentName;
+            me.employeeModal.jobPosition = me.$parent.employeeFocused.jobPosition;
+            me.employeeModal.dateOfBirth = this.formatDate(me.$parent.employeeFocused.dateOfBirth);
+            me.employeeModal.gender = me.$parent.employeeFocused.gender;
+            me.employeeModal.identityNumber = me.$parent.employeeFocused.identityNumber;
+            me.employeeModal.identityDate = this.formatDate(me.$parent.employeeFocused.identityDate);
+            me.employeeModal.identityPlace = me.$parent.employeeFocused.identityPlace;
+            me.employeeModal.address = me.$parent.employeeFocused.address;
+            me.employeeModal.phone = me.$parent.employeeFocused.phone;
+            me.employeeModal.fax = me.$parent.employeeFocused.fax;
+            me.employeeModal.email = me.$parent.employeeFocused.email;
+            me.employeeModal.bankNumber = me.$parent.employeeFocused.bankNumber;
+            me.employeeModal.bankName = me.$parent.employeeFocused.bankName;
+            me.employeeModal.bankBranch = me.$parent.employeeFocused.bankBranch;
         } else {
             me.getNewEmployeeCode();
         }
@@ -492,29 +554,30 @@ export default {
         */
         apiInsertEmployee() {
             let me = this;
+            me.isShowLoadingModal = true;
             try {
                 axios
                 .post(Resource.Url.Employees, {
                     "employeeCode": me.employeeModal.employeeCode,
                     "employeeName": me.employeeModal.employeeName,
+                    "departmentID": me.employeeModal.departmentID,
+                    "jobPosition": me.employeeModal.jobPosition,
+                    "dateOfBirth": me.employeeModal.dateOfBirth == '' ? null : me.employeeModal.dateOfBirth,
                     "gender": me.employeeModal.gender,
-                    "dateOfBirth": me.employeeModal.dateOfBirth,
-                    "phoneNumber": me.employeeModal.phoneNumber,
+                    "phone": me.employeeModal.phoneNumber,
                     "email": me.employeeModal.email,
                     "address": me.employeeModal.address,
+                    "fax": me.employeeModal.fax,
                     "identityNumber": me.employeeModal.identityNumber,
-                    "identityDate": me.employeeModal.identityDate,
+                    "identityDate": me.employeeModal.identityDate == '' ? null : me.employeeModal.identityDate,
                     "identityPlace": me.employeeModal.identityPlace,
-                    "departmentId": me.employeeModal.departmentID,
-                    "telephoneNumber": me.employeeModal.phone,
-                    "bankAccountNumber": me.employeeModal.bankNumber,
+                    "bankNumber": me.employeeModal.bankNumber,
                     "bankName": me.employeeModal.bankName,
-                    "bankBranchName": me.employeeModal.bankBranch,
-                    "employeePosition": me.employeeModal.jobPosition,
-                    "departmentCode": "string",
-                    "departmentName": "string",
-                    "createdDate": "2022-12-22T09:53:59.901Z",
-                    "createdBy": "string",
+                    "bankBranch": me.employeeModal.bankBranch,
+                    "createdDate": new Date(),
+                    "createdBy": this.author,
+                    "modifiedDate": new Date(),
+                    "modifiedBy": this.author,
                 })
                 .then(() => {
                     /* Close modal */
@@ -527,14 +590,14 @@ export default {
                         me.$emit('showSuccessToast');
                         me.$emit('closeModal', false);
                     } 
+                    
+                    me.isShowLoadingModal = false;
                     me.showSuccessToast();
                 })
                 .catch((error) => {
-                    var res = error.response;
-                    console.log(res.data);
-                    me.errorMessage += res.data.userMsg;
-                    me.isShowValidate = true;
-                    
+                    console.log("error", error);
+                    me.validateBackend(error.response);
+                    me.isShowLoadingModal = false;
                 });
             } catch (error) {
                 console.log(error);
@@ -549,29 +612,29 @@ export default {
         */
         apiUpdateEmployee() {
             let me = this;
+            me.isShowLoadingModal = true;
+
             try {                                       
                 axios
                 .put(`${Resource.Url.Employees}/${me.employeeModal.employeeID}`, {
                     "employeeCode": me.employeeModal.employeeCode,
                     "employeeName": me.employeeModal.employeeName,
+                    "departmentID": me.employeeModal.departmentID,
+                    "jobPosition": me.employeeModal.jobPosition,
+                    "dateOfBirth": me.employeeModal.dateOfBirth == '' ? null : me.employeeModal.dateOfBirth,
                     "gender": me.employeeModal.gender,
-                    "dateOfBirth": me.employeeModal.dateOfBirth,
-                    "phoneNumber": me.employeeModal.phoneNumber,
+                    "phone": me.employeeModal.phone,
                     "email": me.employeeModal.email,
                     "address": me.employeeModal.address,
+                    "fax": me.employeeModal.fax,
                     "identityNumber": me.employeeModal.identityNumber,
-                    "identityDate": me.employeeModal.identityDate,
+                    "identityDate": me.employeeModal.identityDate == '' ? null : me.employeeModal.identityDate,
                     "identityPlace": me.employeeModal.identityPlace,
-                    "departmentId": me.employeeModal.departmentID,
-                    "telephoneNumber": me.employeeModal.phone,
-                    "bankAccountNumber": me.employeeModal.bankNumber,
+                    "bankNumber": me.employeeModal.bankNumber,
                     "bankName": me.employeeModal.bankName,
-                    "bankBranchName": me.employeeModal.bankBranch,
-                    "employeePosition": me.employeeModal.jobPosition,
-                    "departmentCode": "string",
-                    "departmentName": "string",
-                    "modifiedDate": "2022-12-22T09:53:59.901Z",
-                    "modifiedBy": me.author,
+                    "bankBranch": me.employeeModal.bankBranch,
+                    "modifiedDate": new Date(),
+                    "modifiedBy": this.author,
                 })
                 .then(() => {
                     me.$parent.loadAPI();
@@ -582,13 +645,14 @@ export default {
                         me.$emit('showSuccessToast');
                         me.$emit('closeModal', false);
                     } 
+
+                    me.isShowLoadingModal = false;
                     me.showSuccessToast();
                 })
                 .catch((error) => {
-                    var res = error.response;
-                    console.log(res.data);
-                    me.errorMessage += res.data.userMsg;
-                    me.isShowValidate = true;
+                    console.log(error);
+                    me.validateBackend(error.response);
+                    me.isShowLoadingModal = false;
                 });
             } catch (error) {
                 console.log(error);
@@ -605,10 +669,10 @@ export default {
             let me = this;
             try {
                 axios
-                .get(`${Resource.Url.Employees}/NewEmployeeCode`)
+                .get(`${Resource.Url.Employees}/NewCode`)
                 .then((resource) => {
                     me.employeeModal.employeeCode = resource.data;
-                    console.log('resset code');
+                    console.log('resset code', resource);
                 })
                 .catch((error) => {
                     console.log('error: ', error.status);
@@ -685,29 +749,60 @@ export default {
             Date: 10/12/2022 
         */
         selectDepartment(department) {
+            let me = this;
+
             if(department) {
-                this.employeeModal.departmentName = department.DepartmentName;
-                this.employeeModal.departmentID = department.DepartmentId;
-                this.employeeModal.departmentCode = department.DepartmentCode;
+                me.employeeModal.departmentName = department.departmentName;
+                me.employeeModal.departmentID = department.departmentID;
+                me.employeeModal.departmentCode = department.departmentCode;
             } else {
-                this.employeeModal.departmentName = '';
-                this.employeeModal.departmentID = '';
-                this.employeeModal.departmentCode = '';
+                me.employeeModal.departmentName = '';
+                me.employeeModal.departmentID = '';
+                me.employeeModal.departmentCode = '';
             }
 
+            me.$refs.departmentFocusing.focus();
         },
 
-        /* Kiểm tra đơn vị
+        /* Kiểm tra đơn vị được chọn
             @param {}
             @returns void
             Author: Tuan 
             Date: 10/12/2022 
         */
-        checkDepartment(department) {
-            if(department.Department == this.employeeModal.departmentName) {
+        checkDepartmentSelected(department) {
+            if(department.departmentID == this.employeeModal.departmentID) {
                 return true;
             }
             return false;
+        },
+
+        /* Get department
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
+        getDepartmentID(departmentID) {
+            try {
+                this.employeeModal.departmentID = departmentID;
+                this.isShowValidity.emptyDepartmentID = false;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        /**
+         * set dữ liệu department
+         * Author: QuangNV (19/12/2022)
+         */
+        departmentGetValue(departmentValue) {
+        try {
+            this.employee.DepartmentId = departmentValue;
+            this.isDepartmentErr = false;
+        } catch (error) {
+            console.log(error);
+        }
         },
 
         /* Tab rollback về mã tài sản
@@ -782,12 +877,18 @@ export default {
             me.isSubmited = false;
 
             me.getNewEmployeeCode();
+
+            me.isShowValidity.emptyDepartmentID = false;
+            me.isShowValidity.emptyEmployeeCode = false;
+            me.isShowValidity.emptyEmployeeName = false;
+            me.isShowValidity.invalidEmail = false;
+
             me.employeeModal.employeeID = '';
             me.employeeModal.employeeName = '';
             me.employeeModal.departmentID = '';
             me.employeeModal.departmentCode = '';
             me.employeeModal.departmentName = '';
-            me.employeeModal.positionName = '';
+            me.employeeModal.jobPosition = '';
             me.employeeModal.dateOfBirth = '';
             me.employeeModal.gender = 0;
             me.employeeModal.identityNumber = '';
@@ -795,9 +896,9 @@ export default {
             me.employeeModal.identityPlace = '';
             me.employeeModal.address = '';
             me.employeeModal.phone = '';
-            me.employeeModal.contact = '';
+            me.employeeModal.fax = '';
             me.employeeModal.email = '';
-            me.employeeModal.bankAccountNumber = '';
+            me.employeeModal.bankNumber = '';
             me.employeeModal.bankName = '';
             me.employeeModal.bankBranch = '';
         },
@@ -827,6 +928,24 @@ export default {
             }
         },
 
+        /* ngăn ngừa paste chữ
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 24/12/2022 
+        */
+        preventText(value) {
+            let pattern = /[0-9]/g;
+            if(pattern.test(value))
+                return value;
+            
+           /*  value.replace(pattern, ''); */
+            
+            return '';
+                    
+
+        },
+
         /* handler key number
             @param {}
             @returns void
@@ -842,7 +961,7 @@ export default {
 
             // Handle paste
             if (theEvent.type === "paste") {
-                key = event.clipboardData.getData("text/plain");
+                key = evt.clipboardData.getData("text/plain");
             } else {
                 // Handle key press
                 var key = theEvent.keyCode || theEvent.which;
@@ -854,25 +973,40 @@ export default {
             }
         },
 
-        /* Input type="text" chỉ viết số
+        /* handler key number
             @param {}
             @returns void
             Author: Tuan 
             Date: 10/12/2022 
-        */  
-        numbersOnly(evt) {
-            evt = (evt) ? evt : window.event;
-            var charCode = (evt.which) ? evt.which : evt.keyCode;
+         */
+        numbersOnly(e) {
+            e = (e) ? e : window.event;
+            var charCode = (e.which) ? e.which : e.keyCode;
             if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-                evt.preventDefault();
+                e.preventDefault();
             } else {
                 return true;
             }
-        },
 
+/*             var keyCode = (e.keyCode ? e.keyCode : e.which);
+            if (keyCode > 47 && keyCode < 58 || keyCode > 95 && keyCode < 107) {
+                e.preventDefault();
+            } */
+        },
         //#endregion Modal format data
 
         //#region Modal validate form
+        /* Tạo thông điệp cho cảnh báo mã nhân viên không được để trống
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */ 
+        emptyEmployeeCodeMessage() {
+            if (!this.employeeModal.employeeCode) 
+                return true;
+            return false;
+        },
 
         /* Tạo thông điệp cho cảnh báo hiện nhiều lỗi
             @param {}
@@ -900,19 +1034,80 @@ export default {
             me.v$.$validate()
             if (me.v$.$error) {
                 if (this.v$.employeeModal.employeeCode.$error) {
-                    me.errorMessage += this.textErrorMessage.EmptyCode;
-                    me.$nextTick(() => me.$refs.employeeCodeFocusing.focus());
+                    me.errorMessage += this.textErrorMessage.emptyCode;
                 } else if (me.v$.employeeModal.employeeName.$error) {
-                    me.errorMessage = this.textErrorMessage.EmptyName;
+                    me.errorMessage = this.textErrorMessage.emptyName;
                 } else if (me.v$.employeeModal.departmentName.$error) {
-                    me.errorMessage = this.textErrorMessage.EmptyDepartmentName;
+                    me.errorMessage = this.textErrorMessage.emptyDepartmentName;
                 }
-                me.isShowValidate = true;
+                me.isShowValidationDialog = true;
                 return false;
             } else {
                 return true;
             } 
         },
+
+                /* Validate dữ liệu truyền vào
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
+        validateBackend(response) {
+            let me = this;
+            if (response.status == Enum.StatusCode.BADREQUEST) {
+                if (response.data.errorCode == Enum.ErrorCode.DUPLICATE_CODE) {
+                    me.errorMessage = me.textErrorMessage.employeeCode +  ' <' + me.employeeModal.employeeCode + '> ' + me.textErrorMessage.duplicateCode;
+                }
+
+                me.isShowValidationDialogBackend = true;    
+            } 
+        },
+
+        /* Focus ô input đầu tiên trả về lỗi
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
+        focusInvalidFirst() {
+            let me = this;
+
+            if (me.errorMessage == me.textErrorMessage.emptyCode) {
+                me.$refs.employeeCodeFocusing.focus();
+                me.isShowValidity.emptyEmployeeCode = false;
+            }
+            if (me.errorMessage == me.textErrorMessage.emptyName) {
+                me.$refs.employeeNameFocusing.focus();
+                me.isShowValidity.emptyEmployeeName = false;
+            }
+            if (me.errorMessage == me.textErrorMessage.emptyDepartmentName) {
+                me.$refs.departmentFocusing.focus();
+                me.isShowValidity.emptyDepartmentID = false;
+            }
+        },
+
+        /* Đóng dialog validate input
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 11/1/2023 
+        */
+        closeValidationDialog() {
+            let me = this;
+
+            me.isShowValidationDialog = false;
+            me.isShowValidationDialogBackend = false;
+
+            me.isShowValidity.emptyDepartmentID = true;
+            me.isShowValidity.emptyEmployeeCode = true;
+            me.isShowValidity.emptyEmployeeName = true;
+            me.isShowValidity.invalidEmail = true;
+
+            me.focusInvalidFirst();
+
+            me.errorMessage = '';
+        }
         //#endregion Modal validate input
     },
 
@@ -928,8 +1123,8 @@ export default {
     data() {
         return {
             //#region Dialog 
-            isShowValidate: false, // Hiển thị dialog cảnh báo lỗi validate 
-
+            isShowValidationDialog: false, // Hiển thị dialog cảnh báo lỗi validate 
+            isShowValidationDialogBackend: false, // Hiển thị dialog cảnh báo lỗi phía backend
             errorMessage: "", // Thông điệp hiện trong dialog cảnh báo lỗi validate
             //#endregion
 
@@ -954,7 +1149,7 @@ export default {
                 identityPlace: "",
                 address: "",
                 phone: "",
-                contact: "",
+                fax: "",
                 email: "",
                 bankNumber: "",
                 bankName: "",
@@ -962,15 +1157,25 @@ export default {
             },
             employeeCodeUpdate: '',
 
-            Departments: [], // Danh sách đơn vị
+            departments: [], // Danh sách đơn vị
+            departmentFocused: null, // Đơn vị được focus
 
+            isShowValidity: { // Cảnh báo lỗi các trường nhập liệu dùng cho BaseMessageError
+                emptyEmployeeCode: false,
+                emptyEmployeeName: false,
+                emptyDepartmentID: false,
+                invalidEmail: false,
+            },
+            url: {
+                department: Resource.Url.Departments,
+                employee: Resource.Url.Employees,
+            },
             notifyShow: false, // Có hiển thị dialog cảnh báo hay không
             heightAlertValidate: 1,
             errorArray: [], // Dãy chứa các lỗi validate
             validateProShow: false, // Có hiển thị dialog cảnh báo lỗi validate nghiệp vụ hay không
-            validateBackendShow: false,
             hasError: false,
-            displayModal: false, /* Hiển thị modal */
+            isShowLoadingModal: false,
             isShowCloseDialog: false, /* Hiển thị cảnh báo khi huỷ*/
             textExceptionMsg: "", // Thông điệp trong cảnh báo lỗi backend
             backendError: false, // Có hiển thị dialog cảnh báo lỗi từ backend không
@@ -991,13 +1196,13 @@ export default {
             textDepartmentName: Resource.TextVi.Modal.DepartmentName,
             textIdentityNumber: Resource.TextVi.Modal.IdentityNumber,
             textIdentityDate: Resource.TextVi.Modal.IdentityDate,
-            textPositionName: Resource.TextVi.Modal.PositionName,
+            textJobPosition: Resource.TextVi.Modal.JobPosition,
             textIdentityPlace: Resource.TextVi.Modal.IdentityPlace,
             textAddress: Resource.TextVi.Modal.Address,
             textPhone: Resource.TextVi.Modal.Phone,
-            textContact: Resource.TextVi.Modal.Contact,
+            textFax: Resource.TextVi.Modal.Fax,
             textEmail: Resource.TextVi.Modal.Email,
-            textBankAccountNumber: Resource.TextVi.Modal.BankAccountNumber,
+            textBankNumber: Resource.TextVi.Modal.BankNumber,
             textBankName: Resource.TextVi.Modal.BankName,
             textBankBranch: Resource.TextVi.Modal.BankBranch,
             //#endregion Tên title và các label
@@ -1024,9 +1229,11 @@ export default {
             //#endregion Data Modal
 
             textErrorMessage: { // Nội dung mã lỗi
-                EmptyCode: Resource.TextVi.ErrorMessage.EmptyCode,
-                EmptyName: Resource.TextVi.ErrorMessage.EmptyName,
-                EmptyDepartmentName: Resource.TextVi.ErrorMessage.EmptyDepartmentName,
+                emptyCode: Resource.TextVi.ErrorMessage.EmptyCode,
+                emptyName: Resource.TextVi.ErrorMessage.EmptyName,
+                emptyDepartmentName: Resource.TextVi.ErrorMessage.EmptyDepartmentName,
+                duplicateCode: Resource.TextVi.ErrorMessage.DuplicateCode,
+                employeeCode: Resource.TextVi.ErrorMessage.EmployeeCode,
             },
 
             textToastMessage: { // Nội dung Toast
@@ -1062,7 +1269,8 @@ export default {
             },
 
             placeholder : {
-                address: "VD: Số 82 Duy Tân, Dịch Vọng, Cầu Giấy, Hà Nội",
+                address: Resource.TextVi.Modal.Placeholder.Address,
+                department: Resource.TextVi.Modal.Placeholder.Department,
             },
 
             /* Một số thông tin khác */
@@ -1079,6 +1287,26 @@ export default {
     },
 
     computed: {
+        /* Thực hiện format trường số
+            Object
+            Author: Tuan 
+            Date: 30/10/2022 
+        */
+        formatIdentityNumber: {
+            get: function() {
+                return this.employeeModal.identityNumber;
+            },
+            
+            set: function(number) {
+                var num = number;
+                
+                num = this.preventText(num);
+                num = "abc";
+                
+                this.employeeModal.identityNumber = num;
+            }
+        },
+
         /* Thực hiện format trường Số lượng
             Object
             Author: Tuan 
@@ -1093,86 +1321,6 @@ export default {
             set: function(number) {
                 number = this.formatNum(number);
                 this.employeeModal.quantity = number;
-            }
-        },
-
-        /* Thực hiện format trường Nguyên giá đồng thời tính lại giá trị hao mòn năm
-            Object
-            Author: Tuan 
-            Date: 30/10/2022 
-        */
-        costFormat: {
-            get: function() {
-                if (this.employeeModal.cost == null || this.employeeModal.cost == 0 || this.employeeModal.cost == "") return 0;
-                return this.formatCurrency(parseInt(this.employeeModal.cost));
-            },
-                // setter
-            set: function(number) {
-                number = this.formatNum(number);
-                if (number != 0 && number != null && number != '') {
-                    this.employeeModal.cost = number;
-                    this.employeeModal.depreciation = (this.employeeModal.depreciationRate*0.01 * this.employeeModal.cost);
-                    this.employeeModal.depreciation = Math.floor(this.employeeModal.depreciation);
-                } else {
-                    this.employeeModal.cost = '';
-                }
-            }
-        },
-
-        /* Thực hiện format số năm sử dụng
-            Object
-            Author: Tuan 
-            Date: 30/10/2022 
-        */
-        lifeTimeFormat: {
-            get: function() {
-                if (this.employeeModal.lifeTime == null || this.employeeModal.lifeTime == 0 || this.employeeModal.lifeTime == "" || this.employeeModal.lifeTime == Infinity) return 0;
-                return this.formatCurrency(parseInt(this.employeeModal.lifeTime));
-
-            },
-            set: function(number) {
-                number = this.formatNum(number);
-                if (number == null || number == 0 || number == "" || number == Infinity) {
-                    this.employeeModal.lifeTime = '';
-                    this.employeeModal.depreciationRate = '';
-                } else {
-                    this.employeeModal.lifeTime = number;
-                    this.employeeModal.depreciationRate = (100 / number).toFixed(2);
-                    this.employeeModal.depreciation = (parseFloat(this.employeeModal.depreciationRate)*0.01 * this.employeeModal.cost);
-                    this.employeeModal.depreciation = Math.floor(this.employeeModal.depreciation);
-                }
-            }
-        },
-
-        /* Thực hiện format tỷ lệ hao mòn đồng thời tính lại giá trị hao mòn năm
-            Object
-            Author: Tuan 
-            Date: 30/10/2022 
-        */
-        depreciationRateFormat: {
-            get: function() {
-                let rate = this.employeeModal.depreciationRate;
-                if (rate == null || rate == '0' || rate == "") 
-                    return "00,00";     
-                return this.formatDecimal(rate);
-            },
-
-            set: function(number) {
-                let tmp = number;
-                tmp = tmp.replaceAll(',', '.');
-                if (tmp == null || tmp == '' || tmp == 0) {
-                    this.employeeModal.depreciationRate = 0;
-                    this.employeeModal.lifeTime = 0;
-                    this.employeeModal.depreciation = 0;
-                } else if (isNaN(this.employeeModal.lifeTime) || isNaN(tmp)) {
-                    this.employeeModal.lifeTime = 0;
-                    this.employeeModal.depreciation = 0;
-                } else {
-                    this.employeeModal.depreciationRate =  tmp;
-                    this.employeeModal.depreciation = (parseFloat(tmp)*0.01 * this.employeeModal.cost);
-                    this.employeeModal.depreciation = Math.floor(this.employeeModal.depreciation);
-                    this.employeeModal.lifeTime = Math.floor((100 / tmp));
-                }
             }
         },
         

@@ -9,7 +9,8 @@ export default {
         Edit: 2,
         Delete: 3,
     },
-    StatusCode:{
+
+    StatusCode: {
         OK: 200, //Trả về thành công cho những phương thức GET, PUT, PATCH hoặc DELETE.
         CREATED: 201, //Trả về khi một Resouce vừa được tạo thành công.
         NOCONTENT: 204, //Trả về khi Resource xoá thành công.
@@ -24,5 +25,9 @@ export default {
         UNPROCESSABLEENTITY: 422, //Dữ liệu không được xác thực.
         TOOMANYREQUEST: 429, //Request bị từ chối do bị giới hạn
         NTERNALSERVERERROR: 500, //Máy chủ bị lỗi.
+    },
+
+    ErrorCode: {
+        DUPLICATE_CODE: 1062, // Trùng mã
     },
 }

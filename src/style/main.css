@@ -37,7 +37,7 @@
 
 [data-title]:hover:after {
     opacity: 0.9;
-    transition: all 0.1s ease 0.5s;
+    transition: all 0.1s ease 0.1s;
     visibility: visible;
 
 }
@@ -67,3 +67,6 @@
     position: relative;
 }
 
+label::selection {
+    background-color: #fff;
+}

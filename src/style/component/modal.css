@@ -65,7 +65,7 @@
     padding: 0 20px;
 }
 
-.modal__checkbox p {
+.modal__checkbox label {
     padding-left: 10px;
 }
 
@@ -123,7 +123,7 @@
     top: -4px;
 }
 
-.modal__item--gender .modal__radio p {
+.modal__item--gender .modal__radio label {
     padding-left: 8px;
     margin-right: 16px;
 }

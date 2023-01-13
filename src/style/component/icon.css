@@ -235,6 +235,12 @@
     height: 48px;
 }
 
+.icon--questionDialog {
+	background-position: -826px -456px;
+	width: 48px;
+    height: 48px;
+}
+
 .icon--closeDialog {
 	background: url(../../assets/icons/close.svg) no-repeat -6px -6px;
 	width: 12px;

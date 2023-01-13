@@ -14,3 +14,8 @@ BEGIN
   FROM Employee e 
   WHERE FIND_IN_SET(e.EmployeeID, $Result);
 END
+
+  DELETE FROM employee 
+  WHERE e.EmployeeID IN (SELECT es.EmployeeID 
+                        FROM employee es
+                        WHERE FIND_IN_SET(es.EmployeeID, $Result));

@@ -1,5 +1,5 @@
 :root {
-    --dialogContent-color: #1F1F1F;
+    --dialogContent-color: #111;
 }
 @keyframes popFromCenter {
     0% {
@@ -8,7 +8,8 @@
     }
 
     80% {
-    transform: scale(1.08);
+    opacity: 1;
+    transform: scale(1.1);
     }
 
     100% {
@@ -35,13 +36,13 @@
     background-color: #fff;
     box-shadow: 0 4px 16px rgba(23,27,42,0.078);
     border-radius: 3px;
-    width: 416px;
-    min-width: 416px;
-    padding: 24px;
+    min-width: 444px;
+    max-width: 444px;
+    padding: 32px;
     display:  flex;
     flex-direction: column;
     justify-content: space-between;
-    animation: popFromCenter 300ms ease-in-out forwards;
+    animation: popFromCenter 200ms ease-in-out forwards;
 }
 
 .dialog__close {
@@ -55,7 +56,8 @@
 }
 
 .dialog__body {
-
+    display: flex;
+    align-items: flex-start;
 }
 
 .dialog__title {
@@ -67,25 +69,53 @@
 }
 
 .dialog__message {
-    overflow:unset;
+    overflow: unset;
     max-height: 400px;
-    min-height: 17px;
-    margin: 24px 0;
-    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 32px;
+    padding-left: 16px;
+    padding-top: 6px;
     color: var(--dialogContent-color);
+}
+
+.dialog__message--question {
+    padding-top: 4px;
+}
+
+.dialog__message--validate {
+    padding-top: 4px;
 }
 
 .dialog__footer {
     display: flex;
     flex-direction: row-reverse;
+    justify-content: space-between;
+    padding-top: 20px;
+    border-top: #b8bcc3 1px solid;
+}
+
+.dialog__footer--error {
+    justify-content: center;
+}
+
+.dialog__footer--warning {
+    justify-content: flex-start;
 }
 
 .dialog__footer .btn--dialog {
-    margin-left: 8px;
-    min-width: 80px;
     height: 36px;
+    min-width: 60px;
 }
 
 .dialog__footer--1button {
     justify-content: center;
+}
+
+.dialog__footer--right {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.margin__left--8 {
+    margin-left: 8px;
 }

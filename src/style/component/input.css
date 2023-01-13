@@ -45,7 +45,8 @@
     pointer-events: none;
 }
 
-.input--error {
+.input--error,
+.input--error:hover {
     border: 1px solid #ed4337;
 }
 

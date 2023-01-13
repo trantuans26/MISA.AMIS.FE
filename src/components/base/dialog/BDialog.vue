@@ -1,33 +1,33 @@
 <template>
     <div class="dialog">
         <div class="dialog__box">
-            <div class="dialog__close"
+<!--             <div class="dialog__close"
                 @click="this.$emit('closeDialog', false)"
             >
                 <i class="icon icon--closeDialog"></i>
-            </div>
+            </div> -->
 
             <div class="dialog__body">
-                <div class="dialog__title">
-                    <slot name="title">
-                        {{ this.textDialog.title.delete }}
+                <div class="dialog__icon">
+                    <slot name="icon">
+                        <i class="icon icon--warningDialog"></i>
                     </slot>
                 </div>
                 <div class="dialog__message">
                     <slot name="message">
-                        {{ this.textEmployee + ' &#60;' + message + '&#62; ' + this.textAfter}}
+                        {{ this.textEmployee + ' <' + message + '> ' + this.textAfter}}
                     </slot>
                 </div>
             </div>
 
             <slot name="footer">
                 <div class="dialog__footer">
-                    <div class="btn btn--dialog btn--red"
+                    <div class="btn btn--dialog"
                         @click="this.$emit('closeDialog', false), this.$emit('deleteEmployee')"
-                    >{{ textDialog.delete }}</div>
+                    >{{ textDialog.yes }}</div>
                     <div class="btn btn--outline btn--dialog"
                         @click="this.$emit('closeDialog', false)"
-                    >{{ textDialog.cancel }}</div>
+                    >{{ textDialog.no }}</div>
                 </div>
             </slot>
         </div>
@@ -63,6 +63,8 @@ export default {
             show: false,
 
             textDialog: {
+                yes: Resource.TextVi.Dialog.Yes,
+                no: Resource.TextVi.Dialog.No,
                 close: Resource.TextVi.Dialog.Close,
                 save: Resource.TextVi.Dialog.Save,
                 cancel: Resource.TextVi.Dialog.Cancel,

@@ -1,11 +1,17 @@
 <template>
-  <div class="loading" >
+  <div class="loading" :class="loadingClass">
       <div class="loader icon icon--loader"></div>
   </div>
 </template>
 
 
 <script>
+
+export default {
+  props: [
+    'loadingClass',
+  ],
+}
 
 </script>
 
@@ -27,7 +33,11 @@
 }
 
 .loading--table {
-  background-color: rgba(0, 0, 0, 0.01);
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.loading--modal {
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
 .loader {
