@@ -9,6 +9,7 @@
       @keydown="selectItemUpDown" 
       :placeholder="propPlaceholder"
       @click="isRequired = false"
+      @keydown.enter="isShowListData = !isShowListData"
       />
     <base-message-error :text="fieldName"></base-message-error>
 
@@ -22,7 +23,8 @@
         :class="{'icon--caretdownRotate' : isShowListData}"
       ></i>
     </button>
-    <div v-show="isShowListData" class="combobox__data" 
+    <div class="combobox__data" 
+      v-show="isShowListData" 
       ref="combobox__data" 
       v-clickoutside="hideListData"
     >

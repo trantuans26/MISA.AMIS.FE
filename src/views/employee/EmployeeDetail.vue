@@ -68,50 +68,7 @@
                                 <label class="modal__label">
                                     {{this.textDepartmentName}} <em>*</em>
                                 </label>
-<!--                                 <div class="modal__input--dropdown" 
-
-                                    @submit.prevent="onSubmit"
-                                    tabindex="1"
-                                >
-                                    <input  class="input input--haveicon input--modal" type="text"
-                                        ref="departmentFocusing" 
-                                        v-model.trim="this.employeeModal.departmentName"
-                                        :class="{'input--error': this.isShowValidity.emptyDepartmentID && !this.employeeModal.departmentName, 'input--focused': isShowDropdownDepartment}"
-                                        placeholder="Chọn đơn vị"
-                                        maxlength="50"
-                                        @keydown="isShowDropdownDepartment = true"
-                                        @keydown.enter="isShowDropdownDepartment = !isShowDropdownDepartment"
-                                        @click ="this.isShowValidity.emptyDepartmentID = false"
-                                        @blur ="this.isShowValidity.emptyDepartmentID = true"
-                                    >
-                                    <base-message-error :text="this.textDepartmentName"></base-message-error>
-                                    <div class="item--caretdown" 
-                                        tabindex="1"
-                                        @click="isShowDropdownDepartment = !isShowDropdownDepartment, this.isShowValidity.emptyDepartmentID = false"
-                                        @blur="hideDropdownDepartment(), this.isShowValidity.emptyDepartmentID = true"
-                                    >
-                                        <i class="icon icon--caretdown"
-                                            :class="{'icon--caretdownRotate' : isShowDropdownDepartment}"
-                                        ></i>
-                                    </div>
-                                    <span class="dropdown dropdown--department" v-if="isShowDropdownDepartment">
-                                        <ul class="dropdown__list">
-                                            <li class="dropdown__item"
-                                                @click="selectDepartment(), isShowDropdownDepartment = true"
-                                            > 
-                                                - {{ this.textDropdownNoChoice }} - 
-                                            </li>
-                                            <li class="dropdown__item"
-                                                v-for="(department) in this.departments"
-                                                :key="department.departmentName"
-                                                @click="selectDepartment(department)"
-                                                :class="{'dropdown__item--selected': checkDepartmentSelected(department), 'dropdown__item--focused': checkDepartmentFocused(department)}"
-                                            >
-                                                <p>{{ department.departmentName }} </p>  
-                                            </li>
-                                        </ul>
-                                    </span>
-                                </div> -->
+                                
                                 <BCombobox
                                     :url= "url.department"
                                     propValue="departmentID"
@@ -119,7 +76,7 @@
                                     propText="departmentName"
                                     :fieldName="this.textDepartmentName"
                                     :propPlaceholder="this.placeholder.department"
-                                    :departmentID="employeeModal.departmentID" 
+                                    :setID="employeeModal.departmentID" 
                                     :baseValue="employeeModal.departmentName"
                                     @getID = "employeeModal.departmentID = $event"
                                     @getCode = "employeeModal.departmentCode = $event"
