@@ -38,6 +38,10 @@
     padding: 0 16px 0 16px;
 }
 
+.table__exportExcel {
+    padding-right: 16px;
+}
+
 .table {
     font-size: 13px;
     background-color: var(--tableBody-color);
@@ -63,6 +67,7 @@
 .table__scroll::-webkit-scrollbar {
     width: 10px;
     height: 10px;
+    -webkit-font-smoothing: subpixel-antialiased;
 }
 
 .table__scroll::-webkit-scrollbar-track {
@@ -73,9 +78,6 @@
 .table__scroll::-webkit-scrollbar-thumb {
     background: #b8bcc3;
 }
-
-
-
 
 /* Begin: Header */
 .table__header {
@@ -110,6 +112,7 @@
 /* Begin: Body */
 .table__body {
     height: calc(var(--tableBody-height) - var(--tableHeader-height) - 56px);
+
 }
 
 .table__body table tbody tr {
@@ -422,3 +425,28 @@ th.table__col {
     z-index: 3;
 }
 /* End: Support layout */
+
+.table__function [data-title]:after {
+    content: attr(data-title);
+    background: rgba(0,0,0,0.85);
+    color: #fff;
+    position: absolute;
+    bottom: -30px;
+    right: 15%;
+    white-space: nowrap;
+    box-shadow: 1px 1px 3px #222222;
+    opacity: 0;
+    visibility: hidden;
+    border-radius: 3.5px;   
+    height: 20px;
+    padding: 2px 12px 2px 12px;
+    text-align: center;
+    line-height: 20px;
+    font-size: 12px;
+    font-weight: normal;
+    z-index: 4;
+}
+
+[data-title] {
+    position: relative;
+}

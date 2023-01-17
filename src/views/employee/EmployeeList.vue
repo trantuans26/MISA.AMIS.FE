@@ -20,7 +20,15 @@
                 <div class="table__reset"
                     :data-title="textTooltip.reload"
                     @click="this.currentPage = 1, loadAPI()"
-                ><i class="icon icon--reset"></i></div>
+                >
+                    <i class="icon icon--reset"></i>
+                </div>
+                <div class="table__exportExcel"
+                    :data-title="textTooltip.exportExcel"
+                    @click="apiExportExcel()"
+                >
+                    <i class="icon icon--excel"></i>
+                </div>
                 <div class="table__space--20grey"></div>
             </div>
 
@@ -213,7 +221,7 @@
         :message="this.employeeDeleted.employeeCode"
         v-if="this.isShowDeleteDialog"
         @closeDialog="(this.isShowDeleteDialog = $event)"
-        @deleteEmployee="deleteEmployeeByID(), showSucessDeleteToast()"
+        @deleteEmployee="apiDeleteEmployeeByID(), showSucessDeleteToast()"
     >
     </BDialog>
 
@@ -276,9 +284,8 @@ export default {
         let me = this;
         try {
             me.isShowLoading = true; // Hiển thị loading data
-            me.loadAPI();
-
-            setTimeout(() => me.isShowLoading = false, 50);
+            
+            me.loadAPI();     
         } catch (error) {
             console.log(error);
         }
@@ -331,6 +338,7 @@ export default {
                     me.totalRecord = resource.data.totalRecord;
                     me.totalPage = resource.data.totalPage;
                     me.isShowLoadingTable = false;
+                    me.isShowLoading = false;
                     console.log("data", resource.data);
                 })
                 .catch((error) => {
@@ -367,7 +375,7 @@ export default {
             Author: Tuan 
             Date: 17/12/2022 
         */
-        deleteEmployeeByID() {
+        apiDeleteEmployeeByID() {
             try {
                 axios
                 .delete(`${Resource.Url.Employees}/${this.employeeDeleted.employeeID}`)
@@ -377,6 +385,29 @@ export default {
                     this.employeeDeleted = '';
                     // Display success toast message 
                     //this.showDeleteSuccessToast();
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        /* API xuất file excel
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 16/1/2023
+        */
+        apiExportExcel() {
+            try {
+                axios
+                .get(`https://localhost:44368/api/v1/Employees/export`)
+                .then((response) => {
+                    let url = response.request.responseURL;
+                
+                    window.open(url);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -676,6 +707,7 @@ export default {
                 fax: Resource.TextVi.Tooltip.Fax,
                 bankBranch: Resource.TextVi.Tooltip.BankBranch,
                 reload: Resource.TextVi.Tooltip.Reload,
+                exportExcel: Resource.TextVi.Tooltip.ExportExcel,
             },
             v$: useValidate(), // validate dữ liệu (sử dụng vuelidate)
         }

@@ -1,21 +1,22 @@
 <template>
   <div class="combobox" 
+
   >
     <input type="text" class="input input--haveicon input--modal combobox__input" 
       v-model="textInput" 
-      :class="{'input--error': this.isRequired && !this.textInput}"   
+      :class="{'input--error': required && !this.textInput}"   
       @input="inputOnChange" 
-      @blur="inputOnBlur, isRequired = true"
+      @blur="onBlur()"
       @keydown="selectItemUpDown" 
       :placeholder="propPlaceholder"
-      @click="isRequired = false"
-      @keydown.enter="isShowListData = !isShowListData"
+      @click="onClick()"
+      @keydown.enter="isShowListData = false"
       />
     <base-message-error :text="fieldName"></base-message-error>
 
     <button class="button combobox__button" 
-      @click="btnSelectDataOnClick(), isRequired = false"
-      @blur="isRequired = true" 
+      @click="btnSelectDataOnClick(), onClick()"
+      @blur="onBlur()" 
       @keydown="selectItemUpDown" 
       tabindex="-1"
     >
@@ -135,7 +136,7 @@ export default {
     clickoutside,
   },
   props: {
-    baseValue: String,
+    setValue: String,
     setID: String,
     url: String,
     propValue: String,
@@ -143,6 +144,10 @@ export default {
     propText: String,
     fieldName: String,
     propPlaceholder: String,
+    required: {
+      type: Boolean,
+      default: false,
+    },
     isLoadData: {
       type: Boolean,
       default: true,
@@ -281,11 +286,20 @@ export default {
     },
 
     /**
-     * Validate dữ liệu.
-     * Author: QuangNV (19/12/2022)
+     * Blur
+     * TTTuan (13/01/2023)
      */
-    inputOnBlur() {
-    }
+    onBlur() {
+      this.$emit('onBlur', true);
+    },
+
+    /**
+     * Blur
+     * TTTuan (13/01/2023)
+     */
+     onClick() {
+      this.$emit('onClick', false);
+    },
   },
 
   created() {
@@ -303,9 +317,7 @@ export default {
         });
     }
     this.selectedID = this.setID;
-    this.textInput = this.baseValue;
-
-
+    this.textInput = this.setValue;
   },
   data() {
     return {

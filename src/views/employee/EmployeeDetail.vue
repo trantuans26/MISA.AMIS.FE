@@ -54,7 +54,7 @@
                                     ref="employeeNameFocusing" 
                                     :class="{'input--error': this.isShowValidity.emptyEmployeeName && !this.employeeModal.employeeName}"
                                     v-model.trim="this.employeeModal.employeeName"
-                                    maxlength="255"
+                                    maxlength="100"
                                     @blur ="this.isShowValidity.emptyEmployeeName = true"
                                     @click="this.isShowValidity.emptyEmployeeName = false"
                                 >
@@ -68,7 +68,7 @@
                                 <label class="modal__label">
                                     {{this.textDepartmentName}} <em>*</em>
                                 </label>
-                                
+
                                 <BCombobox
                                     :url= "url.department"
                                     propValue="departmentID"
@@ -77,10 +77,13 @@
                                     :fieldName="this.textDepartmentName"
                                     :propPlaceholder="this.placeholder.department"
                                     :setID="employeeModal.departmentID" 
-                                    :baseValue="employeeModal.departmentName"
+                                    :setValue="employeeModal.departmentName"
                                     @getID = "employeeModal.departmentID = $event"
                                     @getCode = "employeeModal.departmentCode = $event"
                                     @getName = "employeeModal.departmentName = $event"
+                                    :required="this.isShowValidity.emptyDepartmentID"
+                                    @onClick="this.isShowValidity.emptyDepartmentID = $event"
+                                    @onBlur="this.isShowValidity.emptyDepartmentID = $event"
                                 >
                                 </BCombobox>
                             </div>
@@ -96,13 +99,12 @@
                                     class="input input--modal" type="text"  
                                     v-model.trim="this.employeeModal.jobPosition"
                                     placeholder=""
-                                    maxlength="50"
+                                    maxlength="100"
                                 >
                                 <base-message-error :text="this.textJobPosition"></base-message-error>
                             </div>
                         </div>
                     </div>    
-
                     
                     <div class="modal__topright">
                         <!-- Ngày sinh / giới tính -->
@@ -145,7 +147,7 @@
                                     @keydown="numbersOnly(event)"
                                     @paste="formatIdentityNumber"
                                     placeholder=""
-                                    maxlength="50"
+                                    maxlength="255"
                                 >
                                 <base-message-error :text="textIdentityNumber"></base-message-error>
                             </div>
@@ -175,7 +177,7 @@
                                     class="input input--modal" type="text"  
                                     v-model.trim="this.employeeModal.identityPlace"
                                     placeholder=""
-                                    maxlength="50"
+                                    maxlength="255"
                                 >
                                 <base-message-error :text="this.textIdentityPlace"></base-message-error>
                             </div>
@@ -194,7 +196,7 @@
                                 class="input input--modal" type="text"  
                                 v-model.trim="this.employeeModal.address"
                                 :placeholder="this.placeholder.address"
-                                maxlength="50"
+                                maxlength="255"
                             >
                             <base-message-error :text="this.textAddress"></base-message-error>
                         </div>
@@ -237,7 +239,7 @@
                                 class="input input--modal input--220" type="text"  
                                 v-model.trim="this.employeeModal.email"
                                 placeholder="example@email.com"
-                                maxlength="50"
+                                maxlength="100"
                             >
                             <base-message-error :text="this.textEmail"></base-message-error>
                         </div>
@@ -253,7 +255,7 @@
                                 v-model.trim="this.employeeModal.bankNumber"
                                 @keydown="numbersOnly(event)"
                                 placeholder=""
-                                maxlength="50"
+                                maxlength="255"
                             >
                             <base-message-error :text="this.textBankNumber"></base-message-error>
                         </div>
@@ -266,7 +268,7 @@
                                 class="input input--modal input--174" type="text"  
                                 v-model.trim="this.employeeModal.bankName"
                                 placeholder=""
-                                maxlength="50"
+                                maxlength="255"
                             >
                             <base-message-error :text="this.textBankName"></base-message-error>
                         </div>
@@ -279,7 +281,7 @@
                                 class="input input--modal" type="text"  
                                 v-model.trim="this.employeeModal.bankBranch"
                                 placeholder=""
-                                maxlength="50"
+                                maxlength="255"
                             >
                             <base-message-error :text="this.textBankBranch"></base-message-error>
                         </div>

@@ -171,7 +171,8 @@ export default {
             Phone: "Điện thoại di động",
             Fax: "Điện thoại cố định",
             BankBranch: "Chi nhánh tài khoản ngân hàng",
-            Reload: "Tải lại dữ liệu"
+            Reload: "Tải lại dữ liệu",
+            ExportExcel: "Xuất tệp Excel",
         }
     }
 }
