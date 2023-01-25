@@ -21,6 +21,12 @@
     height: var(--tableFunction-height);
 }
 
+.table__batch {
+    width: auto;
+    flex-grow: 1;
+    padding-left: 20px;
+}
+
 .table__search {
     display: flex;
     align-items: center;
@@ -32,6 +38,10 @@
 .table__search i {
     position: absolute;
     right: 16px;
+}
+
+.table__search:hover input {
+    border-color: var(--input-colorHover);
 }
 
 .table__reset {

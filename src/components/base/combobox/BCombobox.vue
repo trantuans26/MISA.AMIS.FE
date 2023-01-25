@@ -3,14 +3,16 @@
 
   >
     <input type="text" class="input input--haveicon input--modal combobox__input" 
-      v-model="textInput" 
-      :class="{'input--error': required && !this.textInput}"   
+      ref="departmentFocusing"
+      v-model="value" 
+      :class="{'input--error': required && !value}"   
       @input="inputOnChange" 
       @blur="onBlur()"
       @keydown="selectItemUpDown" 
       :placeholder="propPlaceholder"
       @click="onClick()"
       @keydown.enter="isShowListData = false"
+      @change="this.$emit('onChange', value)"
       />
     <base-message-error :text="fieldName"></base-message-error>
 
@@ -152,6 +154,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    addFocus: {
+      type: Boolean,
+      default: false,
+    }
   },
   components: {
     BaseMessageError,
@@ -205,15 +211,15 @@ export default {
     itemOnSelect(item, index) {
       let me = this;
       const text = item[me.propText];
-      me.selectedID = item[me.propValue];
+/*       me.selectedID = item[me.propValue];
       me.selectedCode = item[me.propCode];
-      me.textInput = text; // Hiển thị text lên input.
+      me.textInput = text;  */
+      me.value = text;
       me.indexItemSelected = index;
       me.isShowListData = false;
 
-      me.$emit('getID', me.selectedID);
-      me.$emit('getCode', me.selectedCode);
-      me.$emit('getName', me.textInput);
+      me.$emit('getID', item[me.propValue]);
+      me.$emit('getCode', item[me.propCode]);
     },
 
     /**
@@ -224,7 +230,7 @@ export default {
       var me = this;
       // Thực hiện lọc các phần tử phù hợp trong data:
       this.dataFilter = this.data.filter((e) => {
-        let text = removeVietnameseTones(me.textInput)
+        let text = removeVietnameseTones(me.value)
           .toLowerCase()
           .replace(" ", "");
         let textOfItem = removeVietnameseTones(e[me.propText])
@@ -300,6 +306,7 @@ export default {
      onClick() {
       this.$emit('onClick', false);
     },
+
   },
 
   created() {
@@ -316,13 +323,26 @@ export default {
           console.log(res);
         });
     }
-    this.selectedID = this.setID;
-    this.textInput = this.setValue;
   },
+
+  beforeUpdate() {
+    if(this.$parent.isShowSuccessToast == true)
+      this.textInput = '';
+  },
+
+  updated() {
+    let me = this;
+    me.isFocused = this.addFocus;
+    me.isFocused == true ? me.$refs.departmentFocusing.focus() : false;
+
+    me.$emit("removeFocus", false);
+
+
+  },
+
   data() {
     return {
       data: [], // data gốc
-      textInput: null,
       selectedID: null,
       selectedCode: null,
       dataFilter: [], // data đã được filter
@@ -330,17 +350,26 @@ export default {
       indexItemFocus: null, // Index của item focus hiện tại
       indexItemSelected: null, // Index của item được selected
       isRequired: false,
+      isFocused: false,
     };
   },
 
   watch: {
-    inputText: {
-      immediate: true,
-      handler(val, oldVal) {
-        this.inputText = val
+  },
+
+  computed: {
+    value: {
+      get() {
+        return this.setValue;
+      },
+
+      set(value) {
+        let val = value;
+
+        this.$emit('getName', val);
       }
     },
-  }
+  },
 };
 </script>
 <style scoped>

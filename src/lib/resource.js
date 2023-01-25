@@ -59,7 +59,8 @@ export default {
 
         Table: {
             Search: "Tìm kiếm theo mã, tên nhân viên",
-
+            Batch: "Thực hiện hàng loạt",
+            
             /* Tên cột */
             EmployeeCode: "Mã nhân viên",
             EmployeeName: "Tên nhân viên",
@@ -74,7 +75,7 @@ export default {
             Function: "Chức năng",
 
             /* Tên chức năng */
-            Edit: "Sửa",
+            Update: "Sửa",
             Replicate: "Nhân bản",
             Delete: "Xoá",
             Stop: "Ngừng sử dụng",
@@ -138,7 +139,8 @@ export default {
             Text: {
                 Save: "Bạn có muốn cất không?",
                 Employee: "Bạn có thực sự muốn xoá Nhân viên",
-                After: "không?"
+                After: "không?",
+                DeleteBatch: "Bạn có thực sự muốn xoá những nhân viên đã chọn không?",
             }
         },
 

@@ -84,6 +84,9 @@
                                     :required="this.isShowValidity.emptyDepartmentID"
                                     @onClick="this.isShowValidity.emptyDepartmentID = $event"
                                     @onBlur="this.isShowValidity.emptyDepartmentID = $event"
+                                    :addFocus="this.focusDepartment"
+                                    @removeFocus="this.focusDepartment = $event"
+                                    @onChange="checkChangeDepartment($event)"
                                 >
                                 </BCombobox>
                             </div>
@@ -469,9 +472,49 @@ export default {
             me.employeeModal.bankNumber = me.$parent.employeeFocused.bankNumber;
             me.employeeModal.bankName = me.$parent.employeeFocused.bankName;
             me.employeeModal.bankBranch = me.$parent.employeeFocused.bankBranch;
+        } else if(me.$parent.replicateFunction) {
+            me.titleModal = me.textInsertModal;
+            me.getNewEmployeeCode();
+            me.employeeModal.employeeName = me.$parent.employeeFocused.employeeName;
+            me.employeeModal.departmentID = me.$parent.employeeFocused.departmentID;
+            me.employeeModal.departmentCode = me.$parent.employeeFocused.departmentCode;
+            me.employeeModal.departmentName = me.$parent.employeeFocused.departmentName;
+            me.employeeModal.jobPosition = me.$parent.employeeFocused.jobPosition;
+            me.employeeModal.dateOfBirth = this.formatDate(me.$parent.employeeFocused.dateOfBirth);
+            me.employeeModal.gender = me.$parent.employeeFocused.gender;
+            me.employeeModal.identityNumber = me.$parent.employeeFocused.identityNumber;
+            me.employeeModal.identityDate = this.formatDate(me.$parent.employeeFocused.identityDate);
+            me.employeeModal.identityPlace = me.$parent.employeeFocused.identityPlace;
+            me.employeeModal.address = me.$parent.employeeFocused.address;
+            me.employeeModal.phone = me.$parent.employeeFocused.phone;
+            me.employeeModal.fax = me.$parent.employeeFocused.fax;
+            me.employeeModal.email = me.$parent.employeeFocused.email;
+            me.employeeModal.bankNumber = me.$parent.employeeFocused.bankNumber;
+            me.employeeModal.bankName = me.$parent.employeeFocused.bankName;
+            me.employeeModal.bankBranch = me.$parent.employeeFocused.bankBranch;
         } else {
             me.getNewEmployeeCode();
         }
+
+        me.employeeModalTemp.employeeID = me.employeeModal.employeeID;
+        me.employeeModalTemp.employeeCode = me.employeeModal.employeeCode;
+        me.employeeModalTemp.employeeName = me.employeeModal.employeeName;
+        me.employeeModalTemp.departmentID = me.employeeModal.departmentID;
+        me.employeeModalTemp.departmentCode = me.employeeModal.departmentCode;
+        me.employeeModalTemp.departmentName = me.employeeModal.departmentName;
+        me.employeeModalTemp.jobPosition = me.employeeModal.jobPosition;
+        me.employeeModalTemp.dateOfBirth = this.formatDate(me.employeeModal.dateOfBirth);
+        me.employeeModalTemp.gender = me.employeeModal.gender;
+        me.employeeModalTemp.identityNumber = me.employeeModal.identityNumber;
+        me.employeeModalTemp.identityDate = this.formatDate(me.employeeModal.identityDate);
+        me.employeeModalTemp.identityPlace = me.employeeModal.identityPlace;
+        me.employeeModalTemp.address = me.employeeModal.address;
+        me.employeeModalTemp.phone = me.employeeModal.phone;
+        me.employeeModalTemp.fax = me.employeeModal.fax;
+        me.employeeModalTemp.email = me.employeeModal.email;
+        me.employeeModalTemp.bankNumber = me.employeeModal.bankNumber;
+        me.employeeModalTemp.bankName = me.employeeModal.bankName;
+        me.employeeModalTemp.bankBranch = me.employeeModal.bankBranch;
     },
 
     /* DOM thật */
@@ -701,26 +744,26 @@ export default {
             setTimeout(() => this.isShowDropdownDepartment = false, 200); 
         },
 
-        /* Chọn đơn vị
+        /* Kiểm tra đơn vị
             @param {}
             @returns void
             Author: Tuan 
             Date: 10/12/2022 
         */
-        selectDepartment(department) {
-            let me = this;
+        checkChangeDepartment(departmentName) {
+            let me = this; 
+            let check = false;
+            me.departments.forEach(department => {
+                if(department.departmentName == departmentName) {
+                    check = true;
+                }
+            });
 
-            if(department) {
-                me.employeeModal.departmentName = department.departmentName;
-                me.employeeModal.departmentID = department.departmentID;
-                me.employeeModal.departmentCode = department.departmentCode;
-            } else {
-                me.employeeModal.departmentName = '';
+            if(!check) {
                 me.employeeModal.departmentID = '';
                 me.employeeModal.departmentCode = '';
+                me.employeeModal.departmentName = '';
             }
-
-            me.$refs.departmentFocusing.focus();
         },
 
         /* Kiểm tra đơn vị được chọn
@@ -794,7 +837,8 @@ export default {
         */
         onClose() {
             /* Mở cảnh báo */
-            this.isShowCloseDialog = true;
+            if (this.employeeModal != this.employeeModalTemp)
+                this.isShowCloseDialog = true;
         },
 
         /* Đóng modal khi đối số là true
@@ -817,6 +861,8 @@ export default {
         closeModalAction() {
             this.isSubmited = false;
             this.$parent.isDisplayModal = false;
+            this.$parent.updateFunction = false;
+            this.$parent.replicateFunction = false;
         },
 
 
@@ -1041,7 +1087,7 @@ export default {
                 me.isShowValidity.emptyEmployeeName = false;
             }
             if (me.errorMessage == me.textErrorMessage.emptyDepartmentName) {
-                me.$refs.departmentFocusing.focus();
+                me.focusDepartment = true;
                 me.isShowValidity.emptyDepartmentID = false;
             }
         },
@@ -1114,10 +1160,32 @@ export default {
                 bankName: "",
                 bankBranch: "",
             },
+            employeeModalTemp: { // Dữ liệu form modal temp
+                employeeID: '',
+                employeeCode: '',
+                employeeName: '',
+                dateOfBirth: "",
+                gender: 0,
+                departmentID: "",
+                departmentCode: '',
+                departmentName: '',
+                identityNumber: "",
+                identityDate: "",
+                jobPosition: "",
+                identityPlace: "",
+                address: "",
+                phone: "",
+                fax: "",
+                email: "",
+                bankNumber: "",
+                bankName: "",
+                bankBranch: "",
+            },
             employeeCodeUpdate: '',
 
             departments: [], // Danh sách đơn vị
             departmentFocused: null, // Đơn vị được focus
+            focusDepartment: false, //
 
             isShowValidity: { // Cảnh báo lỗi các trường nhập liệu dùng cho BaseMessageError
                 emptyEmployeeCode: false,

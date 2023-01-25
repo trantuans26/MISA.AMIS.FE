@@ -9,26 +9,36 @@
 
         <div class="content__body">
             <div class="table__function">
+                <div class="table__batch">
+                    <btnBatch
+                        :employeesSelectedByID="this.employeesSelectedByID"
+                        @deleteBatch="this.isShowDeleteBatchDialog = true"
+                    ></btnBatch>
+                </div>
+
                 <div class="table__search">
                     <input class="input input--search"
                         type="text" :placeholder="this.textSearchPlaceholder"
                         v-model.trim="this.filter.employeeFilter"
                         v-on:keyup.enter="this.currentPage = 1, loadAPI()"
                     >
-                    <i class="icon icon--search" @click="this.filter.employeeFilter = 'haha', this.currentPage = 1, loadAPI()"></i>
+                    <i class="icon icon--search" @click="this.currentPage = 1, loadAPI()"></i>
                 </div>
+
                 <div class="table__reset"
                     :data-title="textTooltip.reload"
                     @click="this.currentPage = 1, loadAPI()"
                 >
                     <i class="icon icon--reset"></i>
                 </div>
+
                 <div class="table__exportExcel"
                     :data-title="textTooltip.exportExcel"
                     @click="apiExportExcel()"
                 >
                     <i class="icon icon--excel"></i>
                 </div>
+
                 <div class="table__space--20grey"></div>
             </div>
 
@@ -70,29 +80,25 @@
                                     
                                 >
                                     <td class="table__col table__col--center table__col--check">
- <!--                                        <input type="checkbox" 
-                                            :value="employee.EmployeeId"
-                                            v-model='this.employeesSelectedByID' 
-                                        > -->
                                         <input type="checkbox" 
                                             :checked="checkEmployee(employee.employeeID)"
                                             @click="clickCheckEmployee(employee.employeeID)"
                                         >
                                     </td>
-                                    <td class="table__col table__col--left table__col--employeeCode" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{employee.employeeCode}}</p> </td>
-                                    <td class="table__col table__col--left table__col--employeeName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{employee.employeeName}}</p> </td>
-                                    <td class="table__col table__col--left table__col--gender" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{this.formatGender(employee.gender)}}</p> </td>
-                                    <td class="table__col table__col--center table__col--birthday" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{formatDate(employee.dateOfBirth)}}</p> </td>
-                                    <td class="table__col table__col--left table__col--identity" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{employee.identityNumber}}</p> </td>
-                                    <td class="table__col table__col--left table__col--positionName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{employee.jobPosition}}</p> </td>
-                                    <td class="table__col table__col--left table__col--departmentName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{employee.departmentName}}</p> </td>
-                                    <td class="table__col table__col--left table__col--bankNumber" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{employee.bankNumber}}</p> </td>
-                                    <td class="table__col table__col--left table__col--bankName" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{employee.bankName}}</p> </td>
-                                    <td class="table__col--left table__col--bankBranch" @dblclick="focusEmployee(employee), isDisplayModal = true, updateFunction = true"> <p>{{employee.bankBranch}}</p> </td>
+                                    <td class="table__col table__col--left table__col--employeeCode" @dblclick="onUpdateFunction(employee)"> <p>{{employee.employeeCode}}</p> </td>
+                                    <td class="table__col table__col--left table__col--employeeName" @dblclick="onUpdateFunction(employee)"> <p>{{employee.employeeName}}</p> </td>
+                                    <td class="table__col table__col--left table__col--gender" @dblclick="onUpdateFunction(employee)"> <p>{{this.formatGender(employee.gender)}}</p> </td>
+                                    <td class="table__col table__col--center table__col--birthday" @dblclick="onUpdateFunction(employee)"> <p>{{formatDate(employee.dateOfBirth)}}</p> </td>
+                                    <td class="table__col table__col--left table__col--identity" @dblclick="onUpdateFunction(employee)"> <p>{{employee.identityNumber}}</p> </td>
+                                    <td class="table__col table__col--left table__col--positionName" @dblclick="onUpdateFunction(employee)"> <p>{{employee.jobPosition}}</p> </td>
+                                    <td class="table__col table__col--left table__col--departmentName" @dblclick="onUpdateFunction(employee)"> <p>{{employee.departmentName}}</p> </td>
+                                    <td class="table__col table__col--left table__col--bankNumber" @dblclick="onUpdateFunction(employee)"> <p>{{employee.bankNumber}}</p> </td>
+                                    <td class="table__col table__col--left table__col--bankName" @dblclick="onUpdateFunction(employee)"> <p>{{employee.bankName}}</p> </td>
+                                    <td class="table__col--left table__col--bankBranch" @dblclick="onUpdateFunction(employee)"> <p>{{employee.bankBranch}}</p> </td>
                                     <td class="table__col--function table__col--function">
                                         <span class="table__col--update"
-                                            @click="focusEmployee(employee), isDisplayModal = true, updateFunction = true"
-                                        >Sửa</span>
+                                            @click="onUpdateFunction(employee)"
+                                        > {{ this.textUpdate }}</span>
                                         <span class="table__col--more"
                                             tabindex="1"
                                             @click="selectEmployee(employee)"
@@ -105,9 +111,9 @@
                                         v-show="checkEmployeeSelected(employee)"
                                     >
                                         <ul class="dropdown__list">
-                                            <li class="dropdown__item">Nhân bản</li>
-                                            <li class="dropdown__item" @click="showDeletDialog()">Xoá</li>
-                                            <li class="dropdown__item">Ngưng sử dụng</li>
+                                            <li class="dropdown__item" @click="onReplicateFunction(employee)"> {{ this.textReplication }}</li>
+                                            <li class="dropdown__item" @click="showDeletDialog()"> {{ this.textDelete }}</li>
+                                            <li class="dropdown__item"> {{ this.textStop }}</li>
                                         </ul>
                                     </span>
                                 </tr> 
@@ -225,6 +231,17 @@
     >
     </BDialog>
 
+    <BDialog
+        class="dialog--deleteBatch"
+        v-if="this.isShowDeleteBatchDialog"
+        @closeDialog="(this.isShowDeleteBatchDialog = $event)"
+        @deleteEmployee="apiDeleteEmployeesByIDs(), showSucessDeleteToast()"
+    >   
+        <template #message>
+           {{ this.textDialog.deleteBatch }}
+        </template>
+    </BDialog>
+
     <!-- Begin: Toast thông báo xoá -->
     <BToast
         v-show="this.isShowSuccessDeleteToast"
@@ -257,6 +274,7 @@ import BLoading from '@/components/base/loading/BLoading.vue'
 import EmployeeDetail from "./EmployeeDetail.vue";
 import BDialog from "@/components/base/dialog/BDialog.vue";
 import BToast from "@/components/base/toast/BToast.vue";
+import btnBatch from "@/components/button/btnBatch.vue";
 /* import BComboboxIcon from "@/components/base/combobox/BComboboxIcon.vue"; */
 /* import TheLoading from "@/components/base/loading/TheLoading.vue"; */
 /* import BaseMessageError from "@/components/base/message/BaseMessageError.vue"; */
@@ -268,6 +286,7 @@ export default {
         EmployeeDetail,
         BDialog,
         BToast,
+        btnBatch,
 /*         BComboboxIcon, */
     },
     props: [
@@ -381,10 +400,35 @@ export default {
                 .delete(`${Resource.Url.Employees}/${this.employeeDeleted.employeeID}`)
                 .then(() => {
                     // Reload data
+                    this.currentPage = 1;
                     this.loadAPI();
                     this.employeeDeleted = '';
-                    // Display success toast message 
-                    //this.showDeleteSuccessToast();
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        /* Xoá nhân viên theo danh sách ID
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 17/12/2022 
+        */
+        apiDeleteEmployeesByIDs() {
+            try {
+                axios
+                .post(`${Resource.Url.Employees}/deleteBatch`, {
+                    "iDs": this.employeesSelectedByID.toString(),
+                })
+                .then(() => {
+                    // Reload data
+                    this.currentPage = 1;
+                    this.loadAPI();
+                    this.employeesSelectedByID = [];
                 })
                 .catch((error) => {
                     console.log(error);
@@ -452,6 +496,32 @@ export default {
         },
 
         //#region Click events
+        /* Sửa nhân viên
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
+        onUpdateFunction(employee) {
+            let me = this;
+            me.focusEmployee(employee);
+            me.isDisplayModal = true;
+            me.updateFunction = true;
+        },
+
+        /* Nhân bản nhân viên
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
+        onReplicateFunction(employee) {
+            let me = this;
+            me.focusEmployee(employee);
+            me.isDisplayModal = true;
+            me.replicateFunction = true;
+        },
+
         /* Check các nhân viên với checkbox
             @param {}
             @returns void
@@ -644,12 +714,14 @@ export default {
             isShowSuccessDeleteToast: false,
             isShowSuccessToast: false,
             isShowDeleteDialog: false,
+            isShowDeleteBatchDialog: false,
             isShowMoreFunction: false,
             isDisplayModal: false,
             //#endregion Data xử lý sự kiện show
 
 
             updateFunction: false,
+            replicateFunction: false,
             employeeFocused: [],
             employeeSelected: '',
             employeeDeleted: '',
@@ -686,8 +758,9 @@ export default {
             textBankBranch: Resource.TextVi.Table.BankBranch,
             textFunction: Resource.TextVi.Table.Function,
 
-            textEdit: Resource.TextVi.Table.Edit,
-            textReplication: Resource.TextVi.Table.Replication,
+            textBatch: Resource.TextVi.Table.Batch,
+            textUpdate: Resource.TextVi.Table.Update,
+            textReplication: Resource.TextVi.Table.Replicate,
             textDelete: Resource.TextVi.Table.Delete,
             textStop: Resource.TextVi.Table.Stop,
             textRecordPerPage: Resource.TextVi.Table.RecordPerPage,
@@ -709,6 +782,11 @@ export default {
                 reload: Resource.TextVi.Tooltip.Reload,
                 exportExcel: Resource.TextVi.Tooltip.ExportExcel,
             },
+
+            textDialog: { // Nội dung dialog
+                deleteBatch: Resource.TextVi.Dialog.Text.DeleteBatch,
+            },
+
             v$: useValidate(), // validate dữ liệu (sử dụng vuelidate)
         }
     },

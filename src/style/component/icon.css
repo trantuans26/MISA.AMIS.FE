@@ -205,6 +205,20 @@
 	height: 5px;
 }
 
+.icon__black--caretdown {
+	background-position: -564px -365px !important;
+	width: 8px;
+	height: 5px;
+	opacity: 1 !important; 
+}
+
+.icon__grey--caretdown {
+	background-position: -1756px -317px;
+	width: 8px;
+	height: 5px;
+	opacity: 0.8;
+}
+
 .icon--close {
 	background-position: -147px -147px;
 	width: 18px;
