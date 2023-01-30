@@ -98,7 +98,7 @@
     text-transform: uppercase;
     position: sticky;
     top: 0;
-    z-index: 2;
+    z-index: 4;
 }
 
 .table__header table {
@@ -405,7 +405,7 @@ th.table__col {
     height: calc(var(--tableBody-height) - 10px);
     position: absolute;
     right: 10px;
-    z-index: 3;
+    z-index: 5;
 }
 
 .table__space--20white {
@@ -414,7 +414,7 @@ th.table__col {
     height: calc(var(--tableBody-height) - 10px);
     position: absolute;
     left: 0;
-    z-index: 3;
+    z-index: 5;
 }
 
 .table__space--20whiteRight {
@@ -423,7 +423,7 @@ th.table__col {
     height: calc(var(--tableBody-height) - 10px);
     position: absolute;
     right: 20px;
-    z-index: 3;
+    z-index: 5;
 }
 
 .table__space--10white {
@@ -432,7 +432,7 @@ th.table__col {
     height: calc(var(--tableBody-height) - 10px);
     position: absolute;
     right: 10px;
-    z-index: 3;
+    z-index: 4;
 }
 /* End: Support layout */
 
