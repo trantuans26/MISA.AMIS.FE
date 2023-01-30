@@ -79,7 +79,9 @@ export default {
             Replicate: "Nhân bản",
             Delete: "Xoá",
             Stop: "Ngừng sử dụng",
-            RecordPerPage: " bản ghi trên 1 trang"
+            RecordPerPage: " bản ghi trên 1 trang",
+            Next: "Trước",
+            Previous: "Sau",
         },
 
         Modal:{

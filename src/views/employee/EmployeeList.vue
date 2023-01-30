@@ -156,27 +156,45 @@
                             <span class="table__previous"
                                 @click="previousPage()"
                                 :class="{'table__item--disable': this.currentPage == 1}"
-                            >Trước</span>
+                            >{{ this.textNext }}</span>
+
                             <span class="table__subnumber" tabindex="1" 
                                 v-show="this.totalPage > 1"
                                 @click="firstPage()"
                                 :class="{'table__subnumber--focus': this.currentPage == 1}"
                             >1</span>
+
                             <span class="table__subnumber" tabindex="1" 
-                                @click="this.currentPage -= 2, loadAPI()"
-                                v-show="this.currentPage > 2 && this.totalPage > 3">...</span>
+                                @click="this.isShowPreviousPage = true"
+                                v-show="(this.currentPage > 2 && this.totalPage > 3) || this.isShowNextPage == true"
+                            >...</span>
+
                             <span class="table__subnumber" tabindex="1" 
-                                v-show="(this.currentPage < 3 || this.totalPage == 3) && this.totalPage > 2"
+                                v-show="(this.currentPage < 3 || this.totalPage == 3) && this.totalPage > 2 && (this.isShowNextPage == false || this.currentPage == 2)"
                                 @click="this.currentPage=2, loadAPI()"
                                 :class="{'table__subnumber--focus': this.currentPage == 2}"
                             >2</span>
+                            
                             <span class="table__subnumber" tabindex="1" 
-                                v-show="this.currentPage < 3  && this.totalPage > 3"
+                                v-show="this.currentPage < 3  && this.totalPage > 3 && this.isShowNextPage == false"
                                 @click="this.currentPage=3, loadAPI()"
                             >3</span>
 
                             <span class="table__subnumber" tabindex="1"
-                                v-show="this.currentPage > 2 && this. currentPage < this.totalPage - 1 && this.totalPage > 3"
+                                v-show="(this.currentPage == 1 || this.currentPage == 2) && this.isShowNextPage == true"
+                                @click="this.currentPage++, loadAPI()"
+                            >{{ this.currentPage + 1 }}</span>
+                            <span class="table__subnumber" tabindex="1" 
+                                v-show="(this.currentPage == 1 || this.currentPage == 2) && this.isShowNextPage == true"
+                                @click="this.currentPage+=2, loadAPI()"
+                            >{{ this.currentPage + 2 }}</span>
+                            <span class="table__subnumber" tabindex="1" 
+                                v-show="(this.currentPage == 1) && this.isShowNextPage == true"
+                                @click="this.currentPage+=3, loadAPI()"
+                            >{{ this.currentPage + 3 }}</span>
+
+                            <span class="table__subnumber" tabindex="1"
+                            v-show="this.currentPage > 2 && this. currentPage < this.totalPage - 1 && this.totalPage > 3"
                                 @click="this.currentPage--, loadAPI()"
                             >{{ this.currentPage - 1 }}</span>
                             <span class="table__subnumber table__subnumber--focus" tabindex="1" 
@@ -187,26 +205,44 @@
                                 @click="this.currentPage++, loadAPI()"
                             >{{ this.currentPage + 1 }}</span>
 
-                            <span class="table__subnumber" tabindex="1" 
-                                @click="this.currentPage += 2, loadAPI()"
-                                v-show="this.currentPage < this.totalPage - 1 && this.totalPage > 3">...</span>
                             <span class="table__subnumber" tabindex="1"
-                                v-show="this.currentPage > this.totalPage-2  && this.totalPage > 3"
+                                v-show="(this.currentPage == this.totalPage) && this.isShowPreviousPage == true"
+                                @click="this.currentPage-=3, loadAPI()"
+                            >{{ this.currentPage - 3 }}</span>
+                            <span class="table__subnumber" tabindex="1" 
+                                v-show="(this.currentPage == this.totalPage || this.currentPage == this.totalPage - 1) && this.isShowPreviousPage == true"
+                                @click="this.currentPage-=2, loadAPI()"
+                            >{{ this.currentPage - 2 }}</span>
+                            <span class="table__subnumber" tabindex="1" 
+                                v-show="(this.currentPage == this.totalPage || this.currentPage == this.totalPage - 1) && this.isShowPreviousPage == true"
+                                @click="this.currentPage--, loadAPI()"
+                            >{{ this.currentPage - 1 }}</span>
+
+                            <span class="table__subnumber" tabindex="1"
+                                v-show="this.currentPage > this.totalPage-2  && this.totalPage > 3 && this.isShowPreviousPage == false"
                                 @click="this.currentPage = this.totalPage-2, loadAPI()"
                             >{{ this.totalPage-2 }}</span>
+
                             <span class="table__subnumber" tabindex="1" 
-                                v-show="this.currentPage > this.totalPage-2  && this.totalPage > 3"
+                                v-show="this.currentPage > this.totalPage-2  && this.totalPage > 3 && (this.isShowPreviousPage == false || this.totalPage - 1 == this.currentPage)"
                                 @click="this.currentPage = this.totalPage-1, loadAPI()"  
                                 :class="{'table__subnumber--focus': this.currentPage == this.totalPage-1}"
                             >{{ this.totalPage-1 }}</span>
+
+                            <span class="table__subnumber" tabindex="1" 
+                                @click="this.isShowNextPage = true"
+                                v-show="(this.currentPage < this.totalPage - 1 && this.totalPage > 3) || this.isShowPreviousPage == true"
+                            >...</span>
+
                             <span class="table__subnumber" tabindex="1" 
                                 @click="lastPage()"
                                 :class="{'table__subnumber--focus': this.currentPage == this.totalPage}"
                             >{{this.totalPage}}</span>
+
                             <span class="table__next" 
                                 @click="nextPage()"
                                 :class="{'table__item--disable': this.currentPage == this.totalPage}"
-                            >Sau</span>
+                            >{{ this.textPrevious }}</span>
                         </div>
                     </div>
                 </div>
@@ -358,6 +394,8 @@ export default {
                     me.totalPage = resource.data.totalPage;
                     me.isShowLoadingTable = false;
                     me.isShowLoading = false;
+                    me.isShowNextPage = false;
+                    me.isShowPreviousPage = false;
                     console.log("data", resource.data);
                 })
                 .catch((error) => {
@@ -445,9 +483,10 @@ export default {
             Date: 16/1/2023
         */
         apiExportExcel() {
+            let me = this;
             try {
                 axios
-                .get(`https://localhost:44368/api/v1/Employees/export`)
+                .get(`https://localhost:44368/api/v1/Employees/export?keyword=${me.filter.employeeFilter}`)
                 .then((response) => {
                     let url = response.request.responseURL;
                 
@@ -717,6 +756,8 @@ export default {
             isShowDeleteBatchDialog: false,
             isShowMoreFunction: false,
             isDisplayModal: false,
+            isShowNextPage: false,
+            isShowPreviousPage: false,
             //#endregion Data xử lý sự kiện show
 
 
@@ -764,6 +805,8 @@ export default {
             textDelete: Resource.TextVi.Table.Delete,
             textStop: Resource.TextVi.Table.Stop,
             textRecordPerPage: Resource.TextVi.Table.RecordPerPage,
+            textNext: Resource.TextVi.Table.Next,
+            textPrevious: Resource.TextVi.Table.Previous,
             //#endregion Data table
 
             textToastMessage: { // Nội dung Toast
