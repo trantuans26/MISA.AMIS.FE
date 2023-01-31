@@ -512,6 +512,7 @@ export default {
         }
 
         me.employeeJSON = JSON.stringify(me.employeeModal);
+        console.log(me.employeeJSON);
     },
 
     /* DOM thật */
@@ -645,6 +646,7 @@ export default {
                         me.$emit('closeModal', false);
                     } 
 
+                    me.$parent.updateFunction = false;
                     me.isShowLoadingModal = false;
                     me.showSuccessToast();
                 })
@@ -837,7 +839,7 @@ export default {
             let me = this;
             let eJSON = JSON.stringify(me.employeeModal);
 
-            if (me.employeeJSON != eJSON) {
+            if (me.employeeJSON != eJSON && me.$parent.updateFunction) {
                 me.isShowCloseDialog = true;
             } else {
                 this.closeModalAction();

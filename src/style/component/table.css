@@ -225,6 +225,7 @@ td.table__col--function {
     cursor: pointer;
     border: rgba(0, 0, 0, 0) 1px solid;
     box-sizing: border-box;
+    outline: none;
 }
 
 .table__col--more:focus {
