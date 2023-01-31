@@ -316,7 +316,7 @@
                 </div>
 
                 <div class="modal__footer--end">
-                    <div tabindex="0" @click="this.closeModalAction()" class="btn btn--outline">{{ this.textFunctionCancel }}</div> 
+                    <div tabindex="0" @click="onClose()" class="btn btn--outline">{{ this.textFunctionCancel }}</div> 
                     <button v-on:focus="tabRollback()" class="btn__tabRollback"></button>
                 </div>
             </footer>
@@ -459,7 +459,7 @@ export default {
     },
     
     /* Khởi tạo giá trị mặc định khi vào DOM thật */
-    beforeMount() {
+    async beforeMount() {
         console.log("beforeMount form")
         let me = this;
 
@@ -489,7 +489,7 @@ export default {
             me.employeeModal.bankBranch = me.$parent.employeeFocused.bankBranch;
         } else if(me.$parent.replicateFunction) {
             me.titleModal = me.textInsertModal;
-            me.getNewEmployeeCode();
+            await me.getNewEmployeeCode();
             me.employeeModal.employeeName = me.$parent.employeeFocused.employeeName;
             me.employeeModal.departmentID = me.$parent.employeeFocused.departmentID;
             me.employeeModal.departmentCode = me.$parent.employeeFocused.departmentCode;
@@ -508,28 +508,10 @@ export default {
             me.employeeModal.bankName = me.$parent.employeeFocused.bankName;
             me.employeeModal.bankBranch = me.$parent.employeeFocused.bankBranch;
         } else {
-            me.getNewEmployeeCode();
+            await me.getNewEmployeeCode();
         }
 
-        me.employeeModalTemp.employeeID = me.employeeModal.employeeID;
-        me.employeeModalTemp.employeeCode = me.employeeModal.employeeCode;
-        me.employeeModalTemp.employeeName = me.employeeModal.employeeName;
-        me.employeeModalTemp.departmentID = me.employeeModal.departmentID;
-        me.employeeModalTemp.departmentCode = me.employeeModal.departmentCode;
-        me.employeeModalTemp.departmentName = me.employeeModal.departmentName;
-        me.employeeModalTemp.jobPosition = me.employeeModal.jobPosition;
-        me.employeeModalTemp.dateOfBirth = this.formatDate(me.employeeModal.dateOfBirth);
-        me.employeeModalTemp.gender = me.employeeModal.gender;
-        me.employeeModalTemp.identityNumber = me.employeeModal.identityNumber;
-        me.employeeModalTemp.identityDate = this.formatDate(me.employeeModal.identityDate);
-        me.employeeModalTemp.identityPlace = me.employeeModal.identityPlace;
-        me.employeeModalTemp.address = me.employeeModal.address;
-        me.employeeModalTemp.phone = me.employeeModal.phone;
-        me.employeeModalTemp.fax = me.employeeModal.fax;
-        me.employeeModalTemp.email = me.employeeModal.email;
-        me.employeeModalTemp.bankNumber = me.employeeModal.bankNumber;
-        me.employeeModalTemp.bankName = me.employeeModal.bankName;
-        me.employeeModalTemp.bankBranch = me.employeeModal.bankBranch;
+        me.employeeJSON = JSON.stringify(me.employeeModal);
     },
 
     /* DOM thật */
@@ -685,7 +667,7 @@ export default {
         getNewEmployeeCode() {
             let me = this;
             try {
-                axios
+                return axios
                 .get(`${Resource.Url.Employees}/NewCode`)
                 .then((resource) => {
                     me.employeeModal.employeeCode = resource.data;
@@ -852,9 +834,13 @@ export default {
         */
         onClose() {
             /* Mở cảnh báo */
-            if (this.employeeModal != this.employeeModalTemp) {
-                this.isShowCloseDialog = true;
-                this.$refs.dialog.focus();
+            let me = this;
+            let eJSON = JSON.stringify(me.employeeModal);
+
+            if (me.employeeJSON != eJSON) {
+                me.isShowCloseDialog = true;
+            } else {
+                this.closeModalAction();
             }
         },
 
@@ -1214,6 +1200,7 @@ export default {
                 bankName: "",
                 bankBranch: "",
             },
+            employeeJSON: '',
             employeeCodeUpdate: '',
 
             departments: [], // Danh sách đơn vị
