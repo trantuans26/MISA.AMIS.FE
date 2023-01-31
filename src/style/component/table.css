@@ -193,6 +193,7 @@ td.table__col--check {
 th.table__col--function {
     background-color: var(--tableHeader-color);
     border-left: 1px solid var(--tableBorder-color);
+    z-index: 6;
 }
 
 td.table__col--function {
