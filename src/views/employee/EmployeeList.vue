@@ -486,13 +486,14 @@ export default {
         */
         apiExportExcel() {
             let me = this;
+            me.isShowLoadingTable = true;
             try {
                 axios
                 .get(`https://localhost:44368/api/v1/Employees/export?keyword=${me.filter.employeeFilter}`)
                 .then((response) => {
                     let url = response.request.responseURL;
-                
                     window.open(url);
+                    me.isShowLoadingTable = false;
                 })
                 .catch((error) => {
                     console.log(error);
