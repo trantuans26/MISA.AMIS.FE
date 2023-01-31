@@ -60,11 +60,11 @@
     line-height: 20px;
     font-size: 12px;
     font-weight: normal;
-    z-index: 3;
 }
 
 [data-title] {
     position: relative;
+    z-index: 6;
 }
 
 label::selection {

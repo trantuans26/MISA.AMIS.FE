@@ -1,5 +1,6 @@
 <template>
-    <div class="dialog">
+    <div class="dialog"
+    >
         <div class="dialog__box">
 <!--             <div class="dialog__close"
                 @click="this.$emit('closeDialog', false)"
@@ -44,7 +45,6 @@ export default {
     ],
     
     created() {
-
     },
 
     updated() {

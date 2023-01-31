@@ -1,10 +1,12 @@
 <template>
-    <div class="content">
+    <div class="content"
+        @keyup.ctrl.0="isDisplayModal = true, updateFunction = false"
+    >
         <div class="content__header">
             <div class="content__title">{{this.contentTitle}}</div>
-            <div class="btn btn--add"
+            <button class="btn btn--add"
                 @click="isDisplayModal = true, updateFunction = false"
-            >{{this.contentAdd}}</div>
+            >{{this.contentAdd}}</button>
         </div>
 
         <div class="content__body">
@@ -310,7 +312,7 @@ import BLoading from '@/components/base/loading/BLoading.vue'
 import EmployeeDetail from "./EmployeeDetail.vue";
 import BDialog from "@/components/base/dialog/BDialog.vue";
 import BToast from "@/components/base/toast/BToast.vue";
-import btnBatch from "@/components/button/btnBatch.vue";
+import btnBatch from "@/components/button/BBtnBatch.vue";
 /* import BComboboxIcon from "@/components/base/combobox/BComboboxIcon.vue"; */
 /* import TheLoading from "@/components/base/loading/TheLoading.vue"; */
 /* import BaseMessageError from "@/components/base/message/BaseMessageError.vue"; */

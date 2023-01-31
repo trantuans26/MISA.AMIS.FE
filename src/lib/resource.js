@@ -117,7 +117,7 @@ export default {
             Cancel: "Huỷ",
             Close: "Đóng",
             Save: "Cất",
-            Insert: "Thêm",
+            SaveAndInsert: "Cất và Thêm",
             Update: "Sửa",
             Accept: "Đồng ý",
             Yes: "Có",
@@ -177,6 +177,13 @@ export default {
             BankBranch: "Chi nhánh tài khoản ngân hàng",
             Reload: "Tải lại dữ liệu",
             ExportExcel: "Xuất tệp Excel",
-        }
+            SaveAndInsert: "Cất và thêm(Ctrl + Shift + S)",
+            Close: "Đóng(ESC)",
+            Help: "Giúp(F1)",
+        },
+
+        KeyboardShortcuts: {
+            SaveAndInsert: "Ctrl + Shift + S",
+        },
     }
 }

@@ -1,15 +1,24 @@
 <template>
-    <div class="modal modal--open">     
+    <div class="modal modal--open"
+        @keyup.ctrl.shift.s="onSubmit(), this.saveAndInsert = true"
+        @keyup.esc="onClose()"
+        @keyup.enter="this.isShowValidationDialog = false, this.isShowValidationDialogBackend = false"
+    >     
         <BLoading v-show="isShowLoadingModal" loadingClass="loading--modal"></BLoading>
 
         <div class="modal__main"
             @submit.prevent="onSubmit()"
         >
             <div class="modal__section modal__icon">
-                <div class="modal__support">
+                <div class="modal__support"
+                    :data-title="this.textTooltip.help"
+                >
                     <i class="icon icon--support"></i>
                 </div>
-                <div class="modal__close" @click="onClose()">
+                <div class="modal__close"
+                    @click="onClose()"
+                    :data-title="this.textTooltip.close"
+                >
                     <i class="icon icon--close"></i>
                 </div>
             </div>
@@ -120,6 +129,7 @@
                                     <input 
                                         type="date" 
                                         v-model.trim="this.employeeModal.dateOfBirth"
+                                        pattern="\d{4}-\d{2}-\d{2}"
                                         class="input input--modal"  
                                     >
                                     <base-message-error :text="this.textDateOfBirth"></base-message-error>
@@ -296,12 +306,17 @@
             <!-- Begin: Modal footer -->
             <footer class="modal__section modal__footer">
                 <div class="modal__footer--start">
-                    <button class="btn btn__save btn__save--space" @click="onSubmit(), this.saveAndInsert = true">Cất và Thêm</button>
-                    <div tabindex="0" class="btn btn--outline" @click="onSubmit(), this.saveAndInsert = false">Cất</div> 
+                    <button class="btn btn__save btn__save--space"
+                        @click="onSubmit(), this.saveAndInsert = true"
+                        :data-title="this.textTooltip.saveAndInsert"
+                    > {{ this.textFunctionSaveAndInsert }}</button>
+                    <div tabindex="0" class="btn btn--outline" 
+                        @click="onSubmit(), this.saveAndInsert = false"
+                    >{{ this.textFunctionSave }}</div> 
                 </div>
 
                 <div class="modal__footer--end">
-                    <div tabindex="0" @click="this.closeModalAction()" class="btn btn--outline">Huỷ</div> 
+                    <div tabindex="0" @click="this.closeModalAction()" class="btn btn--outline">{{ this.textFunctionCancel }}</div> 
                     <button v-on:focus="tabRollback()" class="btn__tabRollback"></button>
                 </div>
             </footer>
@@ -837,8 +852,10 @@ export default {
         */
         onClose() {
             /* Mở cảnh báo */
-            if (this.employeeModal != this.employeeModalTemp)
+            if (this.employeeModal != this.employeeModalTemp) {
                 this.isShowCloseDialog = true;
+                this.$refs.dialog.focus();
+            }
         },
 
         /* Đóng modal khi đối số là true
@@ -951,6 +968,21 @@ export default {
 
         },
 
+        /* ngăn ngừa save as
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 24/12/2022 
+        */
+        blockKeyWindows(e) {
+            if (e.keyCode === 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+            e.preventDefault();
+            // Process event...
+            this.onSubmit();
+            this.saveAndInsert = false;
+            }
+        },
+
         /* handler key number
             @param {}
             @returns void
@@ -1045,6 +1077,7 @@ export default {
                 } else if (me.v$.employeeModal.departmentName.$error) {
                     me.errorMessage = this.textErrorMessage.emptyDepartmentName;
                 }
+                
                 me.isShowValidationDialog = true;
                 return false;
             } else {
@@ -1237,9 +1270,9 @@ export default {
             //#region Tên các chức năng
             textFunctionClose: Resource.TextVi.Modal.Close,
             textFunctionCancel: Resource.TextVi.Modal.Cancel,
-            textFunctionInsert: Resource.TextVi.Modal.Insert,
             textFunctionUpdate: Resource.TextVi.Modal.Update,
             textFunctionSave: Resource.TextVi.Modal.Save,
+            textFunctionSaveAndInsert: Resource.TextVi.Modal.SaveAndInsert,
             textFunctionAccept: Resource.TextVi.Modal.Accept,
             textFunctionYes: Resource.TextVi.Modal.Yes,
             textFunctionNo: Resource.TextVi.Modal.No,
@@ -1292,7 +1325,9 @@ export default {
                 identityNumber: Resource.TextVi.Tooltip.IdentityNumber,
                 phone: Resource.TextVi.Tooltip.Phone,
                 fax: Resource.TextVi.Tooltip.Fax,
-
+                help: Resource.TextVi.Tooltip.Help,
+                close: Resource.TextVi.Tooltip.Close,
+                saveAndInsert: Resource.TextVi.Tooltip.SaveAndInsert,
             },
 
             placeholder : {
