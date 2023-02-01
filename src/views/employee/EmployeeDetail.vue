@@ -126,10 +126,11 @@
                                     {{this.textDateOfBirth}} 
                                 </label>
                                 <div class="modal__input--icon">
+                                    <Datepicker v-model="this.employeeModal.dateOfBirth" :format="datingFormat" hidden></Datepicker>
                                     <input 
                                         type="date" 
-                                        v-model.trim="this.employeeModal.dateOfBirth"
-                                        pattern="\d{4}-\d{2}-\d{2}"
+                                        v-model="this.employeeModal.dateOfBirth"
+                                        @change="checkDate()"
                                         class="input input--modal"  
                                     >
                                     <base-message-error :text="this.textDateOfBirth"></base-message-error>
@@ -428,6 +429,8 @@ import BCombobox from "@/components/base/combobox/BCombobox.vue";
 import useValidate from '@vuelidate/core';
 import {required} from '@vuelidate/validators';
 import BaseMessageError from "@/components/base/message/BaseMessageError.vue";
+import Datepicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 export default {
     name: "EmployeeDetail",
@@ -437,6 +440,7 @@ export default {
         BToast,
         BLoading,
         BCombobox,
+        Datepicker,
     },
 
     props: [
@@ -455,9 +459,23 @@ export default {
         let me = this;
 
         me.displayModal = me.$parent.displayModal;
-
     },
     
+    setup() {
+        const datingFormat = (date) => {
+            const day = date.getDate();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+
+            return `${month}/${day}/${year}`;
+        
+        }
+
+        return {
+            datingFormat,
+        }
+    },
+
     /* Khởi tạo giá trị mặc định khi vào DOM thật */
     async beforeMount() {
         console.log("beforeMount form")
@@ -677,6 +695,8 @@ export default {
                 })
                 .catch((error) => {
                     console.log('error: ', error.status);
+                    me.validateBackend(error.response);
+
                 })
             } catch (e) {
                 console.log(e);
@@ -874,7 +894,17 @@ export default {
         //#endregion Modal click events 
 
         //#region Modal xử lý hiển thị
-
+        /* Xử lý ngày tháng
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 24/12/2022 
+        */
+        checkDate() {
+            if(this.employeeModal.dateOfBirth.getFullYear() > new Date().getFullYear()) {
+                this.employeeModal.dateOfBirth = new Date();
+            }
+        },
 
         /* Load lại form modal trống
             @param {}
@@ -1084,10 +1114,16 @@ export default {
             if (response.status == Enum.StatusCode.BADREQUEST) {
                 if (response.data.errorCode == Enum.ErrorCode.DUPLICATE_CODE) {
                     me.errorMessage = me.textErrorMessage.employeeCode +  ' <' + me.employeeModal.employeeCode + '> ' + me.textErrorMessage.duplicateCode;
-                }
-
-                me.isShowValidationDialogBackend = true;    
+                }  
             } 
+            else if(response.status == Enum.StatusCode.NOTFOUND) {
+                me.isShowValidationDialogBackend = true;    
+
+            } else {
+                me.errorMessage = me.textErrorMessage.BadRequest + '.';
+
+            }
+                me.isShowValidationDialogBackend = true;    
         },
 
         /* Focus ô input đầu tiên trả về lỗi
@@ -1283,6 +1319,7 @@ export default {
                 emptyDepartmentName: Resource.TextVi.ErrorMessage.EmptyDepartmentName,
                 duplicateCode: Resource.TextVi.ErrorMessage.DuplicateCode,
                 employeeCode: Resource.TextVi.ErrorMessage.EmployeeCode,
+                badRequest: Resource.TextVi.ErrorMessage.BadRequest,
             },
 
             textToastMessage: { // Nội dung Toast
@@ -1375,6 +1412,22 @@ export default {
             }
         },
         
+        /* Thực hiện format trường ngày tháng
+            Object
+            Author: Tuan 
+            Date: 30/10/2022 
+        */
+        dateFormat: {
+            get: function() {                
+                return this.employeeModal.dateOfBirth;
+            },
+            
+            set: function() {
+                if (this.employeeModal.dateOfBirth.getFullYear() > new Date().getFullYear()) 
+                    this.employeeModal.dateOfBirth = new Date('1/1/2001');
+            }
+        },
+
         /* Tự động thêm tên tài sản khi điền mã tài sản
             Object
             Author: Tuan 

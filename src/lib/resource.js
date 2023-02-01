@@ -16,21 +16,7 @@ export default {
         NOTFOUND:"Server không tìm thấy bất kì tài nguyên nào.", 
         NTERNALSERVERERROR:"Có lỗi xảy ra phía máy chủ. Vui lòng liên hệ MISA!.", 
     },
-
-    // Các thông báo nếu nhập thiếu
-    IsEmpty: {
-        code: "Cần phải nhập thông tin Mã nhân viên.",
-        name: "Cần phải nhập thông tin Tên nhân viên.",
-    },
-
-    // Error Message
-    ErrorMsg: {
-        CloseMsg: "Bạn có muốn hủy bỏ khai báo nhân viên này?.", // Lời nhắn khi đóng
-        CloseEditedMsg: "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?.", // Lời nhắn khi đóng mà trước đó đã sửa đổi
-        ValidateEmpty: "Cần phải nhập thông tin: .", // Lời nhắn khi nhập thiếu
-        ValidateDuplicateCode: "Mã nhân viên đã tồn tại.", // Lời nhắn khi trùng mã nhân viên
-    },
-        
+  
     TitleModal: {
         Insert: "Thêm nhân viên",
         Update: "Sửa nhân viên",
@@ -153,6 +139,8 @@ export default {
             EmptyName: "Tên nhân viên không được để trống",
             EmptyDepartmentName: "Tên đơn vị không được để trống",
             InvalidEmail: "Email không đúng định dạng",
+            BadRequest: "Có lỗi xảy ra, vui lòng liên hệ MISA để được hỗ trợ",
+            
         },
 
         ToastMessage: {
