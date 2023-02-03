@@ -1,11 +1,11 @@
 <template>
     <div class="content"
-        @keyup.ctrl.0="isDisplayModal = true, updateFunction = false"
+        @keyup.ctrl.0="isDisplayModal = true, updateFunction = false, replicateFunction = false"
     >
         <div class="content__header">
             <div class="content__title">{{this.contentTitle}}</div>
             <button class="btn btn--add"
-                @click="isDisplayModal = true, updateFunction = false"
+                @click="isDisplayModal = true, updateFunction = false, replicateFunction = false"
             >{{this.contentAdd}}</button>
         </div>
 
@@ -184,16 +184,16 @@
 
                             <span class="table__subnumber" tabindex="1"
                                 v-show="(this.currentPage == 1 || this.currentPage == 2) && this.isShowNextPage == true"
-                                @click="this.currentPage++, loadAPI()"
-                            >{{ this.currentPage + 1 }}</span>
-                            <span class="table__subnumber" tabindex="1" 
-                                v-show="(this.currentPage == 1 || this.currentPage == 2) && this.isShowNextPage == true"
-                                @click="this.currentPage+=2, loadAPI()"
-                            >{{ this.currentPage + 2 }}</span>
-                            <span class="table__subnumber" tabindex="1" 
-                                v-show="(this.currentPage == 1) && this.isShowNextPage == true"
                                 @click="this.currentPage+=3, loadAPI()"
                             >{{ this.currentPage + 3 }}</span>
+                            <span class="table__subnumber" tabindex="1" 
+                                v-show="(this.currentPage == 1 || this.currentPage == 2) && this.isShowNextPage == true"
+                                @click="this.currentPage+=4, loadAPI()"
+                            >{{ this.currentPage + 4 }}</span>
+                            <span class="table__subnumber" tabindex="1" 
+                                v-show="(this.currentPage == 1) && this.isShowNextPage == true"
+                                @click="this.currentPage+=5, loadAPI()"
+                            >{{ this.currentPage + 5 }}</span>
 
                             <span class="table__subnumber" tabindex="1"
                             v-show="this.currentPage > 2 && this. currentPage < this.totalPage - 1 && this.totalPage > 3"
@@ -209,16 +209,16 @@
 
                             <span class="table__subnumber" tabindex="1"
                                 v-show="(this.currentPage == this.totalPage) && this.isShowPreviousPage == true"
+                                @click="this.currentPage-=5, loadAPI()"
+                            >{{ this.currentPage - 5 }}</span>
+                            <span class="table__subnumber" tabindex="1" 
+                                v-show="(this.currentPage == this.totalPage || this.currentPage == this.totalPage - 1) && this.isShowPreviousPage == true"
+                                @click="this.currentPage-=4, loadAPI()"
+                            >{{ this.currentPage - 4 }}</span>
+                            <span class="table__subnumber" tabindex="1" 
+                                v-show="(this.currentPage == this.totalPage || this.currentPage == this.totalPage - 1) && this.isShowPreviousPage == true"
                                 @click="this.currentPage-=3, loadAPI()"
                             >{{ this.currentPage - 3 }}</span>
-                            <span class="table__subnumber" tabindex="1" 
-                                v-show="(this.currentPage == this.totalPage || this.currentPage == this.totalPage - 1) && this.isShowPreviousPage == true"
-                                @click="this.currentPage-=2, loadAPI()"
-                            >{{ this.currentPage - 2 }}</span>
-                            <span class="table__subnumber" tabindex="1" 
-                                v-show="(this.currentPage == this.totalPage || this.currentPage == this.totalPage - 1) && this.isShowPreviousPage == true"
-                                @click="this.currentPage--, loadAPI()"
-                            >{{ this.currentPage - 1 }}</span>
 
                             <span class="table__subnumber" tabindex="1"
                                 v-show="this.currentPage > this.totalPage-2  && this.totalPage > 3 && this.isShowPreviousPage == false"
@@ -520,9 +520,10 @@ export default {
             Author: Tuan 
             Date: 17/12/2022 
         */
-        showSucessToast() {
+        async showSucessToast() {
             this.isShowSuccessToast = true;
-            setTimeout(() => this.isShowSuccessToast = false, 2400); 
+            await setTimeout(() => this.isShowSuccessToast = false, 2400); 
+
         },
 
         /* formatDate
@@ -538,6 +539,21 @@ export default {
         },
 
         //#region Click events
+        /* Thêm mới nhân viên
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 10/12/2022 
+        */
+        onInsertFunction() {
+            let me = this;
+            me.isDisplayModal = true;
+            me.updateFunction = false;
+            me.replicateFunction = false;
+            me.isShowSuccessDeleteToast = false
+            me.isShowSuccessToast = false;
+        },
+
         /* Sửa nhân viên
             @param {}
             @returns void
@@ -549,6 +565,8 @@ export default {
             me.focusEmployee(employee);
             me.isDisplayModal = true;
             me.updateFunction = true;
+            me.isShowSuccessDeleteToast = false
+            me.isShowSuccessToast = false;
         },
 
         /* Nhân bản nhân viên
@@ -562,6 +580,9 @@ export default {
             me.focusEmployee(employee);
             me.isDisplayModal = true;
             me.replicateFunction = true;
+            me.updateFunction = false;
+            me.isShowSuccessDeleteToast = false
+            me.isShowSuccessToast = false;
         },
 
         /* Check các nhân viên với checkbox

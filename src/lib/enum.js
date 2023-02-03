@@ -24,7 +24,7 @@ export default {
         UNSUPPORTEDMEDIATYPE: 415, //Không hỗ trợ kiểu Resource này.
         UNPROCESSABLEENTITY: 422, //Dữ liệu không được xác thực.
         TOOMANYREQUEST: 429, //Request bị từ chối do bị giới hạn
-        NTERNALSERVERERROR: 500, //Máy chủ bị lỗi.
+        INTERNALSERVERERROR: 500, //Máy chủ bị lỗi.
     },
 
     ErrorCode: {

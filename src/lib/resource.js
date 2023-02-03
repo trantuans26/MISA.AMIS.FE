@@ -3,6 +3,8 @@
     Date: 10/12/2022
  */
 export default {
+    Author: "Trần Thái Tuấn",
+
     Url:{
         Employees: "https://localhost:44368/api/v1/Employees",
         Departments: "https://localhost:44368/api/v1/Departments",
@@ -15,21 +17,6 @@ export default {
         FORBIDDEN: "Không có quyền truy cập tài nguyên này.",
         NOTFOUND:"Server không tìm thấy bất kì tài nguyên nào.", 
         NTERNALSERVERERROR:"Có lỗi xảy ra phía máy chủ. Vui lòng liên hệ MISA!.", 
-    },
-  
-    TitleModal: {
-        Insert: "Thêm nhân viên",
-        Update: "Sửa nhân viên",
-        Replication: "Nhân bản nhân viên",
-    },
-
-    TitleFunction: {
-        Insert: "Thêm nhân viên",
-        Export: "Xuất khẩu nhân viên",
-        Delete: "Xoá nhân viên",
-        CategoryFilter: "Loại nhân viên",
-        DepartmentFilter: "Bộ phận sử dụng",
-        Search: "Tìm kiếm nhân viên"
     },
 
     TextVi:{
@@ -71,7 +58,7 @@ export default {
         },
 
         Modal:{
-            InsertModal: "Thêm nhân viên",
+            InsertModal: "Thêm mới nhân viên",
             UpdateModal: "Thông tin nhân viên",
 
             Customer: "Là khách hàng",
@@ -139,8 +126,10 @@ export default {
             EmptyName: "Tên nhân viên không được để trống",
             EmptyDepartmentName: "Tên đơn vị không được để trống",
             InvalidEmail: "Email không đúng định dạng",
-            BadRequest: "Có lỗi xảy ra, vui lòng liên hệ MISA để được hỗ trợ",
-            
+            InternalServerError: "Có lỗi xảy ra, vui lòng liên hệ MISA để được hỗ trợ",
+            InvalidDateOfBirth: "Ngày sinh không hợp lệ",
+            InvalidIdentityDate: "Ngày cấp không hợp lệ",
+            InvalidIdentityNumber: "Số CMND không hợp lệ",
         },
 
         ToastMessage: {

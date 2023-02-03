@@ -129,11 +129,18 @@
                                     <Datepicker v-model="this.employeeModal.dateOfBirth" :format="datingFormat" hidden></Datepicker>
                                     <input 
                                         type="date" 
+                                        ref="dateOfBirthFocusing"
                                         v-model="this.employeeModal.dateOfBirth"
-                                        @change="checkDate()"
+                                        @focus="this.isShowValidity.invalidDateOfBirth = false"
+                                        @blur="checkDate()"
                                         class="input input--modal"  
+                                        :class="{'input--error': this.isShowValidity.invalidDateOfBirth}"
                                     >
-                                    <base-message-error :text="this.textDateOfBirth"></base-message-error>
+                                    <base-message-error>
+                                        <template #message>
+                                            {{ this.textErrorMessage.invalidDateOfBirth }}
+                                        </template>
+                                    </base-message-error>
                                 </div>
                             </div>
             
@@ -157,13 +164,19 @@
                                 </label>
                                 <input 
                                     class="input input--haveicon input--modal" type="text"  
+                                    :class="{'input--error': this.isShowValidity.invalidIdentityNumber}"    
                                     v-model.trim="this.employeeModal.identityNumber"
-                                    @keydown="numbersOnly(event)"
-                                    @paste="formatIdentityNumber"
+                                    @focus="this.isShowValidity.invalidIdentityNumber = false"
+                                    @change="checkIdentityNumber()"
+                                    @blur="checkIdentityNumber()"
                                     placeholder=""
                                     maxlength="255"
                                 >
-                                <base-message-error :text="textIdentityNumber"></base-message-error>
+                                <base-message-error>
+                                    <template #message>
+                                        {{ this.textErrorMessage.invalidIdentityNumber }}
+                                    </template>
+                                </base-message-error>
                             </div>
 
                             <div class="modal__item">
@@ -173,10 +186,18 @@
                                 <div class="modal__input--icon">
                                     <input 
                                         type="date" 
+                                        ref="identityDateFocusing"
                                         v-model.trim="this.employeeModal.identityDate"
                                         class="input input--modal"  
+                                        @focus="this.isShowValidity.invalidIdentityDate = false"
+                                        @blur="checkIdentityDate()"
+                                        :class="{'input--error': this.isShowValidity.invalidIdentityDate}"
                                     >
-                                    <base-message-error :text="this.textIdentityDate"></base-message-error>
+                                    <base-message-error>
+                                        <template #message>
+                                            {{ this.textErrorMessage.invalidIdentityDate }}
+                                        </template>
+                                    </base-message-error>
                                 </div>
                             </div>
                         </div>
@@ -250,12 +271,21 @@
                                 {{this.textEmail}}
                             </label>
                             <input
-                                class="input input--modal input--220" type="text"  
+                                class="input input--modal input--220" type="text"
+                                :class="{'input--error': this.isShowValidity.invalidEmail}"
+                                ref="EmailFocusing"  
                                 v-model.trim="this.employeeModal.email"
+                                @focus="this.isShowValidity.invalidEmail = false"
+                                @change="checkEmail()"
+                                @blur="checkEmail()"
                                 placeholder="example@email.com"
                                 maxlength="100"
                             >
-                            <base-message-error :text="this.textEmail"></base-message-error>
+                            <base-message-error>
+                                <template #message>
+                                    {{ this.textErrorMessage.invalidEmail}}
+                                </template>
+                            </base-message-error>
                         </div>
                     </div>
 
@@ -427,7 +457,7 @@ import BToast from "@/components/base/toast/BToast.vue";
 import BLoading from '@/components/base/loading/BLoading.vue'
 import BCombobox from "@/components/base/combobox/BCombobox.vue";
 import useValidate from '@vuelidate/core';
-import {required} from '@vuelidate/validators';
+import {required, email, numeric} from '@vuelidate/validators';
 import BaseMessageError from "@/components/base/message/BaseMessageError.vue";
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
@@ -505,9 +535,11 @@ export default {
             me.employeeModal.bankNumber = me.$parent.employeeFocused.bankNumber;
             me.employeeModal.bankName = me.$parent.employeeFocused.bankName;
             me.employeeModal.bankBranch = me.$parent.employeeFocused.bankBranch;
+            me.employeeModal.createdBy = me.$parent.employeeFocused.createdBy;
+            me.employeeModal.createdDate = me.$parent.employeeFocused.createdDate;
         } else if(me.$parent.replicateFunction) {
             me.titleModal = me.textInsertModal;
-            await me.getNewEmployeeCode();
+            await me.apiGetNewEmployeeCode();
             me.employeeModal.employeeName = me.$parent.employeeFocused.employeeName;
             me.employeeModal.departmentID = me.$parent.employeeFocused.departmentID;
             me.employeeModal.departmentCode = me.$parent.employeeFocused.departmentCode;
@@ -526,7 +558,7 @@ export default {
             me.employeeModal.bankName = me.$parent.employeeFocused.bankName;
             me.employeeModal.bankBranch = me.$parent.employeeFocused.bankBranch;
         } else {
-            await me.getNewEmployeeCode();
+            await me.apiGetNewEmployeeCode();
         }
 
         me.employeeJSON = JSON.stringify(me.employeeModal);
@@ -571,31 +603,20 @@ export default {
             Date: 17/11/2022 
         */
         apiInsertEmployee() {
-            let me = this;
-            me.isShowLoadingModal = true;
             try {
+                let me = this;
+
+                me.isShowLoadingModal = true;
+
+                me.employeeModal.modifiedBy = me.author;
+                me.employeeModal.modifiedDate = new Date();       
+                me.employeeModal.createdBy = me.author;
+                me.employeeModal.createdDate = new Date();
                 axios
-                .post(Resource.Url.Employees, {
-                    "employeeCode": me.employeeModal.employeeCode,
-                    "employeeName": me.employeeModal.employeeName,
-                    "departmentID": me.employeeModal.departmentID,
-                    "jobPosition": me.employeeModal.jobPosition,
-                    "dateOfBirth": me.employeeModal.dateOfBirth == '' ? null : me.employeeModal.dateOfBirth,
-                    "gender": me.employeeModal.gender,
-                    "phone": me.employeeModal.phoneNumber,
-                    "email": me.employeeModal.email,
-                    "address": me.employeeModal.address,
-                    "fax": me.employeeModal.fax,
-                    "identityNumber": me.employeeModal.identityNumber,
-                    "identityDate": me.employeeModal.identityDate == '' ? null : me.employeeModal.identityDate,
-                    "identityPlace": me.employeeModal.identityPlace,
-                    "bankNumber": me.employeeModal.bankNumber,
-                    "bankName": me.employeeModal.bankName,
-                    "bankBranch": me.employeeModal.bankBranch,
-                    "createdDate": new Date(),
-                    "createdBy": this.author,
-                    "modifiedDate": new Date(),
-                    "modifiedBy": this.author,
+                .post(Resource.Url.Employees, this.employeeModal, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 })
                 .then(() => {
                     /* Close modal */
@@ -628,43 +649,31 @@ export default {
             Author: Tuan 
             Date: 17/11/2022 
         */
-        apiUpdateEmployee() {
+        async apiUpdateEmployee() {
             let me = this;
             me.isShowLoadingModal = true;
 
+            me.employeeModal.modifiedBy = me.author;
+            me.employeeModal.modifiedDate = new Date();
+            
             try {                                       
-                axios
-                .put(`${Resource.Url.Employees}/${me.employeeModal.employeeID}`, {
-                    "employeeCode": me.employeeModal.employeeCode,
-                    "employeeName": me.employeeModal.employeeName,
-                    "departmentID": me.employeeModal.departmentID,
-                    "jobPosition": me.employeeModal.jobPosition,
-                    "dateOfBirth": me.employeeModal.dateOfBirth == '' ? null : me.employeeModal.dateOfBirth,
-                    "gender": me.employeeModal.gender,
-                    "phone": me.employeeModal.phone,
-                    "email": me.employeeModal.email,
-                    "address": me.employeeModal.address,
-                    "fax": me.employeeModal.fax,
-                    "identityNumber": me.employeeModal.identityNumber,
-                    "identityDate": me.employeeModal.identityDate == '' ? null : me.employeeModal.identityDate,
-                    "identityPlace": me.employeeModal.identityPlace,
-                    "bankNumber": me.employeeModal.bankNumber,
-                    "bankName": me.employeeModal.bankName,
-                    "bankBranch": me.employeeModal.bankBranch,
-                    "modifiedDate": new Date(),
-                    "modifiedBy": this.author,
+                await axios
+                .put(`${Resource.Url.Employees}/${me.employeeModal.employeeID}`, this.employeeModal, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 })
                 .then(() => {
                     me.$parent.loadAPI();
                     me.loadModal();
                     if (me.saveAndInsert) {
-                        me.$emit('closeModal', true)
+                        me.$emit('closeModal', true);
+                        me.titleModal = me.textInsertModal;
                     } else {
                         me.$emit('showSuccessToast');
                         me.$emit('closeModal', false);
                     } 
 
-                    me.$parent.updateFunction = false;
                     me.isShowLoadingModal = false;
                     me.showSuccessToast();
                 })
@@ -673,6 +682,8 @@ export default {
                     me.validateBackend(error.response);
                     me.isShowLoadingModal = false;
                 });
+
+
             } catch (error) {
                 console.log(error);
             }
@@ -684,7 +695,7 @@ export default {
             Author: Tuan 
             Date: 17/11/2022 
         */
-        getNewEmployeeCode() {
+        apiGetNewEmployeeCode() {
             let me = this;
             try {
                 return axios
@@ -721,8 +732,10 @@ export default {
                 .catch((error) => {
                     console.log('error: ', error.status);
                 })
-            } catch (e) {
-                console.log(e);
+            } catch (error) {
+                console.log("error", error);
+                me.validateBackend(error.response);
+                me.isShowLoadingModal = false;
             }
         },
 
@@ -858,7 +871,7 @@ export default {
             /* Mở cảnh báo */
             let me = this;
             let eJSON = JSON.stringify(me.employeeModal);
-
+            console.log('khi onclose', eJSON);
             if (me.employeeJSON != eJSON && me.$parent.updateFunction) {
                 me.isShowCloseDialog = true;
             } else {
@@ -901,9 +914,43 @@ export default {
             Date: 24/12/2022 
         */
         checkDate() {
-            if(this.employeeModal.dateOfBirth.getFullYear() > new Date().getFullYear()) {
-                this.employeeModal.dateOfBirth = new Date();
-            }
+            this.employeeModal.dateOfBirth > new Date().toISOString() ? this.isShowValidity.invalidDateOfBirth = true : this.isShowValidity.invalidDateOfBirth = false;
+        },
+
+        /* Xử lý ngày cấp CMND
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 24/12/2022 
+        */
+        checkIdentityDate() {
+            this.employeeModal.identityDate > new Date().toISOString() ? this.isShowValidity.invalidIdentityDate = true : this.isShowValidity.invalidIdentityDate = false;
+        },
+
+        /* Xử lý email
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 24/12/2022 
+        */
+        checkEmail() {
+            let me = this;
+            me.v$.$validate();
+
+            me.v$.employeeModal.email.$error ?  me.isShowValidity.invalidEmail = true : me.isShowValidity.invalidEmail = false;
+        },
+
+        /* Xử lý số CMND
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 24/12/2022 
+        */
+        checkIdentityNumber() {
+            let me = this;
+            me.v$.$validate();
+
+            me.v$.employeeModal.identityNumber.$error ?  me.isShowValidity.invalidIdentityNumber = true : me.isShowValidity.invalidIdentityNumber = false;
         },
 
         /* Load lại form modal trống
@@ -912,18 +959,21 @@ export default {
             Author: Tuan 
             Date: 24/12/2022 
         */
-        loadModal() {
+        async loadModal() {
             let me = this;
             me.isSubmited = false;
 
-            me.getNewEmployeeCode();
+            await me.apiGetNewEmployeeCode();
 
             me.isShowValidity.emptyDepartmentID = false;
             me.isShowValidity.emptyEmployeeCode = false;
             me.isShowValidity.emptyEmployeeName = false;
             me.isShowValidity.invalidEmail = false;
+            me.isShowValidity.invalidDateOfBirth = false;
+            me.isShowValidity.invalidIdentityDate = false;
+            me.isShowValidity.invalidIdentityNumber = false;
 
-            me.employeeModal.employeeID = '';
+            me.employeeModal.employeeID = null;
             me.employeeModal.employeeName = '';
             me.employeeModal.departmentID = '';
             me.employeeModal.departmentCode = '';
@@ -941,6 +991,11 @@ export default {
             me.employeeModal.bankNumber = '';
             me.employeeModal.bankName = '';
             me.employeeModal.bankBranch = '';
+            me.employeeModal.createdBy = me.author;
+            me.employeeModal.createdDate = new Date();
+            me.employeeModal.modifiedBy = me.author;
+            me.employeeModal.modifiedDate = new Date();
+            me.employeeJSON = JSON.stringify(me.employeeModal);
         },
 
         /* Show toast thêm thành công
@@ -952,6 +1007,8 @@ export default {
         showSuccessToast() {
             this.isShowSuccessToast = true;
             setTimeout(() => this.isShowSuccessToast = false, 2400); 
+
+
         },
         //#endregion Modal processing ui
 
@@ -1094,9 +1151,24 @@ export default {
                     me.errorMessage = this.textErrorMessage.emptyName;
                 } else if (me.v$.employeeModal.departmentName.$error) {
                     me.errorMessage = this.textErrorMessage.emptyDepartmentName;
+                } else if (me.v$.employeeModal.email.$error) {
+                    me.errorMessage = this.textErrorMessage.invalidEmail;
+                } else if (me.v$.employeeModal.identityNumber.$error) {
+                    me.errorMessage = this.textErrorMessage.invalidIdentityNumber;
                 }
-                
+
                 me.isShowValidationDialog = true;
+
+                return false;
+            } else if(me.isShowValidity.invalidDateOfBirth) {
+                me.errorMessage = this.textErrorMessage.invalidDateOfBirth;
+                me.isShowValidationDialog = true;
+
+                return false;
+            } else if(me.isShowValidity.invalidIdentityDate) {
+                me.errorMessage = this.textErrorMessage.invalidIdentityDate;
+                me.isShowValidationDialog = true;
+
                 return false;
             } else {
                 return true;
@@ -1111,19 +1183,25 @@ export default {
         */
         validateBackend(response) {
             let me = this;
-            if (response.status == Enum.StatusCode.BADREQUEST) {
-                if (response.data.errorCode == Enum.ErrorCode.DUPLICATE_CODE) {
-                    me.errorMessage = me.textErrorMessage.employeeCode +  ' <' + me.employeeModal.employeeCode + '> ' + me.textErrorMessage.duplicateCode;
-                }  
-            } 
-            else if(response.status == Enum.StatusCode.NOTFOUND) {
-                me.isShowValidationDialogBackend = true;    
+            try {
+                if (response.status == Enum.StatusCode.BADREQUEST) {
+                    if (response.data.errorCode == Enum.ErrorCode.DUPLICATE_CODE) {
+                        me.errorMessage = me.textErrorMessage.employeeCode +  ' <' + me.employeeModal.employeeCode + '> ' + me.textErrorMessage.duplicateCode;
+                    }  
+                } 
+                else if(response.status == Enum.StatusCode.NOTFOUND) {
+                    me.isShowValidationDialogBackend = true;    
 
-            } else {
-                me.errorMessage = me.textErrorMessage.BadRequest + '.';
+                } else {
+                    me.errorMessage = me.textErrorMessage.internalServerError + '.';
 
+                }
+                    me.isShowValidationDialogBackend = true;   
+            } catch(e) {
+                me.isShowValidationDialogBackend = true;   
+                me.errorMessage = me.textErrorMessage.internalServerError + '.';
             }
-                me.isShowValidationDialogBackend = true;    
+ 
         },
 
         /* Focus ô input đầu tiên trả về lỗi
@@ -1146,6 +1224,22 @@ export default {
             if (me.errorMessage == me.textErrorMessage.emptyDepartmentName) {
                 me.focusDepartment = true;
                 me.isShowValidity.emptyDepartmentID = false;
+            } 
+            if (me.errorMessage == me.textErrorMessage.invalidDateOfBirth) {
+                me.$refs.dateOfBirthFocusing.focus();
+                me.isShowValidity.invalidDateOfBirth = false;
+            }
+            if (me.errorMessage == me.textErrorMessage.invalidIdentityNumber) {
+                me.$refs.identityNumberFocusing.focus();
+                me.isShowValidity.invalidIdentityNumber = false;
+            }
+            if (me.errorMessage == me.textErrorMessage.invalidIdentityDate) {
+                me.$refs.identityDateFocusing.focus();
+                me.isShowValidity.invalidIdentityDate = false;
+            }
+            if (me.errorMessage == me.textErrorMessage.invalidEmail) {
+                me.$refs.EmailFocusing.focus();
+                me.isShowValidity.invalidEmail = false;
             }
         },
 
@@ -1163,8 +1257,7 @@ export default {
 
             me.isShowValidity.emptyDepartmentID = true;
             me.isShowValidity.emptyEmployeeCode = true;
-            me.isShowValidity.emptyEmployeeName = true;
-            me.isShowValidity.invalidEmail = true;
+            me.isShowValidity.emptyEmployeeName = true;            
 
             me.focusInvalidFirst();
 
@@ -1179,11 +1272,15 @@ export default {
             employeeCode: { required },
             employeeName: { required },
             departmentName: { required },
+            email: { email },
+            identityNumber: { numeric }
         },
     },
 
     data() {
         return {
+            author: Resource.Author,
+
             //#region Dialog 
             isShowValidationDialog: false, // Hiển thị dialog cảnh báo lỗi validate 
             isShowValidationDialogBackend: false, // Hiển thị dialog cảnh báo lỗi phía backend
@@ -1197,16 +1294,16 @@ export default {
 
             //#region Data Modal 
             employeeModal: { // Dữ liệu form modal
-                employeeID: '',
+                employeeID: null,
                 employeeCode: '',
                 employeeName: '',
-                dateOfBirth: "",
+                dateOfBirth: null,
                 gender: 0,
                 departmentID: "",
                 departmentCode: '',
                 departmentName: '',
                 identityNumber: "",
-                identityDate: "",
+                identityDate: null,
                 jobPosition: "",
                 identityPlace: "",
                 address: "",
@@ -1216,27 +1313,10 @@ export default {
                 bankNumber: "",
                 bankName: "",
                 bankBranch: "",
-            },
-            employeeModalTemp: { // Dữ liệu form modal temp
-                employeeID: '',
-                employeeCode: '',
-                employeeName: '',
-                dateOfBirth: "",
-                gender: 0,
-                departmentID: "",
-                departmentCode: '',
-                departmentName: '',
-                identityNumber: "",
-                identityDate: "",
-                jobPosition: "",
-                identityPlace: "",
-                address: "",
-                phone: "",
-                fax: "",
-                email: "",
-                bankNumber: "",
-                bankName: "",
-                bankBranch: "",
+                createdBy: this.author,
+                createdDate: new Date(),
+                modifiedBy: this.author,
+                modifiedDate: new Date(),
             },
             employeeJSON: '',
             employeeCodeUpdate: '',
@@ -1250,6 +1330,9 @@ export default {
                 emptyEmployeeName: false,
                 emptyDepartmentID: false,
                 invalidEmail: false,
+                invalidDateOfBirth: false,
+                invalidIdentityDate: false,
+                invalidIdentityNumber: false,
             },
             url: {
                 department: Resource.Url.Departments,
@@ -1319,7 +1402,11 @@ export default {
                 emptyDepartmentName: Resource.TextVi.ErrorMessage.EmptyDepartmentName,
                 duplicateCode: Resource.TextVi.ErrorMessage.DuplicateCode,
                 employeeCode: Resource.TextVi.ErrorMessage.EmployeeCode,
-                badRequest: Resource.TextVi.ErrorMessage.BadRequest,
+                internalServerError: Resource.TextVi.ErrorMessage.InternalServerError,
+                invalidEmail: Resource.TextVi.ErrorMessage.InvalidEmail,
+                invalidDateOfBirth: Resource.TextVi.ErrorMessage.InvalidDateOfBirth,
+                invalidIdentityDate: Resource.TextVi.ErrorMessage.InvalidIdentityDate,
+                invalidIdentityNumber: Resource.TextVi.ErrorMessage.InvalidIdentityNumber,
             },
 
             textToastMessage: { // Nội dung Toast
@@ -1362,7 +1449,6 @@ export default {
             },
 
             /* Một số thông tin khác */
-            author: "Tuấn",
             v$: useValidate(), // Validate dữ liệu (sử dụng vuelidate)
         }   
     },
@@ -1412,22 +1498,6 @@ export default {
             }
         },
         
-        /* Thực hiện format trường ngày tháng
-            Object
-            Author: Tuan 
-            Date: 30/10/2022 
-        */
-        dateFormat: {
-            get: function() {                
-                return this.employeeModal.dateOfBirth;
-            },
-            
-            set: function() {
-                if (this.employeeModal.dateOfBirth.getFullYear() > new Date().getFullYear()) 
-                    this.employeeModal.dateOfBirth = new Date('1/1/2001');
-            }
-        },
-
         /* Tự động thêm tên tài sản khi điền mã tài sản
             Object
             Author: Tuan 
