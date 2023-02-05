@@ -149,6 +149,10 @@
     background-color: var(--tableRow-colorcheck) !important;
 }
 
+.table__row {
+    position: relative;
+}
+
 .table__row--checked,
 .table__row--checked > .table__col--check,
 .table__row--checked > .table__col--function {
@@ -373,14 +377,17 @@ th.table__col {
 
 .table__col--positionName {
     min-width: 160px;
+    max-width: 160px;
 }
 
 .table__col--departmentName {
     min-width: 200px;
+    max-width: 200px;
 }
 
 .table__col--bankNumber {
     min-width: 140px;
+    max-width: 140px;
 }
 
 .table__col--bankName {

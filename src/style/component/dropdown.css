@@ -25,13 +25,21 @@
 /*     transition: opacity .25s,transform .25s,width .3s ease; */
 }
 
+.dropdown__box {
+    position: sticky;
+    outline: none;
+    right: 10px;
+    margin-right: 10px;
+    margin-top: 13px;
+    width: 0;
+    z-index: 3;
+    cursor: pointer;
+}
 
 .dropdown--function {
-    height: 0;
-    width: 0;
-    position: sticky;
+    position: absolute;
     right: 0;
-    margin-top: 36px;
+    top: 20px;
 }
 
 .dropdown--page {
@@ -65,11 +73,6 @@
     border: 1px solid #babec5;
 }
 
-.dropdown--function .dropdown__list {
-    right: 28px;
-    position: absolute;
-
-}
 
 .dropdown__item {
     position: relative;
