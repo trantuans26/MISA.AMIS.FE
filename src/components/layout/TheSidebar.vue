@@ -57,7 +57,6 @@
                         @click="makeActive(item.style)"
                         :key="item"
                         :class="item.style"
-                        :data-title="item.title"
                     >
                         <router-link :to="item.route">
                             <div class="sidebar__icon">

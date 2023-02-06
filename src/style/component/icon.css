@@ -297,6 +297,18 @@
 	height: 20px;
 }
 
+.icon--setting {
+	background-position: -90px -201px;
+	width: 20px;
+	height: 22px;
+} 
+
+.icon--setting:hover {
+	background-position: -1378px -89px;
+	width: 20px;
+	height: 22px;
+}
+
 /* BEGIN: ICON:HOVER */
 .item--caretdown {
     width: 30px;
