@@ -31,7 +31,7 @@ export default {
         },
 
         Table: {
-            Search: "Tìm kiếm theo mã, tên nhân viên",
+            Search: "Tìm kiếm theo mã, tên và ĐT di động",
             Batch: "Thực hiện hàng loạt",
             
             /* Tên cột */

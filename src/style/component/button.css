@@ -86,33 +86,42 @@
     border: none;
 }
 
-.btn--batch {
-    border: 2px solid #3b3c3f;
+.btn__batch {
+    height: 32px;
+    border: 1px solid #b1b2b3;
     padding: 0 16px;
-    border-radius: 30px;
-    color: #111;
+    color: #afafaf;
     background-color: transparent;
     position: relative;
+    pointer-events:none;
+    
 }
 
-.btn--batch:hover {
+.btn__batch--actived {
+    opacity: 1;
+    pointer-events: all;
+    border: 1px solid #3b3c3f;
+    color: #111;
+}
+
+.btn__batch:hover {
     background-color: #d2d3d6;
 }
 
-.btn--batch:focus {
+.btn__batch:focus {
     background-color: unset;
 }
 
-.btn--batch:active {
+.btn__batch:active {
     background-color: #bbbcbc;
 }
 
-.btn__content--batch {
+.btn__batch--content {
     display: flex;
     align-items: center;
 }
 
-.btn__icon--batch {
+.btn__batch--icon {
     padding: 8px;
 }
 

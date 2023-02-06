@@ -1,11 +1,12 @@
 <template>
-    <button class="btn btn--batch"
+    <button class="btn btn__batch"
+        :class="{'btn__batch--actived': this.employeesSelectedByID.length}"
         @click="isShow = !isShow"
         @blur="isShow = false"
     >
-        <div class="btn__content--batch">
+        <div class="btn__batch--content">
             {{ this.textBatch }}
-            <div class="btn__icon--batch">
+            <div class="btn__batch--icon">
                 <i class="icon icon__grey--caretdown"
                     :class="{'icon__black--caretdown': this.employeesSelectedByID.length}"
                 ></i>
