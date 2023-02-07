@@ -213,6 +213,19 @@
     position: relative;
 }
 
+.modal [data-title]:after {
+    bottom: -3.8vh;
+    right: -12%;
+    z-index: 99;
+}
+
+.modal__item [data-title]:after {
+    bottom: 0vh;
+    right: 1%;
+    z-index: 99;
+}
+
+
 @keyframes modalFadeIn {
     from {
         opacity: 0;

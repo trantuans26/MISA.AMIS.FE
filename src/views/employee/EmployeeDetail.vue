@@ -1,8 +1,6 @@
 <template>
     <div class="modal modal--open"
-        @keyup.ctrl.shift.s="onSubmit(), this.saveAndInsert = true"
-        @keyup.esc="onClose()"
-        @keyup.enter="this.isShowValidationDialog = false, this.isShowValidationDialogBackend = false"
+        @keyup="keyboardShortcuts"
     >     
         <BLoading v-show="isShowLoadingModal" loadingClass="loading--modal"></BLoading>
 
@@ -343,6 +341,7 @@
                     > {{ this.textFunctionSaveAndInsert }}</button>
                     <div tabindex="0" class="btn btn--outline" 
                         @click="onSubmit(), this.saveAndInsert = false"
+                        :data-title="this.textTooltip.save"
                     >{{ this.textFunctionSave }}</div> 
                 </div>
 
@@ -1049,12 +1048,31 @@ export default {
             Author: Tuan 
             Date: 24/12/2022 
         */
-        blockKeyWindows(e) {
+        keyboardShortcuts(e) {
+            // Bắt Ctrl + S và Ctrl + Shift + S
             if (e.keyCode === 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
-            e.preventDefault();
-            // Process event...
-            this.onSubmit();
-            this.saveAndInsert = false;
+                e.preventDefault();
+                
+                // Process event...
+                this.onSubmit();
+
+                if(e.shiftKey) {
+                    this.saveAndInsert = true;
+                } else {
+                    this.saveAndInsert = false;
+                }
+            } 
+
+            // Bắt Esc
+            if (e.keyCode === 27) {
+                this.onClose();
+            }
+
+            // Bắt Enter
+            if (e.keyCode === 13) {
+                this.isShowValidationDialog = false;
+                this.isShowValidationDialogBackend = false;
+                this.isShowCloseDialog = false;
             }
         },
 
@@ -1441,6 +1459,7 @@ export default {
                 help: Resource.TextVi.Tooltip.Help,
                 close: Resource.TextVi.Tooltip.Close,
                 saveAndInsert: Resource.TextVi.Tooltip.SaveAndInsert,
+                save: Resource.TextVi.Tooltip.Save,
             },
 
             placeholder : {

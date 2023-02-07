@@ -155,12 +155,14 @@ export default {
             Reload: "Tải lại dữ liệu",
             ExportExcel: "Xuất tệp Excel",
             SaveAndInsert: "Cất và thêm(Ctrl + Shift + S)",
+            Save: "Cất(Ctrl + S)",
             Close: "Đóng(ESC)",
             Help: "Giúp(F1)",
         },
 
         KeyboardShortcuts: {
             SaveAndInsert: "Ctrl + Shift + S",
+            Save: "Ctrl + S",
         },
     }
 }
