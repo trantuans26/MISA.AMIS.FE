@@ -1,5 +1,6 @@
 <template>
-  <div id="container" class="container">
+  <div id="container" class="container"
+  >
     <TheSidebar 
       :isDisplay="sidebarNormal"
       @sidebarToggle="sidebarNormal = $event"
@@ -35,7 +36,9 @@ export default {
     }
   },
   methods: {
-
+    preventKeyboardDefault(event) {
+      event.preventDefault();
+    }
   },
 }
 </script>

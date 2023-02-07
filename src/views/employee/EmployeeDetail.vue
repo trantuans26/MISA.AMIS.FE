@@ -1,6 +1,6 @@
 <template>
     <div class="modal modal--open"
-        @keyup="keyboardShortcuts"
+        @keydown="keyboardShortcuts"
     >     
         <BLoading v-show="isShowLoadingModal" loadingClass="loading--modal"></BLoading>
 
@@ -1053,7 +1053,7 @@ export default {
             if (e.keyCode === 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
                 e.preventDefault();
                 
-                // Process event...
+                // Xử lý sự kiện
                 this.onSubmit();
 
                 if(e.shiftKey) {
