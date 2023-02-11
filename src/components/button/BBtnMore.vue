@@ -33,7 +33,6 @@ export default {
     },
 
     updated() {
-        console.log("isShow updated", this.isShow)
 
     },
 

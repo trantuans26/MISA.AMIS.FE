@@ -333,7 +333,6 @@ export default {
 
     // Thiết lập vào data, event nhưng chưa vào DOM
     created() {
-        console.log("Created")
         let me = this;
         try {
             me.isShowLoading = true; // Hiển thị loading data
@@ -346,7 +345,8 @@ export default {
     
     /* Khởi tạo giá trị mặc định khi vào DOM thật */
     beforeMount() {
-        console.log("beforeMount")
+
+        
     },
 
     /* DOM thật */
@@ -394,7 +394,6 @@ export default {
                     me.isShowLoading = false;
                     me.isShowNextPage = false;
                     me.isShowPreviousPage = false;
-                    console.log("data", resource.data);
                 })
                 .catch((error) => {
                     console.log('error: ', error.status);

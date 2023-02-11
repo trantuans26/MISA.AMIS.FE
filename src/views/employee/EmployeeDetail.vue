@@ -561,7 +561,6 @@ export default {
         }
 
         me.employeeJSON = JSON.stringify(me.employeeModal);
-        console.log(me.employeeJSON);
     },
 
     /* DOM thật */
@@ -634,7 +633,7 @@ export default {
                 })
                 .catch((error) => {
                     console.log("error", error);
-                    me.validateBackend(error.response);
+                    me.handleException(error.response);
                     me.isShowLoadingModal = false;
                 });
             } catch (error) {
@@ -678,7 +677,7 @@ export default {
                 })
                 .catch((error) => {
                     console.log(error);
-                    me.validateBackend(error.response);
+                    me.handleException(error.response);
                     me.isShowLoadingModal = false;
                 });
 
@@ -701,11 +700,10 @@ export default {
                 .get(`${Resource.Url.Employees}/NewCode`)
                 .then((resource) => {
                     me.employeeModal.employeeCode = resource.data;
-                    console.log('resset code', resource);
                 })
                 .catch((error) => {
                     console.log('error: ', error.status);
-                    me.validateBackend(error.response);
+                    me.handleException(error.response);
 
                 })
             } catch (e) {
@@ -726,14 +724,13 @@ export default {
                 .get(`${Resource.Url.Departments}`)
                 .then((resource) => {
                     me.departments = resource.data;
-                    console.log('departments: ', me.departments);
                 })
                 .catch((error) => {
                     console.log('error: ', error.status);
                 })
             } catch (error) {
                 console.log("error", error);
-                me.validateBackend(error.response);
+                me.handleException(error.response);
                 me.isShowLoadingModal = false;
             }
         },
@@ -870,7 +867,6 @@ export default {
             /* Mở cảnh báo */
             let me = this;
             let eJSON = JSON.stringify(me.employeeModal);
-            console.log('khi onclose', eJSON);
             if (me.employeeJSON != eJSON && me.$parent.updateFunction) {
                 me.isShowCloseDialog = true;
             } else {
@@ -1199,7 +1195,7 @@ export default {
             Author: Tuan 
             Date: 10/12/2022 
         */
-        validateBackend(response) {
+        handleException(response) {
             let me = this;
             try {
                 if (response.status == Enum.StatusCode.BADREQUEST) {
@@ -1474,9 +1470,6 @@ export default {
 
 
     watch: {
-        functionUpdate: function(query) {
-            console.log(query);
-        }
     },
 
     computed: {

@@ -30,9 +30,11 @@
 
 .toast {
     position: fixed;
+    left: 50%;
     top: 0;
-    transform: translateX(84%);
-    z-index: 999;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
 }
 
 .toast__container {
@@ -43,7 +45,7 @@
     height: 56px;
     border-radius: 4px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.078);
-    margin: 20px 0;
+    margin-top: 20px;
     padding: 16px;
     z-index: 999;
     animation: sideInTop ease 0.28s, faceOut linear 1s 4s;
