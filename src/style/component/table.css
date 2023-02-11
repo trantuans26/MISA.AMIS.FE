@@ -326,10 +326,13 @@ td.table__col--function {
 .table__col {
     border-right: 1px dotted var(--tableBorder-color);
     padding: 0 10px;
+}
+
+.table__col p {
     overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical; 
+    text-overflow: ellipsis;
+    height: 100%;
+    white-space:nowrap
 }
 
 th.table__col {

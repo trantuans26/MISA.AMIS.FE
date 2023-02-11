@@ -377,7 +377,7 @@
     </BDialog>
     <!-- End: Dialog validate dữ liệu -->
 
-    <!-- Begin: Dialog check mã trùng -->
+    <!-- Begin: Dialog validate backend -->
     <BDialog
         v-show="this.isShowValidationDialogBackend"
         @closeDialog="(this.isShowValidationDialogBackend = $event), this.errorMessage = ''"
@@ -398,7 +398,7 @@
             </div>
         </template>
     </BDialog>
-    <!-- End: Dialog check mã trùng -->
+    <!-- End: Dialog validate backend -->
 
     <!-- Begin: Dialog click icon đóng modal -->
     <BDialog
@@ -854,7 +854,7 @@ export default {
         focusFirst() {
             let me = this;
 
-            me.$nextTick(() => me.$refs.employeeCodeFocusing.focus());
+            me.$refs.employeeCodeFocusing.focus();
         },
 
         /* Click huỷ trên form modal
@@ -1202,6 +1202,9 @@ export default {
                     if (response.data.errorCode == Enum.ErrorCode.DUPLICATE_CODE) {
                         me.errorMessage = me.textErrorMessage.employeeCode +  ' <' + me.employeeModal.employeeCode + '> ' + me.textErrorMessage.duplicateCode;
                     }  
+                    else {
+                        me.errorMessage = response.data.moreInfo[0];
+                    }
                 } 
                 else if(response.status == Enum.StatusCode.NOTFOUND) {
                     me.isShowValidationDialogBackend = true;    
@@ -1266,14 +1269,17 @@ export default {
         closeValidationDialog() {
             let me = this;
 
-            me.isShowValidationDialog = false;
-            me.isShowValidationDialogBackend = false;
-
             me.isShowValidity.emptyDepartmentID = true;
             me.isShowValidity.emptyEmployeeCode = true;
             me.isShowValidity.emptyEmployeeName = true;            
 
-            me.focusInvalidFirst();
+            if (me.isShowValidationDialog == true)
+                me.focusInvalidFirst();
+            else 
+                me.$refs.employeeCodeFocusing.focus();
+
+            me.isShowValidationDialog = false;
+            me.isShowValidationDialogBackend = false;
 
             me.errorMessage = '';
         }
