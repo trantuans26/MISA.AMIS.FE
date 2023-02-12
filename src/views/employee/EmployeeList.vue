@@ -896,33 +896,6 @@ export default {
                 this.employeesSelectedByID = employeesSelectedByID;
             }
         },
-
-        /* Tự động thêm tên tài sản khi điền mã tài sản
-            Object
-            Author: Tuan 
-            Date: 10/12/2022 
-        */
-        categorySelection: {
-            get: function() { 
-                return this.assetModal.categoryCode;
-            },
-
-            set: function(code) {
-                this.assetModal.categoryCode = code;
-                for(var i=0; i<this.categories.length; i++) {
-                    if(this.categories[i].fixed_asset_category_code == code) {
-                        this.assetModal.categoryId = this.categories[i].fixed_asset_category_id;
-                        this.assetModal.categoryName = this.categories[i].fixed_asset_category_name;
-                        this.assetModal.lifeTime = this.categories[i].life_time;
-                        this.assetModal.depreciationRate = this.categories[i].depreciation_rate;
-                        break;
-                    } else {
-                        this.assetModal.categoryId = "";
-                        this.assetModal.categoryName = "";
-                    }
-                }         
-            }
-        }
     },
 }
 </script>

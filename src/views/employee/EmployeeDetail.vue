@@ -1515,33 +1515,6 @@ export default {
                 this.employeeModal.quantity = number;
             }
         },
-        
-        /* Tự động thêm tên tài sản khi điền mã tài sản
-            Object
-            Author: Tuan 
-            Date: 30/10/2022 
-        */
-        categorySelection: {
-            get: function() { 
-                return this.employeeModal.categoryCode;
-            },
-
-            set: function(code) {
-                this.employeeModal.categoryCode = code;
-                for(var i=0; i<this.categories.length; i++) {
-                    if(this.categories[i].fixed_asset_category_code == code) {
-                        this.employeeModal.categoryId = this.categories[i].fixed_asset_category_id;
-                        this.employeeModal.categoryName = this.categories[i].fixed_asset_category_name;
-                        this.employeeModal.lifeTime = this.categories[i].life_time;
-                        this.employeeModal.depreciationRate = this.categories[i].depreciation_rate;
-                        break;
-                    } else {
-                        this.employeeModal.categoryId = "";
-                        this.employeeModal.categoryName = "";
-                    }
-                }         
-            }
-        }
     },
 }
 </script>
