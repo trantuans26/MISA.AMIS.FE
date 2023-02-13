@@ -162,6 +162,7 @@
                                 </label>
                                 <input 
                                     class="input input--haveicon input--modal" type="text"  
+                                    ref="identityNumberFocusing"
                                     :class="{'input--error': this.isShowValidity.invalidIdentityNumber}"    
                                     v-model.trim="this.employeeModal.identityNumber"
                                     @focus="this.isShowValidity.invalidIdentityNumber = false"
@@ -1045,6 +1046,7 @@ export default {
             Date: 24/12/2022 
         */
         keyboardShortcuts(e) {
+            let me = this;
             // Bắt Ctrl + S và Ctrl + Shift + S
             if (e.keyCode === Enum.KEY_CODE.S && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
                 e.preventDefault();
@@ -1066,9 +1068,12 @@ export default {
 
             // Bắt Enter
             if (e.keyCode === Enum.KEY_CODE.ENTER) {
-                this.isShowCloseDialog = false;
+                e.preventDefault();
 
-                this.closeValidationDialog();
+                if(me.isShowValidationDialog == true) {
+                    this.closeValidationDialog();
+                }
+ 
             }
         },
 
