@@ -122,7 +122,7 @@
 
                 <div class="table__footer" 
                 >
-                    <span class="table__record">Tổng số: <b>{{formatNumber(totalRecord)}}</b> bản ghi</span>
+                    <span class="table__record"> {{ textTotal }}: <b>{{formatNumber(totalRecord)}}</b> {{ textRecord }}</span>
                     <div class="table__page">
                         <div class="table__size">
                             <div class="item--caretdown" 
@@ -298,10 +298,10 @@
 
 <script>
 import axios from "axios";
-import Resource from "@/lib/resource";
+import Resource from "@/translations/resource";
 /* import TheDelete from "@/components/function/delete/TheDelete.vue"; */
 import moment from 'moment';
-import Enum from "@/lib/enum";
+import Enum from "@/utils/enum";
 import BLoading from '@/components/base/loading/BLoading.vue'
 import EmployeeDetail from "./EmployeeDetail.vue";
 import BDialog from "@/components/base/dialog/BDialog.vue";
@@ -829,9 +829,9 @@ export default {
             Date: 21/11/2022 
          */
         formatGender(value) {
-            if(value == 0) return "Nam";
-            else if (value == 1) return "Nữ";
-            else if (value == 2) return "Khác";
+            if(value == 0) return this.textMale;
+            else if (value == 1) return this.textFemale;
+            else if (value == 2) return this.textOther;
         },
     },
 
@@ -899,7 +899,13 @@ export default {
             textRecordPerPage: Resource.TextVi.Table.RecordPerPage,
             textNext: Resource.TextVi.Table.Next,
             textPrevious: Resource.TextVi.Table.Previous,
+            textTotal: Resource.TextVi.Table.Total,
+            textRecord: Resource.TextVi.Table.Record,
             //#endregion Data table
+
+            textMale: Resource.TextVi.Gender.Male, // Nam
+            textFemale: Resource.TextVi.Gender.Female, // Nữ
+            textOther: Resource.TextVi.Gender.Other, // JKhác
 
             textToastMessage: { // Nội dung Toast
                 success: {

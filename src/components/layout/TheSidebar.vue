@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import Resource from "@/translations/resource";
 
     export default {
         name: 'TheSidebar',
@@ -87,91 +88,91 @@
                     items: [
                         {
                             icon: 'icon--total',
-                            title: 'Tổng quan',
+                            title: Resource.TextVi.Sidebar.Total,
                             style: 'total',
                             route: '/total',
                         },
                         {
                             icon: 'icon--money',
-                            title: 'Tiền mặt',
+                            title: Resource.TextVi.Sidebar.Money,
                             style: 'money',
                             route: '/money',
                         },
                         {
                             icon: 'icon--deposit',
-                            title: 'Tiền gửi',
+                            title: Resource.TextVi.Sidebar.Deposit,
                             style: 'deposit',
                             route: '/deposit',
                         },
                         {
                             icon: 'icon--shop',
-                            title: 'Mua hàng',
+                            title: Resource.TextVi.Sidebar.Shop,
                             style: 'shop',
                             route: '/shop',
                         },
                         {
                             icon: 'icon--sale',
-                            title: 'Bán hàng',
+                            title: Resource.TextVi.Sidebar.Sale,
                             style: 'sale',
                             route: '/sale',
                         },
                         {
                             icon: 'icon--bill',
-                            title: 'Quản lý hoá đơn',
+                            title: Resource.TextVi.Sidebar.Bill,
                             style: 'bill',
                             route: '/bill',
                         },
                         {
                             icon: 'icon--store',
-                            title: 'Kho',
+                            title: Resource.TextVi.Sidebar.Store,
                             style: 'store',
                             route: '/store',
                         },
                         {
                             icon: 'icon--tool',
-                            title: 'Công cụ dụng cụ',
+                            title: Resource.TextVi.Sidebar.Tool,
                             style: 'tool',
                             route: '/tool',
                         },                       
                         {
                             icon: 'icon--fixedAsset',
-                            title: 'Tài sản cố định',
+                            title: Resource.TextVi.Sidebar.FixedAsset,
                             style: 'fixedAsset',
                             route: '/fixedAsset',
                         },
                         {
                             icon: 'icon--tax',
-                            title: 'Thuế',
+                            title: Resource.TextVi.Sidebar.Tax,
                             style: 'tax',
                             route: '/tax',
                         },                       
                         {
                             icon: 'icon--cost',
-                            title: 'Giá thành',
+                            title: Resource.TextVi.Sidebar.Cost,
                             style: 'cost',
                             route: '/cost',
                         },                       
                         {
                             icon: 'icon--general',
-                            title: 'Tổng hợp',
+                            title: Resource.TextVi.Sidebar.General,
                             style: 'general',
                             route: '/general',
                         },                       
                         {
                             icon: 'icon--budget',
-                            title: 'Ngân sách',
+                            title: Resource.TextVi.Sidebar.Budget,
                             style: 'budget',
                             route: '/budget',
                         },                       
                         {
                             icon: 'icon--report',
-                            title: 'Báo cáo',
+                            title: Resource.TextVi.Sidebar.Report,
                             style: 'report',
                             route: '/report',
                         },                       
                         {
                             icon: 'icon--analyst',
-                            title: 'Phân tích tài chính',
+                            title: Resource.TextVi.Sidebar.Analyst,
                             style: 'analyst',
                             route: '/analyst',
                         },
@@ -187,10 +188,10 @@
             },
 
             /* Click sidebar__item
-            @param {item}
-            @returns void
-            Author: Tuan 
-            Date: 23/10/2022 
+                @param {item}
+                @returns void
+                Author: Tuan 
+                Date: 23/12/2022 
             */
             makeActive: function(item) {
                 this.active = item;

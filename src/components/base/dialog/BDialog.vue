@@ -36,7 +36,7 @@
 </template>
   
 <script>
-import Resource from "@/lib/resource";
+import Resource from "@/translations/resource";
 
 export default {
     name: "BDialog",

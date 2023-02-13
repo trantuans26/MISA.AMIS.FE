@@ -147,9 +147,9 @@
                                     {{this.textGender}}
                                 </label>
                                 <div class="modal__radio">
-                                    <input id="gender__male" type="radio" v-model="this.employeeModal.gender" value="0"> <label for="gender__male">Nam</label>
-                                    <input id="gender__female" type="radio" v-model="this.employeeModal.gender" value="1"> <label for="gender__female">Nữ</label>
-                                    <input id="gender__other" type="radio" v-model="this.employeeModal.gender" value="2"> <label for="gender__other">Khác</label>
+                                    <input id="gender__male" type="radio" v-model="this.employeeModal.gender" value="0"> <label for="gender__male">{{ this.textMale }}</label>
+                                    <input id="gender__female" type="radio" v-model="this.employeeModal.gender" value="1"> <label for="gender__female">{{ this.textFemale }}</label>
+                                    <input id="gender__other" type="radio" v-model="this.employeeModal.gender" value="2"> <label for="gender__other">{{ this.textOther }}</label>
                                 </div>
                             </div>
                         </div>
@@ -450,8 +450,8 @@
 <script>
 import axios from "axios";
 import moment from 'moment'
-import Enum from "@/lib/enum";
-import Resource from "@/lib/resource";
+import Enum from "@/utils/enum";
+import Resource from "@/translations/resource";
 import BDialog from "@/components/base/dialog/BDialog.vue";
 import BToast from "@/components/base/toast/BToast.vue";
 import BLoading from '@/components/base/loading/BLoading.vue'
@@ -1370,7 +1370,6 @@ export default {
             hasError: false,
             isShowLoadingModal: false,
             isShowCloseDialog: false, /* Hiển thị cảnh báo khi huỷ*/
-            textExceptionMsg: "", // Thông điệp trong cảnh báo lỗi backend
             backendError: false, // Có hiển thị dialog cảnh báo lỗi từ backend không
             saveAndInsert: false, // Cất và Thêm
 
@@ -1420,6 +1419,10 @@ export default {
             //#endregion Dropdown
 
             //#endregion Data Modal
+
+            textMale: Resource.TextVi.Gender.Male, // Nam
+            textFemale: Resource.TextVi.Gender.Female, // Nữ
+            textOther: Resource.TextVi.Gender.Other, // JKhác
 
             textErrorMessage: { // Nội dung mã lỗi
                 emptyCode: Resource.TextVi.ErrorMessage.EmptyCode,

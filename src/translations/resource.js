@@ -10,15 +10,6 @@ export default {
         Departments: "https://localhost:44368/api/v1/Departments",
     },
 
-    // Các thông báo exception gửi về từ backend hiện ra cho người dùng
-    ExceptionMsg:{
-        BADREQUEST: "Dữ liệu đầu vào không hợp lệ.", 
-        UNAUTHORIZED: "Hệ thống MISA chưa được ủy quyền.",
-        FORBIDDEN: "Không có quyền truy cập tài nguyên này.",
-        NOTFOUND:"Server không tìm thấy bất kì tài nguyên nào.", 
-        NTERNALSERVERERROR:"Có lỗi xảy ra phía máy chủ. Vui lòng liên hệ MISA!.", 
-    },
-
     TextVi:{
         Header: {
             CompanyName: "Công ty TNHH Sản xuất - Thương mại - Dịch vụ Qui Phúc",
@@ -55,6 +46,8 @@ export default {
             RecordPerPage: " bản ghi trên 1 trang",
             Next: "Trước",
             Previous: "Sau",
+            Total: "Tổng số",
+            Record: "bản ghi",
         },
 
         Modal:{
@@ -164,5 +157,29 @@ export default {
             SaveAndInsert: "Ctrl + Shift + S",
             Save: "Ctrl + S",
         },
+
+        Gender: {
+            Male: "Nam",
+            Female: "Nữ",
+            Other: "Khác",
+        },
+
+        Sidebar: {
+            Total: "Tổng quan",
+            Money: "Tiền mặt",
+            Deposit: "Tiền gửi",
+            Shop: "Mua hàng",
+            Sale: "Bán hàng",
+            Bill: "Quản lý hóa đơn",
+            Store: "Quản lý kho",
+            Tool: "Công cụ",
+            FixedAsset: "Tài sản cố định",
+            Tax: "Thuế",
+            Cost: "Giá thành",
+            General: "Tổng hợp",
+            Budget: "Ngân sách",
+            Report: "Báo cáo",
+            Analyst: "Phân tích tài chính",
+          },
     }
 }
