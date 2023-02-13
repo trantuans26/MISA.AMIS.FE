@@ -29,7 +29,6 @@
     position: sticky;
     outline: none;
     right: 10px;
-    margin-right: 10px;
     margin-top: 13px;
     width: 0;
     z-index: 3;
@@ -38,7 +37,7 @@
 
 .dropdown--function {
     position: absolute;
-    right: 0;
+    right: -1px;
     top: 20px;
 }
 

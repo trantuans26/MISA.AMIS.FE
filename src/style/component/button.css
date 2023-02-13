@@ -136,6 +136,7 @@
 
 .btn__dropdown:focus {
     border: 1px solid rgb(3, 119, 193);
+    outline: none;
 }
 
 .btn__dropdown--list { 
