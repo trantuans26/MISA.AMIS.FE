@@ -252,7 +252,7 @@ td.table__col--function {
     padding: 12px 32px 12px 0;
     display: flex;
     justify-content: space-between;
-    z-index: 2;
+    z-index: 3;
 }
 
 .table__record {

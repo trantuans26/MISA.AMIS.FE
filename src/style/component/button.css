@@ -134,6 +134,9 @@
     z-index: 2;
 }
 
+.btn__dropdown:focus {
+    border: 1px solid rgb(3, 119, 193);
+}
 
 .btn__dropdown--list { 
     position: absolute;
