@@ -151,6 +151,7 @@
 
 .table__row {
     position: relative;
+    outline: none;
 }
 
 .table__row--checked,

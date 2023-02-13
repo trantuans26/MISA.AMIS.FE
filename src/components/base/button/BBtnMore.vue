@@ -1,6 +1,5 @@
 <template>
     <div class="dropdown__box"
-    tabindex="1"
     >
         <div class="btn__dropdown"
             tabindex="1"

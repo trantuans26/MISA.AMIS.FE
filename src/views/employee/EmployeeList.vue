@@ -1,6 +1,6 @@
 <template>
     <div class="content"
-        @keyup.ctrl.0="isDisplayModal = true, updateFunction = false, replicateFunction = false"
+        @keydown="keyboardShortcuts"
     >
         <div class="content__header">
             <div class="content__title">{{this.contentTitle}}</div>
@@ -78,13 +78,14 @@
                                     tabindex="1"
                                     v-for="(employee) in this.employees"
                                     :key="employee"
-                                    :class="{'table__row--checked': checkEmployee(employee.employeeID)}" 
-                                    
+                                    :class="{'table__row--checked': checkEmployee(employee.employeeID)}"                                     
+                                    @click="selectEmployee(employee)"
+                                    @blur="deselectEmployee"
                                 >
                                     <td class="table__col table__col--center table__col--check">
                                         <input type="checkbox" 
                                             :checked="checkEmployee(employee.employeeID)"
-                                            @click="clickCheckEmployee(employee.employeeID)"
+                                            @click="clickCheckEmployee(employee)"
                                         >
                                     </td>
                                     <td class="table__col table__col--left table__col--employeeCode" @dblclick="onUpdateFunction(employee)"> <p>{{employee.employeeCode}}</p> </td>
@@ -246,68 +247,67 @@
                 <BLoading v-show="isShowLoadingTable" loadingClass="loading--table"></BLoading>
             </div>
         </div>
+
+        <EmployeeDetail 
+            v-if="isDisplayModal"
+            @closeModal="isDisplayModal = $event" 
+            @showSuccessToast="showSucessToast()"
+        ></EmployeeDetail>
+
+        <BDialog
+            class="dialog--delete"
+            :message="this.employeeDeleted.employeeCode"
+            v-if="this.isShowDeleteDialog"
+            @closeDialog="(this.isShowDeleteDialog = $event)"
+            @deleteEmployee="apiDeleteEmployeeByID(), showSucessDeleteToast()"
+        >
+        </BDialog>
+
+        <BDialog
+            class="dialog--deleteBatch"
+            v-if="this.isShowDeleteBatchDialog"
+            @closeDialog="(this.isShowDeleteBatchDialog = $event)"
+            @deleteEmployee="apiDeleteEmployeesByIDs(), showSucessDeleteToast()"
+        >   
+            <template #message>
+            {{ this.textDialog.deleteBatch }}
+            </template>
+        </BDialog>
+
+        <!-- Begin: Toast thông báo xoá -->
+        <BToast
+            v-show="this.isShowSuccessDeleteToast"
+            @closeToast="this.isShowSuccessDeleteToast = false"
+        ></BToast>
+        <!-- End: Toast thông báo xoá -->
+
+        <!-- Begin: Toast thông báo thêm|sửa -->
+        <BToast
+            v-show="this.isShowSuccessToast"
+            @closeToast="this.isShowSuccessToast = false"
+        >
+            <template #text>
+                {{ this.updateFunction ? this.textToastMessage.success.update : this.textToastMessage.success.insert }}
+            </template>
+        </BToast>
+        <!-- End: Toast thông báo thêm|sửa -->
+
+        <BLoading v-show="this.isShowLoading"></BLoading>
     </div>
-
-    <EmployeeDetail 
-        v-if="isDisplayModal"
-        @closeModal="isDisplayModal = $event" 
-        @showSuccessToast="showSucessToast()"
-    ></EmployeeDetail>
-
-    <BDialog
-        class="dialog--delete"
-        :message="this.employeeDeleted.employeeCode"
-        v-if="this.isShowDeleteDialog"
-        @closeDialog="(this.isShowDeleteDialog = $event)"
-        @deleteEmployee="apiDeleteEmployeeByID(), showSucessDeleteToast()"
-    >
-    </BDialog>
-
-    <BDialog
-        class="dialog--deleteBatch"
-        v-if="this.isShowDeleteBatchDialog"
-        @closeDialog="(this.isShowDeleteBatchDialog = $event)"
-        @deleteEmployee="apiDeleteEmployeesByIDs(), showSucessDeleteToast()"
-    >   
-        <template #message>
-           {{ this.textDialog.deleteBatch }}
-        </template>
-    </BDialog>
-
-    <!-- Begin: Toast thông báo xoá -->
-    <BToast
-        v-show="this.isShowSuccessDeleteToast"
-        @closeToast="this.isShowSuccessDeleteToast = false"
-    ></BToast>
-    <!-- End: Toast thông báo xoá -->
-
-    <!-- Begin: Toast thông báo thêm|sửa -->
-    <BToast
-        v-show="this.isShowSuccessToast"
-        @closeToast="this.isShowSuccessToast = false"
-    >
-        <template #text>
-            {{ this.updateFunction ? this.textToastMessage.success.update : this.textToastMessage.success.insert }}
-        </template>
-    </BToast>
-    <!-- End: Toast thông báo thêm|sửa -->
-
-    <BLoading v-show="this.isShowLoading"></BLoading>
 </template>
 
 <script>
 import axios from "axios";
 import Resource from "@/lib/resource";
 /* import TheDelete from "@/components/function/delete/TheDelete.vue"; */
-import moment from 'moment'
-import useValidate from '@vuelidate/core'
-import {required} from '@vuelidate/validators'
+import moment from 'moment';
+import Enum from "@/lib/enum";
 import BLoading from '@/components/base/loading/BLoading.vue'
 import EmployeeDetail from "./EmployeeDetail.vue";
 import BDialog from "@/components/base/dialog/BDialog.vue";
 import BToast from "@/components/base/toast/BToast.vue";
-import btnBatch from "@/components/button/BBtnBatch.vue";
-import btnMore from "@/components/button/BBtnMore.vue";
+import btnBatch from "@/components/base/button/BBtnBatch.vue";
+import btnMore from "@/components/base/button/BBtnMore.vue";
 /* import BComboboxIcon from "@/components/base/combobox/BComboboxIcon.vue"; */
 /* import TheLoading from "@/components/base/loading/TheLoading.vue"; */
 /* import BaseMessageError from "@/components/base/message/BaseMessageError.vue"; */
@@ -533,6 +533,61 @@ export default {
             }
         },
 
+        /* Phím tắt
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 24/12/2022 
+        */
+        keyboardShortcuts(e) {
+            let me = this;
+            if (e.ctrlKey) {
+                switch(e.keyCode) {
+                    case Enum.KEY_CODE.ONE:
+                        e.preventDefault();
+                        me.isDisplayModal = true;
+                        me.updateFunction = false;
+                        me.replicateFunction = false;
+                        break;
+                    case Enum.KEY_CODE.TWO:
+                        e.preventDefault();
+                        me.onReplicateFunction(me.employeeSelected);
+                        break;
+                    case Enum.KEY_CODE.E:
+                        e.preventDefault();
+                        me.apiExportExcel();
+                        break;
+                    case Enum.KEY_CODE.D:
+                        e.preventDefault();
+                        if(me.employeesSelectedByID.length > 1)
+                            me.isShowDeleteBatchDialog = true;
+                        else {
+                            if(me.employeeSelected) {
+                                me.showDeleteDialog(me.employeeSelected);
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if(e.keyCode == Enum.KEY_CODE.DELETE) {
+                e.preventDefault();
+                if(me.employeesSelectedByID.length > 1)
+                    me.isShowDeleteBatchDialog = true;
+                else {
+                    if(me.employeeSelected) {
+                        me.showDeleteDialog(me.employeeSelected);
+                    }
+                }
+            }
+
+            if(e.keyCode == Enum.KEY_CODE.ESC) {
+                e.preventDefault();
+            }
+        },
+
         //#region Click events
         /* Thêm mới nhân viên
             @param {}
@@ -587,17 +642,19 @@ export default {
             Author: Tuan 
             Date: 10/12/2022 
         */
-        clickCheckEmployee(id) {
+        clickCheckEmployee(employee) {
             let bool = true;
             for(var i = 0; i < this.employeesSelectedByID.length; i++) {
-                if(id == this.employeesSelectedByID[i]) {
+                if(employee.employeeID == this.employeesSelectedByID[i]) {
                     bool = false;
                     this.employeesSelectedByID.splice(i,1);
                     break;
                 }
             }
             
-            if(bool) this.employeesSelectedByID.push(id);
+            if(bool) {
+                this.employeesSelectedByID.push(employee.employeeID);
+            }
         },
 
         /* Bỏ chọn nhân viên thao tác các chức năng
@@ -607,7 +664,7 @@ export default {
             Date: 10/12/2022 
         */
         deselectEmployee() {
-            this.employeeSelected = '';
+            this.employeeSelected = null;
         },
 
         /* Chọn 1 nhân viên thao tác các chức năng
@@ -850,28 +907,8 @@ export default {
             textDialog: { // Nội dung dialog
                 deleteBatch: Resource.TextVi.Dialog.Text.DeleteBatch,
             },
-
-            v$: useValidate(), // validate dữ liệu (sử dụng vuelidate)
         }
     },
-
-    validations: {
-        // Các trường cần validate thiếu
-        assetModal: { 
-            fixedAssetCode: { required },
-            fixedAssetName: { required },
-            departmentCode: { required },
-            categoryCode: { required },
-            quantity: { required },
-            cost: { required },
-            depreciationRate: { required },
-            lifeTime: { required },
-            purchaseDate: { required },
-            productionDate: { required },
-        },
-    },
-
-
     
     computed: {
         /* Chọn tất cả dòng

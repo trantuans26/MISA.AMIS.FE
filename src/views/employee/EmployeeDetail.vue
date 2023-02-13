@@ -1038,7 +1038,7 @@ export default {
 
         },
 
-        /* ngăn ngừa save as
+        /* Phím tắt
             @param {}
             @returns void
             Author: Tuan 
@@ -1046,7 +1046,7 @@ export default {
         */
         keyboardShortcuts(e) {
             // Bắt Ctrl + S và Ctrl + Shift + S
-            if (e.keyCode === 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+            if (e.keyCode === Enum.KEY_CODE.S && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
                 e.preventDefault();
                 
                 // Xử lý sự kiện
@@ -1060,15 +1060,15 @@ export default {
             } 
 
             // Bắt Esc
-            if (e.keyCode === 27) {
+            if (e.keyCode === Enum.KEY_CODE.ESC) {
                 this.onClose();
             }
 
             // Bắt Enter
-            if (e.keyCode === 13) {
-                this.isShowValidationDialog = false;
-                this.isShowValidationDialogBackend = false;
+            if (e.keyCode === Enum.KEY_CODE.ENTER) {
                 this.isShowCloseDialog = false;
+
+                this.closeValidationDialog();
             }
         },
 
@@ -1198,15 +1198,15 @@ export default {
         handleException(response) {
             let me = this;
             try {
-                if (response.status == Enum.StatusCode.BADREQUEST) {
-                    if (response.data.errorCode == Enum.ErrorCode.DUPLICATE_CODE) {
+                if (response.status == Enum.STATUS_CODE.BADREQUEST) {
+                    if (response.data.errorCode == Enum.ERROR_CODE.DUPLICATE_CODE) {
                         me.errorMessage = me.textErrorMessage.employeeCode +  ' <' + me.employeeModal.employeeCode + '> ' + me.textErrorMessage.duplicateCode;
                     }  
                     else {
                         me.errorMessage = response.data.moreInfo[0];
                     }
                 } 
-                else if(response.status == Enum.StatusCode.NOTFOUND) {
+                else if(response.status == Enum.STATUS_CODE.NOTFOUND) {
                     me.isShowValidationDialogBackend = true;    
 
                 } else {

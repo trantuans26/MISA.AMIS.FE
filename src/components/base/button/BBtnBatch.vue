@@ -1,6 +1,6 @@
 <template>
     <button class="btn btn__batch"
-        :class="{'btn__batch--actived': this.employeesSelectedByID.length}"
+        :class="{'btn__batch--actived': this.employeesSelectedByID.length > 1}"
         @click="isShow = !isShow"
         @blur="isShow = false"
     >
@@ -8,7 +8,7 @@
             {{ this.textBatch }}
             <div class="btn__batch--icon">
                 <i class="icon icon__grey--caretdown"
-                    :class="{'icon__black--caretdown': this.employeesSelectedByID.length}"
+                    :class="{'icon__black--caretdown': this.employeesSelectedByID.length > 1}"
                 ></i>
             </div>
         </div>
