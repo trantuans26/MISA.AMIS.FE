@@ -122,7 +122,7 @@
 
                 <div class="table__footer" 
                 >
-                    <span class="table__record">Tổng số: <b>{{totalRecord}}</b> bản ghi</span>
+                    <span class="table__record">Tổng số: <b>{{formatNumber(totalRecord)}}</b> bản ghi</span>
                     <div class="table__page">
                         <div class="table__size">
                             <div class="item--caretdown" 
@@ -531,6 +531,20 @@ export default {
             if (value) {
                 return (moment(String(value)).format('DD/MM/YYYY'));
             }
+        },
+
+        /* Định dạng dữ liệu cho số (200000 => 200.000)
+            @param {}
+            @returns void
+            Author: Tuan 
+            Date: 24/12/2022 
+        */
+        formatNumber(number) {
+            let val = (number/1).toFixed(0)
+            if (number && !isNaN(number)) {
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            } else 
+                return number;
         },
 
         /* Phím tắt
